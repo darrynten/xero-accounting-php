@@ -20,7 +20,7 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
         'password' => 'password',
         'key' => 'key',
         'endpoint' => '//localhost:8082',
-        'version' => '1.1.2',
+        'version' => '2.0',
         'companyId' => null
     ];
 
@@ -203,7 +203,7 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
     {
         $validKeys = array_fill_keys([
             'type', 'nullable', 'readonly', 'default',
-            'required', 'min', 'max', 'regex'
+            'required', 'min', 'max', 'regex', 'valid', 'only', 'except'
         ], true);
         foreach (array_keys($options) as $option) {
             if (!isset($validKeys[$option])) {
@@ -423,7 +423,7 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('boolean', gettype($value['delete']));
         $this->assertCount(4, $value);
 
-        foreach (['all', 'get', 'save', 'delete'] as $feature) {
+        foreach (['all', 'get', 'create', 'update', 'delete'] as $feature) {
             $expected = $features[$feature] ? 'true' : 'false';
             $actual = $value[$feature] ? 'true' : 'false';
             $this->assertEquals(
@@ -445,8 +445,9 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
         $className = $this->getClassName($class);
 
         $model = new $class($this->config);
-        $data = json_decode(file_get_contents(__DIR__ . "/../../mocks/{$className}/GET_{$className}_Get_xx.json"));
-        $model->loadResult($data);
+        $data = json_decode(json_encode(simplexml_load_file(__DIR__ . "/../../mocks/Accounting/{$className}/GET_{$className}_xx.xml")));
+        // die(var_dump($data->Account));
+        $model->loadResult($data->Account);
 
         $whatToCheck($model);
     }
@@ -460,12 +461,11 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyGetAll(string $class, callable $whatToCheck)
     {
         $className = $this->getClassName($class);
-        $path = sprintf('%s/Get', $className);
-        $mockFile = sprintf('%s/GET_%s_Get.json', $className, $className);
+        $mockFile = sprintf('Accounting/%s/GET_%s.xml', $className, $className);
         $model = $this->setUpRequestMock(
             'GET',
             $class,
-            $path,
+            $className,
             $mockFile
         );
 
@@ -489,7 +489,7 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
     {
         $className = $this->getClassName($class);
         $path = sprintf('%s/Get/%s', $className, $id);
-        $mockFile = sprintf('%s/GET_%s_Get_xx.json', $className, $className);
+        $mockFile = sprintf('%s/GET_%s_xx.json', $className, $className);
         $model = $this->setUpRequestMock(
             'GET',
             $class,
@@ -523,7 +523,7 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
             $mockFileRequest
         );
 
-        $data = json_decode(file_get_contents(__DIR__ . "/../../mocks/" . $mockFileRequest));
+        $data = simplexml_load_file(__DIR__ . "/../../mocks/Accounting/" . $mockFileRequest);
         $model->loadResult($data);
 
         $beforeSave($model);
@@ -725,15 +725,15 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUpRequestMock(string $method, string $class, string $path, string $mockFileResponse = null, string $mockFileRequest = null)
     {
-        $url = sprintf('/1.1.2/%s?apikey=key', $path);
+        $url = sprintf('/2.0/%s?apikey=key', $path);
 
         $responseData = null;
         if ($mockFileResponse) {
-            $responseData = file_get_contents(__DIR__ . '/../../mocks/' . $mockFileResponse);
+            $responseData = simplexml_load_file(__DIR__ . '/../../mocks/Accounting/' . $mockFileResponse);
         }
         $requestData = [];
         if ($mockFileRequest) {
-            $requestData= json_decode(file_get_contents(__DIR__ . '/../../mocks/' . $mockFileRequest), true);
+            $requestData = simplexml_load_file(__DIR__ . '/../../mocks/Accounting/' . $mockFileRequest);
         }
 
         $this->http->mock
@@ -773,7 +773,7 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
         $reflectedRequest = $modelReflection->getProperty('request');
         $reflectedRequest->setAccessible(true);
         $reflectedRequest->setValue($model, $request);
-        
+
         return $model;
     }
 }

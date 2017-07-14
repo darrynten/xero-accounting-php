@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Account:
  * https://developer.xero.com/documentation/api/accounts
  */
-class Account extends BaseModel
+class Accounts extends BaseModel
 {
     /**
      * The API Endpoint
@@ -85,7 +85,7 @@ class Account extends BaseModel
      * @var array $fields
      */
     protected $fields = [
-        'accountId' => [
+        'accountID' => [
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,
@@ -96,15 +96,17 @@ class Account extends BaseModel
             'readonly' => false,
             'required' => true,
         ],
+        // An inconvenient name as we use type
         'type' => [
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,
             'required' => true,
-            'types' => 'accountTypes',
+            'valid' => 'accountTypes',
         ],
         'bankAccountNumber' => [
-            'type' => 'integer',
+            // Should be integer.. TODO
+            'type' => 'string',
             'nullable' => true,
             'readonly' => false,
             // This is *only* required if type is bank
@@ -116,9 +118,9 @@ class Account extends BaseModel
         ],
         'status' => [
             'type' => 'string',
-            'nullable' => false,
-            'readonly' => true,
-            'types' => 'accountStatusCodes'
+            'nullable' => true,
+            'readonly' => false,
+            'valid' => 'accountStatusCodes'
         ],
         'description' => [
             'type' => 'string',
@@ -133,7 +135,7 @@ class Account extends BaseModel
             'type' => 'BankAccountType',
             'nullable' => true,
             'readonly' => false,
-            'types' => 'bankAccountTypes',
+            'valid' => 'bankAccountTypes',
             // These are probably not a good idea...
             'only' => [
                 'type' => 'BANK',
@@ -194,8 +196,16 @@ class Account extends BaseModel
             'readonly' => true,
         ],
         // Not sure how to deal with these
-        'where' => '',
-        'order' => '',
+        'where' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'order' => [
+           'type' => 'string',
+           'nullable' => true,
+           'readonly' => false,
+        ],
     ];
 
     /**

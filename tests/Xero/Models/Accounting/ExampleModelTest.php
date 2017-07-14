@@ -132,7 +132,7 @@ class ExampleModelTest extends \PHPUnit_Framework_TestCase
         $reflectedModel->setValue($exampleModel, $exampleBadFields);
 
         // Test
-        $data = json_decode(file_get_contents(__DIR__ . '/../../mocks/Example/GET_Example_Get_xx.json'));
+        $data = simplexml_load_file(__DIR__ . '/../../mocks/Example/GET_Example_Get_xx.json');
         $exampleModel->loadResult($data);
     }
 
@@ -306,7 +306,7 @@ class ExampleModelTest extends \PHPUnit_Framework_TestCase
         $this->expectExceptionCode(10112);
 
         // This response is not for this model
-        $data = json_decode(file_get_contents(__DIR__ . '/../../mocks/Account/GET_Account_Get_xx.json'));
+        $data = simplexml_load_file(__DIR__ . '/../../mocks/Account/GET_Account_Get_xx.json');
 
         $exampleModel->loadResult($data);
     }
@@ -447,7 +447,7 @@ class ExampleModelTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(false, $value['delete']);
 
         // Test injecting a result
-        $data = json_decode(file_get_contents(__DIR__ . '/../../mocks/Example/GET_Example_Get_xx.json'));
+        $data = simplexml_load_file(__DIR__ . '/../../mocks/Example/GET_Example_Get_xx.json');
         $exampleModel->loadResult($data);
 
         // Check values on all child properties to match the mock it received

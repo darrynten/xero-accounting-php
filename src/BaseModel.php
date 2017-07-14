@@ -378,7 +378,7 @@ abstract class BaseModel
         // We only care about entires that are defined in the model
         foreach ($this->fields as $key => $config) {
             $remoteKey = $this->getRemoteKey($key);
-
+var_dump($key, $remoteKey);
             // If the payload is missing an item
             if (!property_exists($result, $remoteKey)) {
                 $this->throwException(ModelException::INVALID_LOAD_RESULT_PAYLOAD, sprintf(
