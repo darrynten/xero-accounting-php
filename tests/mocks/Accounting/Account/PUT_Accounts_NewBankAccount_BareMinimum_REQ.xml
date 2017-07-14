@@ -1,0 +1,5 @@
+<Account>
+  <Name>Cheque Account</Name>
+  <Type>BANK</Type>
+  <BankAccountNumber>121-121-1234567</BankAccountNumber>
+</Account>

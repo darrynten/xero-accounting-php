@@ -1,0 +1,66 @@
+<?php
+/**
+ * Xero
+ *
+ * @category Base
+ * @package  Xero
+ * @author   Darryn Ten <darrynten@github.com>
+ * @license  MIT <https://github.com/darrynten/xero-php/blob/master/LICENSE>
+ * @link     https://github.com/darrynten/xero-php
+ */
+
+namespace DarrynTen\Xero;
+
+use DarrynTen\Xero\Config\PublicApplicationConfig;
+use DarrynTen\Xero\Request\RequestHandler;
+use DarrynTen\AnyCache\AnyCache;
+
+/**
+ * Base class for Xero manipulation
+ *
+ * @package Xero
+ */
+class Xero
+{
+    /**
+     * Configuration
+     *
+     * @var Config $config
+     */
+    public $config;
+
+    /**
+     * API Request Handler
+     *
+     * @var RequestHandler $request
+     */
+    private $request;
+
+    /**
+     * The local cache
+     *
+     * @var AnyCache $cache
+     */
+    private $cache;
+
+    /**
+     * Xero constructor
+     *
+     * @param array $config The API client config details
+     */
+    public function __construct(array $config)
+    {
+        // $this->config = new Config($config);
+        $this->config = new PublicApplicationConfig($config);
+        $this->cache = new AnyCache();
+        $this->request = new RequestHandler($this->config->getRequestHandlerConfig());
+    }
+
+    /**
+     * @return RequestHandler
+     */
+    public function getRequest()
+    {
+        return $this->request;
+    }
+}

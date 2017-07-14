@@ -1,0 +1,32 @@
+engines:
+  duplication:
+    enabled: true
+    config:
+      languages:
+      - ruby
+      - javascript
+      - python
+      - php
+  fixme:
+    enabled: true
+    checks:
+      TODO:
+        enabled: false
+  phpmd:
+    enabled: true
+    checks:
+      Naming/ShortVariable:
+        enabled: false
+      Design/TooManyFields:
+        enabled: false
+ratings:
+  paths:
+  - "**.inc"
+  - "**.js"
+  - "**.jsx"
+  - "**.module"
+  - "**.php"
+  - "**.py"
+  - "**.rb"
+exclude_paths:
+- tests/

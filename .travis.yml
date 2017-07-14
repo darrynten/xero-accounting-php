@@ -1,0 +1,20 @@
+language: php
+
+addons:
+  code_climate:
+    repo_token: 45829b0dffa0ff878307eb6dac8016692595ac197eac906cf5fe70d979ca648e
+
+php:
+  - 7.0
+  - 7.1
+
+before_script:
+  - travis_retry composer self-update --preview
+  - travis_retry composer install --prefer-dist --no-interaction --dev
+
+script:
+  - bin/phpunit --coverage-clover=coverage.xml
+
+after_success:
+  - bash <(curl -s https://codecov.io/bash)
+  - vendor/bin/test-reporter

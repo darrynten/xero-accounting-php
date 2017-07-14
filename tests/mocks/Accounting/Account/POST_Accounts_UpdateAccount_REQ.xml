@@ -1,0 +1,12 @@
+<Accounts>
+  <Account>
+    <AccountID>297c2dc5-cc47-4afd-8ec8-74990b8761e9</AccountID>
+    <Code>200</Code>
+    <Name>Sales account</Name>
+    <Type>REVENUE</Type>
+    <TaxType>OUTPUT2</TaxType>
+    <Description>Income from any normal business trading activity</Description>
+    <EnablePaymentsToAccount>false</EnablePaymentsToAccount>
+    <ShowInExpenseClaims>false</ShowInExpenseClaims>
+  </Account>
+</Accounts>
