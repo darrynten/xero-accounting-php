@@ -13,6 +13,10 @@ namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
 
+use DarrynTen\Xero\Types\BankAccountTypes;
+use DarrynTen\Xero\Types\AccountTypes;
+use DarrynTen\Xero\Codes\AccountStatusCodes;
+
 /**
  * Account Model
  *
@@ -30,42 +34,6 @@ class Accounts extends BaseModel
      * @var string $endpoint
      */
     protected $endpoint = 'Accounts';
-
-    protected $accountTypes = [
-        'BANK' => 'Bank account',
-        'CURRENT' => 'Current Asset account',
-        'CURRLIAB' => 'Current Liability account',
-        'DEPRECIATN' => 'Depreciation account',
-        'DIRECTCOSTS' => 'Direct Costs account',
-        'EQUITY' => 'Equity account',
-        'EXPENSE' => 'Expense account',
-        'FIXED' => 'Fixed Asset account',
-        'INVENTORY' => 'Inventory Asset account',
-        'LIABILITY' => 'Liability account',
-        'NONCURRENT' => 'Non-current Asset account',
-        'OTHERINCOME' => 'Other Income account',
-        'OVERHEADS' => 'Overhead account',
-        'PREPAYMENT' => 'Prepayment account',
-        'REVENUE' => 'Revenue account',
-        'SALES' => 'Sale account',
-        'TERMLIAB' => 'Non-current Liability account',
-        'PAYGLIABILITY' => 'PAYG Liability account',
-        'SUPERANNUATIONEXPENSE' => 'Superannuation Expense account',
-        'SUPERANNUATIONLIABILITY' => 'Superannuation Liability account',
-        'WAGESEXPENSE' => 'Wages Expense account',
-        'WAGESPAYABLELIABILITY' => 'Wages Payable Liability account',
-    ];
-
-    protected $accountStatusCodes = [
-        'ACTIVE' => 'Active account',
-        'ARCHIVED' => 'Archived account',
-    ];
-
-    protected $bankAccountTypes = [
-        'BANK' => 'Bank account',
-        'CREDITCARD' => 'Credit card account',
-        'PAYPAL' => 'Paypal account',
-    ];
 
     /**
      * Defines all possible fields.
