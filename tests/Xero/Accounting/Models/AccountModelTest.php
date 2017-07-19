@@ -1,52 +1,50 @@
 <?php
 
-namespace DarrynTen\Xero\Tests\Xero\Models;
+namespace DarrynTen\Xero\Tests\Xero\Accounting\Models;
 
-use DarrynTen\Xero\Tests\Xero\Models\BaseModelTest;
-use DarrynTen\Xero\Models\Accounting\Accounts;
-// use DarrynTen\Xero\Models\TaxType;
-// use DarrynTen\Xero\Models\AccountCategory;
+use DarrynTen\Xero\Tests\Xero\Accounting\BaseAccountingModelTest;
+use DarrynTen\Xero\Accounting\Models\AccountModel;
 use DarrynTen\Xero\Request\RequestHandler;
 use GuzzleHttp\Client;
 use ReflectionClass;
 
 use DarrynTen\Xero\Exception\ModelException;
 
-class AccountsModelTest extends BaseModelTest
+class AccountsModelTest extends BaseAccountingModelTest
 {
     public function testInstanceOf()
     {
-        $this->verifyInstanceOf(Accounts::class);
+        $this->verifyInstanceOf(AccountModel::class);
     }
 
     public function testSetUndefined()
     {
-        $this->verifySetUndefined(Accounts::class);
+        $this->verifySetUndefined(AccountModel::class);
     }
 
     public function testGetUndefined()
     {
-        $this->verifyGetUndefined(Accounts::class);
+        $this->verifyGetUndefined(AccountModel::class);
     }
 
     public function testCanNotNullify()
     {
-        $this->verifyCanNotNullify(Accounts::class, 'type');
+        $this->verifyCanNotNullify(AccountModel::class, 'type');
     }
 
     public function testCanNullify()
     {
-        $this->verifyCanNullify(Accounts::class, 'bankAccountNumber');
+        $this->verifyCanNullify(AccountModel::class, 'bankAccountNumber');
     }
 
     public function testBadImport()
     {
-        $this->verifyBadImport(Accounts::class, 'name');
+        $this->verifyBadImport(AccountModel::class, 'name');
     }
 
     public function testInject()
     {
-        $this->verifyInject(Accounts::class, function ($model, $data) {
+        $this->verifyInject(AccountModel::class, function ($model, $data) {
             $this->assertEquals($model->accountId, '');
             $this->assertEquals($model->name, 'sample string 2');
 
@@ -59,7 +57,7 @@ class AccountsModelTest extends BaseModelTest
 
     public function testAttributes()
     {
-        $this->verifyAttributes(Accounts::class, [
+        $this->verifyAttributes(AccountModel::class, [
             'accountID' => [
                 'type' => 'string',
                 'nullable' => false,
@@ -170,7 +168,7 @@ class AccountsModelTest extends BaseModelTest
 
     public function testFeatures()
     {
-        $this->verifyFeatures(Accounts::class, [
+        $this->verifyFeatures(AccountModel::class, [
             'all' => true,
             'get' => true,
             'delete' => true,
@@ -181,7 +179,7 @@ class AccountsModelTest extends BaseModelTest
 
     public function testGetAll()
     {
-        $this->verifyGetAll(Accounts::class, function ($results, $data) {
+        $this->verifyGetAll(AccountModel::class, function ($results, $data) {
             $this->assertEquals(2, count($results));
             $model = new Account($this->config);
             $data = json_decode(json_encode($results[0], JSON_PRESERVE_ZERO_FRACTION));
@@ -195,7 +193,7 @@ class AccountsModelTest extends BaseModelTest
 
     public function testGetId()
     {
-        $this->verifyGetId(Accounts::class, 2, function ($model) {
+        $this->verifyGetId(AccountModel::class, 2, function ($model) {
             $this->assertEquals($model->id, 11);
             $this->assertTrue($model->active);
             $this->assertEquals($model->name, 'sample string 2');
@@ -204,7 +202,7 @@ class AccountsModelTest extends BaseModelTest
 
     public function testSave()
     {
-        $this->verifySave(Accounts::class, function ($response) {
+        $this->verifySave(AccountModel::class, function ($response) {
             $this->assertEquals(11, $response->ID);
             // TODO Do actual checks
         });
@@ -212,13 +210,13 @@ class AccountsModelTest extends BaseModelTest
 
     public function testDelete()
     {
-        $this->verifyDelete(Accounts::class, 11, function () {
+        $this->verifyDelete(AccountModel::class, 11, function () {
             // TODO do actual checks
         });
     }
 
     public function testAuth()
     {
-        $this->verifyRequestWithAuth(Accounts::class, 'Save');
+        $this->verifyRequestWithAuth(AccountModel::class, 'Save');
     }
 }

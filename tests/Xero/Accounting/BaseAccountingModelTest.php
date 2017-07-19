@@ -1,6 +1,6 @@
 <?php
 
-namespace DarrynTen\Xero\Tests\Xero\Models;
+namespace DarrynTen\Xero\Tests\Xero\Accounting;
 
 use DarrynTen\Xero\Request\RequestHandler;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
@@ -11,7 +11,7 @@ use DarrynTen\Xero\Exception\ModelException;
 use DarrynTen\Xero\Models\ModelCollection;
 use DarrynTen\Xero\Exception\ValidationException;
 
-abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
+abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 {
     use HttpMockTrait;
 
@@ -461,7 +461,7 @@ abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyGetAll(string $class, callable $whatToCheck)
     {
         $className = $this->getClassName($class);
-        $mockFile = sprintf('Accounting/%s/GET_%s.xml', $className, $className);
+        $mockFile = sprintf('%s/GET_%s.xml', $className, $className);
         $model = $this->setUpRequestMock(
             'GET',
             $class,

@@ -10,12 +10,13 @@
  * @version  PHP 7+
  */
 
-namespace DarrynTen\Xero;
+namespace DarrynTen\Xero\Accounting;
 
 use DarrynTen\Xero\Request\RequestHandler;
 use DarrynTen\Xero\Exception\ModelException;
 use DarrynTen\Xero\Validation;
-use DarrynTen\Xero\Models\ModelCollection;
+
+// use DarrynTen\Xero\Models\ModelCollection;
 
 /**
  * This is the base class for all the Xero Models.
@@ -28,7 +29,7 @@ use DarrynTen\Xero\Models\ModelCollection;
  * In order to provide ORM type functionality we support re-hydrating any
  * model with its defined JSON fragment.
  */
-abstract class BaseModel
+abstract class BaseAccountingModel
 {
     use Validation;
     /**
@@ -152,7 +153,7 @@ abstract class BaseModel
 
         $results = $this->request->request('GET', $this->endpoint, 'Get');
 
-        return new ModelCollection(static::class, $this->config, $results);
+        // return new ModelCollection(static::class, $this->config, $results);
     }
 
     /**

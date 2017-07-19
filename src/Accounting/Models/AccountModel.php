@@ -9,9 +9,9 @@
  * @link     https://github.com/darrynten/xero-php
  */
 
-namespace DarrynTen\Xero\Models\Accounting;
+namespace DarrynTen\Xero\Accounting\Models;
 
-use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\Accounting\BaseAccountingModel;
 
 use DarrynTen\Xero\Types\BankAccountTypes;
 use DarrynTen\Xero\Types\AccountTypes;
@@ -23,7 +23,7 @@ use DarrynTen\Xero\Codes\AccountStatusCodes;
  * Details on writable properties for Account:
  * https://developer.xero.com/documentation/api/accounts
  */
-class Accounts extends BaseModel
+class AccountModel extends BaseAccountingModel
 {
     /**
      * The API Endpoint
