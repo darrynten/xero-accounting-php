@@ -8,7 +8,7 @@ use GuzzleHttp\Client;
 use ReflectionClass;
 
 use DarrynTen\Xero\Exception\ModelException;
-use DarrynTen\Xero\Models\ModelCollection;
+use DarrynTen\Xero\ModelCollection;
 use DarrynTen\Xero\Exception\ValidationException;
 
 abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
@@ -417,13 +417,15 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $this->assertArrayHasKey('get', $value);
         $this->assertArrayHasKey('save', $value);
         $this->assertArrayHasKey('delete', $value);
+        $this->assertArrayHasKey('update', $value);
         $this->assertEquals('boolean', gettype($value['all']));
         $this->assertEquals('boolean', gettype($value['get']));
         $this->assertEquals('boolean', gettype($value['save']));
         $this->assertEquals('boolean', gettype($value['delete']));
-        $this->assertCount(4, $value);
+        $this->assertEquals('boolean', gettype($value['update']));
+        $this->assertCount(7, $value);
 
-        foreach (['all', 'get', 'create', 'update', 'delete'] as $feature) {
+        foreach (['all', 'get', 'save', 'update', 'delete'] as $feature) {
             $expected = $features[$feature] ? 'true' : 'false';
             $actual = $value[$feature] ? 'true' : 'false';
             $this->assertEquals(
@@ -443,11 +445,8 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyInject(string $class, callable $whatToCheck)
     {
         $className = $this->getClassName($class);
-
-        $model = new $class($this->config);
-        $data = json_decode(json_encode(simplexml_load_file(__DIR__ . "/../../mocks/Accounting/{$className}/GET_{$className}_xx.xml")));
-        // die(var_dump($data->Account));
-        $model->loadResult($data->Account);
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/GET_{$className}_xx.xml";
+        $model = $this->injectData($class, $pathToMock);
 
         $whatToCheck($model);
     }
@@ -479,17 +478,43 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Verifies that we can load list of models by several ids
+     *
+     * @param string $class Full path to the class
+     * @param callable $whatToCheck Verifies fields on result
+     */
+    protected function verifyGetByIds(string $class, array $ids, callable $whatToCheck)
+    {
+        $className = $this->getClassName($class);
+        $mockFile = sprintf('%s/GET_%s_xx.xml', $className, $className);
+        $model = $this->setUpRequestMock(
+            'GET',
+            $class,
+            $className,
+            $mockFile
+        );
+
+        $allInstances = $model->getByIds($ids);
+        $this->assertInstanceOf(ModelCollection::class, $allInstances);
+        $this->assertObjectHasAttribute('totalResults', $allInstances);
+        $this->assertObjectHasAttribute('returnedResults', $allInstances);
+        $this->assertObjectHasAttribute('results', $allInstances);
+
+        $whatToCheck($allInstances->results);
+    }
+
+    /**
      * Verifies that we can load single model
      *
      * @param string $class Full path to the class
      * @param ind $id id of the model
      * @param callable $whatToCheck Verifies fields on single model
      */
-    protected function verifyGetId(string $class, int $id, callable $whatToCheck)
+    protected function verifyGetId(string $class, string $id, callable $whatToCheck)
     {
         $className = $this->getClassName($class);
         $path = sprintf('%s/Get/%s', $className, $id);
-        $mockFile = sprintf('%s/GET_%s_xx.json', $className, $className);
+        $mockFile = sprintf('%s/GET_%s_xx.xml', $className, $className);
         $model = $this->setUpRequestMock(
             'GET',
             $class,
@@ -512,19 +537,48 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifySave(string $class, callable $beforeSave, callable $afterSave)
     {
         $className = $this->getClassName($class);
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/PUT_{$className}_NewAssetAccount_BareMinimum_REQ.xml";
         $path = sprintf('%s/Save', $className);
-        $mockFileResponse = sprintf('%s/POST_%s_Save_RESP.json', $className, $className);
-        $mockFileRequest = sprintf('%s/POST_%s_Save_REQ.json', $className, $className);
+        $mockFileResponse = sprintf('%s/PUT_%s_NewAssetAccount_BareMinimum_REQ.xml', $className, $className);
         $model = $this->setUpRequestMock(
-            'POST',
+            'PUT',
             $class,
             $path,
-            $mockFileResponse,
-            $mockFileRequest
+            $mockFileResponse
         );
 
-        $data = simplexml_load_file(__DIR__ . "/../../mocks/Accounting/" . $mockFileRequest);
-        $model->loadResult($data);
+        $data = json_decode(json_encode(simplexml_load_file($pathToMock)));
+        // die(var_dump($data->Account));
+        $model->loadResult($data->Account);
+
+        $beforeSave($model);
+        $savedModel = $model->save();
+        $afterSave($savedModel);
+    }
+
+    /**
+     * Verifies that we can update model
+     *
+     * @param string $class Full path to the class
+     * @param callable $beforeSave Modifies model before saving
+     * @param callable $afterSave Verifies model after saving
+     */
+    protected function verifyUpdate(string $class, callable $beforeSave, callable $afterSave)
+    {
+        $className = $this->getClassName($class);
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/POST_{$className}_UpdateAccount_REQ.xml";
+        $path = sprintf('%s/Save', $className);
+        $mockFileResponse = sprintf('%s/POST_%s_UpdateAccount_REQ.xml', $className, $className);
+        $model = $this->setUpRequestMock(
+            'PUT',
+            $class,
+            $path,
+            $mockFileResponse
+        );
+
+        $data = json_decode(json_encode(simplexml_load_file($pathToMock)));
+        // die(var_dump($data->Account));
+        $model->loadResult($data->Account);
 
         $beforeSave($model);
         $savedModel = $model->save();
@@ -726,16 +780,14 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function setUpRequestMock(string $method, string $class, string $path, string $mockFileResponse = null, string $mockFileRequest = null)
     {
         $url = sprintf('/2.0/%s?apikey=key', $path);
-
         $responseData = null;
         if ($mockFileResponse) {
-            $responseData = simplexml_load_file(__DIR__ . '/../../mocks/Accounting/' . $mockFileResponse);
+            $responseData = file_get_contents(__DIR__ . '/../../mocks/Accounting/' . $mockFileResponse);
         }
-        $requestData = [];
+        $requestData = null;
         if ($mockFileRequest) {
             $requestData = simplexml_load_file(__DIR__ . '/../../mocks/Accounting/' . $mockFileRequest);
         }
-
         $this->http->mock
             ->when()
             ->methodIs($method)
@@ -773,6 +825,23 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $reflectedRequest = $modelReflection->getProperty('request');
         $reflectedRequest->setAccessible(true);
         $reflectedRequest->setValue($model, $request);
+
+        return $model;
+    }
+
+    /**
+     * Used to load initial data from file to Account model
+     *
+     * @param string $class
+     * @param string $path
+     *
+     * @return mixed
+     */
+    protected function injectData(string $class, string $path)
+    {
+        $model = new $class($this->config);
+        $data = json_decode(json_encode(simplexml_load_file($path)));
+        $model->loadResult($data->Account);
 
         return $model;
     }

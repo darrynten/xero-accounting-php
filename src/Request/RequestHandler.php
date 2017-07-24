@@ -128,7 +128,8 @@ class RequestHandler
                 }
             } elseif ($method === 'POST' || $method === 'PUT' || $method === 'DELETE') {
                 // Otherwise send JSON in the body
-                $options['json'] = (object)$parameters;
+                $options['headers'] = ['Content-Type' => 'text/xml; charset=UTF8'];
+                $options['body'] = $parameters['body'];
             }
         }
 
@@ -139,7 +140,7 @@ class RequestHandler
             $this->handleException($exception);
         }
 
-        return json_decode($response->getBody());
+        return json_decode(json_encode(simplexml_load_string((string) $response->getBody())));;
     }
 
     /**
@@ -172,10 +173,10 @@ class RequestHandler
      */
     private function getAuthToken()
     {
-        // Generate a new token if current is expired or empty
-        if (!$this->token || !$this->tokenType) {
-            $this->requestToken();
-        }
+//        // Generate a new token if current is expired or empty
+//        if (!$this->token || !$this->tokenType) {
+//            $this->getRequestToken();
+//        }
 
         return $this->tokenType . ' ' . $this->token;
     }
@@ -215,7 +216,7 @@ class RequestHandler
      *
      * @throws ApiException
      */
-    public function request(string $verb, string $service, string $method, array $parameters = [])
+    public function request(string $verb, string $service, string $method = null, array $parameters = [])
     {
         $options = [
             'headers' => [

@@ -10,18 +10,17 @@
  * @version  PHP 7+
  */
 
-namespace DarrynTen\Xero\Accounting;
+namespace DarrynTen\Xero;
 
+//use DarrynTen\SageOne\Models\Accounting\AccountModelCollection;
 use DarrynTen\Xero\Request\RequestHandler;
 use DarrynTen\Xero\Exception\ModelException;
 use DarrynTen\Xero\Validation;
 
-// use DarrynTen\Xero\Models\ModelCollection;
-
 /**
  * This is the base class for all the Xero Models.
  *
- * This class covers all/get/save/delete calls for all models that require it.
+ * This class covers all/get/save/delete/update calls for all models that require it.
  *
  * It also handles conversion between our Model objects, and JSON that is
  * compliant with the Xero API format.
@@ -29,7 +28,7 @@ use DarrynTen\Xero\Validation;
  * In order to provide ORM type functionality we support re-hydrating any
  * model with its defined JSON fragment.
  */
-abstract class BaseAccountingModel
+abstract class BaseModel
 {
     use Validation;
     /**
@@ -78,6 +77,7 @@ abstract class BaseAccountingModel
     {
         // TODO can't be spawning a million of these and passing in
         // config the whole time
+        // TODO switch to Xero-Auth
         $this->request = new RequestHandler($config);
         $this->config = $config;
     }
@@ -143,17 +143,23 @@ abstract class BaseAccountingModel
      * $account = new Account;
      * $allAccounts = $account->all();
      *
+     * @param array $parameters for sort and filter implementation
+     *
      * @return ModelCollection A collection of entities
      */
-    public function all()
+    public function all(array $parameters = [])
     {
         if (!$this->features['all']) {
             $this->throwException(ModelException::NO_GET_ALL_SUPPORT);
         }
 
-        $results = $this->request->request('GET', $this->endpoint, 'Get');
+        if ($parameters) {
+            $parameters = $this->prepareGetQueryParams($parameters);
+        }
 
-        // return new ModelCollection(static::class, $this->config, $results);
+        $results = $this->request->request('GET', $this->endpoint, null, $parameters);
+
+        return new ModelCollection(static::class, $this->config, $results->{$this->entity});
     }
 
     /**
@@ -163,7 +169,7 @@ abstract class BaseAccountingModel
      * method here allows any compatible method to be called with something like:
      *
      * $account = new Account;
-     * $account->get(11);
+     * $account->get('297c2dc5-cc47-4afd-8ec8-74990b8761e9');
      *
      * @return object A single entity
      */
@@ -173,9 +179,32 @@ abstract class BaseAccountingModel
             $this->throwException(ModelException::NO_GET_ONE_SUPPORT, sprintf('id %s', $id));
         }
 
-        $result = $this->request->request('GET', $this->endpoint, sprintf('Get/%s', $id));
+        $result = $this->request->request('GET', $this->endpoint, $id);
 
-        $this->loadResult($result);
+        $this->loadResult($result->{$this->entity});
+    }
+
+    /**
+     * Returns ModelCollection of something based on given ids
+     *
+     * $account = new Account;
+     * $account->getByIds(['297c2dc5-cc47-4afd-8ec8-74990b8761e9', '297c2dc5-cc47-4afd-8ec8-74990b8761e9']);
+     *
+     * @return object A single entity
+     */
+    public function getByIds(array $ids)
+    {
+        if (!$this->features['get']) {
+            $this->throwException(ModelException::NO_GET_ONE_SUPPORT, sprintf('id %s', $ids));
+        }
+
+        $results = [];
+        foreach ($ids as $id) {
+            $result = $this->request->request('GET', $this->endpoint, $id)->{$this->entity};
+            array_push($results, $result);
+        }
+
+        return new ModelCollection(static::class, $this->config, $results);
     }
 
     /**
@@ -185,9 +214,9 @@ abstract class BaseAccountingModel
      * method here allows any compatible method to be called with something like:
      *
      * $account = new Account;
-     * $account->delete(11);
+     * $account->delete('297c2dc5-cc47-4afd-8ec8-74990b8761e9');
      *
-     * @param integer $id The ID to delete
+     * @param string $id The ID to delete
      *
      * @return void
      */
@@ -198,7 +227,7 @@ abstract class BaseAccountingModel
         }
 
         // TODO Response handle?
-        $this->request->request('DELETE', $this->endpoint, sprintf('Delete/%s', $id));
+        $this->request->request('DELETE', $this->endpoint, $id);
     }
 
     /**
@@ -213,16 +242,48 @@ abstract class BaseAccountingModel
         if (!$this->features['save']) {
             $this->throwException(ModelException::NO_SAVE_SUPPORT);
         }
+        $data = $this->toObject();
+        $xml = $this->generate_valid_xml_from_array($data);
 
         // TODO Submission Body and Validation
-        $data = $this->request->request('POST', $this->endpoint, 'Save');
+        $data = $this->request->request('PUT', $this->endpoint, 'Save', ['body' => $xml]);
         /**
-         * we do not need to verify results here because loadResult will throuw exception
+         * we do not need to verify results here because loadResult will throw exception
          * in case of invalid body
          * If we reach this string then we expect that API returned valid body with response code 200
          * otherwise ApiException was thrown and this line can not be reached
          */
-        $this->loadResult($data);
+        $this->loadResult($data->{$this->entity});
+
+        return $this;
+    }
+
+    /**
+     * Submits a update call to Xero
+     *
+     * TODO: Actually perform this action!
+     *
+     * @return stdClass Representaion of response
+     */
+    public function update()
+    {
+        if (!$this->features['update']) {
+            $this->throwException(ModelException::NO_UPDATE_SUPPORT);
+        }
+        $id = $this->accountID;
+        $data = $this->toObject();
+        $xml = $this->generate_valid_xml_from_array($data);
+
+        // TODO Submission Body and Validation
+        $data = $this->request->request('POST', $this->endpoint, $id, ['body' => $xml]);
+        /**
+         * we do not need to verify results here because loadResult will throw exception
+         * in case of invalid body
+         * If we reach this string then we expect that API returned valid body with response code 200
+         * otherwise ApiException was thrown and this line can not be reached
+         */
+        $this->loadResult($data->{$this->entity});
+
         return $this;
     }
 
@@ -308,7 +369,7 @@ abstract class BaseAccountingModel
      * Loops through valid fields and exports only those, so as to match the
      * Xero API responses.
      *
-     * @return object
+     * @return array
      */
     private function toObject()
     {
@@ -317,6 +378,7 @@ abstract class BaseAccountingModel
             $remoteKey = $this->getRemoteKey($localKey);
             $result[$remoteKey] = $this->prepareObjectRow($localKey, $config);
         }
+
         return $result;
     }
 
@@ -376,16 +438,24 @@ abstract class BaseAccountingModel
      */
     public function loadResult(\stdClass $result)
     {
+        $result = $this->removeSkippedResults($result);
+
         // We only care about entires that are defined in the model
         foreach ($this->fields as $key => $config) {
             $remoteKey = $this->getRemoteKey($key);
-var_dump($key, $remoteKey);
             // If the payload is missing an item
             if (!property_exists($result, $remoteKey)) {
+                if (!isset($config['required'])) {
+                    continue;
+                }
                 $this->throwException(ModelException::INVALID_LOAD_RESULT_PAYLOAD, sprintf(
                     'Defined key "%s" not present in payload',
                     $key
                 ));
+            }
+
+            if ($config['type'] != 'string') {
+                $result->$remoteKey = $this->castToType($config['type'], $result->$remoteKey);
             }
 
             $value = $this->processResultItem($result->$remoteKey, $config);
@@ -476,7 +546,7 @@ var_dump($key, $remoteKey);
      */
     public function throwException($code, $message = '')
     {
-        throw new ModelException($this->endpoint, $code, $message);
+        throw new ModelException((new \ReflectionClass($this))->getShortName(), $code, $message);
     }
 
     /**
@@ -493,5 +563,134 @@ var_dump($key, $remoteKey);
             __NAMESPACE__,
             $model
         );
+    }
+
+    /**
+     * Used to skip empty values after parsing from XML
+     *
+     * @param \stdClass $results
+     *
+     * @return \stdClass
+     */
+    private function removeSkippedResults(\stdClass $results)
+    {
+        foreach ((array) $results as $field => $value) {
+            if ($value instanceof \stdClass && empty((array) $value)) {
+                $results->$field = null;
+            }
+        }
+
+        return $results;
+    }
+
+    /**
+     * Used to generate XML nodes from array
+     *
+     * @param $array
+     *
+     * @return string
+     */
+    private function generate_xml_from_array($array) {
+        $xml = '';
+
+        if (is_array($array) || is_object($array)) {
+            foreach ($array as $key => $value) {
+                if ($value) {
+                    $xml .= '<' . $key . '>' . "\n" . $this->generate_xml_from_array($value) . '</' . $key . '>' . "\n";
+                }
+            }
+        } else {
+            $xml = htmlspecialchars($array, ENT_QUOTES) . "\n";
+        }
+
+        return $xml;
+    }
+
+    /**
+     *
+     * Used to generate XML nodes from array
+     *
+     * @param $array
+     *
+     * @return string
+     */
+    private function generate_valid_xml_from_array(array $array) {
+        $xml = '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
+
+        $xml .= '<' . $this->entity . '>' . "\n";
+        $xml .= $this->generate_xml_from_array($array);
+        $xml .= '</' . $this->entity . '>' . "\n";
+
+        return $xml;
+    }
+
+    /**
+     * Used to generate right filters for query from raw parameters
+     *
+     * @param array $parameters
+     *
+     * @return array
+     */
+    protected function prepareGetQueryParams(array  $parameters) : array
+    {
+        $queryParams = [];
+        if (array_key_exists('order', $parameters)) {
+            if (!$this->features['order']) {
+                $this->throwException(ModelException::NO_SORT_SUPPORT);
+            }
+            if (!array_key_exists('field', $parameters['order'])) {
+                $this->throwException(ModelException::TRYING_SORT_BY_UNKNOWN_FIELD);
+            }
+            if (!in_array($parameters['order']['field'], array_keys($this->fieldsData))) {
+                $this->throwException(ModelException::TRYING_SORT_BY_UNKNOWN_FIELD);
+            }
+            if (array_key_exists('direction', $parameters['order']) && !in_array($parameters['order']['direction'], ['ASC','DESC'])) {
+                unset($parameters['order']['direction']);
+            }
+            $queryParams['order'] = $parameters['order']['field'];
+            if (isset($parameters['order']['direction'])) {
+                $queryParams['order'] .= sprintf('+%s', $parameters['order']['direction']);
+            }
+        }
+
+        if (array_key_exists('filter', $parameters) && !$this->features['filter']) {
+            if (!$this->features['filter']) {
+                $this->throwException(ModelException::NO_FILTER_SUPPORT);
+            }
+            foreach ($parameters['filter'] as $key => $value) {
+                if ($value) {
+                    if (!in_array($key, array_keys($this->fieldsData))) {
+                        $this->throwException(ModelException::TRYING_FILTER_BY_UNKNOWN_FIELD);
+                    }
+                    $preparedKey = sprintf('%ss', $this->getRemoteKey($key));
+                    if (is_array($value)) {
+                        $value = implode(',', $value);
+                    }
+                    $queryParams[$preparedKey] = $value;
+                }
+            }
+        }
+
+        return $queryParams;
+    }
+
+    /**
+     * Used to cast values as we get strings from XML
+     *
+     * @param string $expectedType
+     * @param $value
+     *
+     * @return int|mixed
+     */
+    private function castToType(string $expectedType, $value)
+    {
+        if ($expectedType == 'integer') {
+            return (int) $value;
+        }
+        if ($expectedType == 'boolean') {
+            return filter_var($value, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return $value;
     }
 }

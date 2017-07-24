@@ -17,6 +17,9 @@ class ExceptionMessages
         10102 => 'Get single is not supported',
         10103 => 'Save is not supported',
         10104 => 'Delete is not supported',
+        10105 => 'Update is not supported',
+        10106 => 'Sort is not supported',
+        10107 => 'Filter is not supported',
         // Properties
         10110 => 'Property is referencing an undefined, non-primitive class',
         10111 => 'Property is null without nullable permission',
@@ -25,6 +28,8 @@ class ExceptionMessages
         10114 => 'Attempting to set a read-only property',
         10115 => 'Unexpected class encountered while preparing row',
         10116 => 'Attempting to get an undefined property',
+        10117 => 'Unknown property for sorting',
+        10118 => 'Unknown property for filtering',
     ];
 
     // Validation codes 1012x

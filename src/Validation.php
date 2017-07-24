@@ -45,6 +45,9 @@ trait Validation
      *
      * @param string $value
      * @param string $regex
+     *
+     * @throws ValidationException
+     *
      */
     public function validateRegex($value, $regex)
     {
@@ -65,6 +68,8 @@ trait Validation
      * @param string|integer $value
      * @param integer $min
      * @param integer $max
+     *
+     * @throws ValidationException
      */
     public function validateRange($value, $min, $max)
     {

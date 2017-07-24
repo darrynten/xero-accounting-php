@@ -9,13 +9,13 @@
  * @link     https://github.com/darrynten/xero-php
  */
 
-namespace DarrynTen\Xero\Accounting\Models;
+namespace DarrynTen\Xero\Models\Accounting;
 
-use DarrynTen\Xero\Accounting\BaseAccountingModel;
+use DarrynTen\Xero\BaseModel;
 
-use DarrynTen\Xero\Types\BankAccountTypes;
-use DarrynTen\Xero\Types\AccountTypes;
-use DarrynTen\Xero\Codes\AccountStatusCodes;
+//use DarrynTen\Xero\Types\BankAccountTypes;
+//use DarrynTen\Xero\Types\AccountTypes;
+//use DarrynTen\Xero\Codes\AccountStatusCodes;
 
 /**
  * Account Model
@@ -23,7 +23,7 @@ use DarrynTen\Xero\Codes\AccountStatusCodes;
  * Details on writable properties for Account:
  * https://developer.xero.com/documentation/api/accounts
  */
-class AccountModel extends BaseAccountingModel
+class AccountModel extends BaseModel
 {
     /**
      * The API Endpoint
@@ -34,6 +34,12 @@ class AccountModel extends BaseAccountingModel
      * @var string $endpoint
      */
     protected $endpoint = 'Accounts';
+
+    /**
+     * String required to get right property from \stdObj after parsing from xml
+     * @var string $entity
+     */
+    protected $entity = 'Account';
 
     /**
      * Defines all possible fields.
@@ -55,8 +61,13 @@ class AccountModel extends BaseAccountingModel
     protected $fields = [
         'accountID' => [
             'type' => 'string',
-            'nullable' => false,
-            'readonly' => false,
+            'nullable' => true,
+            'readonly' => true,
+        ],
+        'code' => [
+            'type' => 'integer',
+            'nullable' => true,
+            'readonly' => true,
         ],
         'name' => [
             'type' => 'string',
@@ -73,13 +84,11 @@ class AccountModel extends BaseAccountingModel
             'valid' => 'accountTypes',
         ],
         'bankAccountNumber' => [
-            // Should be integer.. TODO
-            'type' => 'string',
+            'type' => 'integer',
             'nullable' => true,
             'readonly' => false,
             // This is *only* required if type is bank
             // This is *only* allowed if type is bank
-            'required' => true,
             'only' => [
                 'type' => 'BANK',
             ],
@@ -88,11 +97,11 @@ class AccountModel extends BaseAccountingModel
             'type' => 'string',
             'nullable' => true,
             'readonly' => false,
-            'valid' => 'accountStatusCodes'
+            'valid' => 'accountStatusCodes',
         ],
         'description' => [
             'type' => 'string',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => false,
             // This is not allowed if type is bank
             'except' => [
@@ -100,7 +109,7 @@ class AccountModel extends BaseAccountingModel
             ],
         ],
         'bankAccountType' => [
-            'type' => 'BankAccountType',
+            'type' => 'string',
             'nullable' => true,
             'readonly' => false,
             'valid' => 'bankAccountTypes',
@@ -118,8 +127,8 @@ class AccountModel extends BaseAccountingModel
             ]
         ],
         'taxType' => [
-            'type' => 'TaxType',
-            'nullable' => false,
+            'type' => 'string',
+            'nullable' => true,
             'readonly' => true,
         ],
         'enablePaymentsToAccount' => [
@@ -129,18 +138,18 @@ class AccountModel extends BaseAccountingModel
         ],
         'showInExpenseClaims' => [
             'type' => 'boolean',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => true,
         ],
         'class' => [
-            'type' => 'AccountClass',
-            'nullable' => false,
+            'type' => 'string',
+            'nullable' => true,
             'readonly' => true,
         ],
         //  Note that non-system accounts may have this element set as either "" or null.
         'systemAccount' => [
             'type' => 'boolean',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => true,
         ],
         'reportingCode' => [
@@ -155,24 +164,13 @@ class AccountModel extends BaseAccountingModel
         ],
         'hasAttachments' => [
             'type' => 'boolean',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => true,
         ],
         'updatedDateUTC' => [
             'type' => 'DateTime',
-            'nullable' => false,
-            'readonly' => true,
-        ],
-        // Not sure how to deal with these
-        'where' => [
-            'type' => 'string',
             'nullable' => true,
-            'readonly' => false,
-        ],
-        'order' => [
-           'type' => 'string',
-           'nullable' => true,
-           'readonly' => false,
+            'readonly' => true,
         ],
     ];
 
@@ -186,8 +184,10 @@ class AccountModel extends BaseAccountingModel
     protected $features = [
         'all' => true,
         'get' => true,
-        'create' => true,
+        'save' => true,
         'update' => true,
+        'order' => true,
+        'filter' => true,
         /**
          * Non-system accounts and accounts not used on transactions
          * can be deleted using the delete method. If an account is

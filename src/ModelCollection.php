@@ -9,15 +9,15 @@
  * @link     https://github.com/darrynten/sage-one-php
  */
 
-namespace DarrynTen\SageOne\Models;
+namespace DarrynTen\Xero;
 
-use DarrynTen\SageOne\Exception\ModelCollectionException;
+use DarrynTen\Xero\Exception\ModelCollectionException;
 
 /**
  * Paging response of model
  *
  */
-abstract class BaseAccountingCollection
+class ModelCollection
 {
     /**
      * @var integer $totalResults
@@ -70,7 +70,6 @@ abstract class BaseAccountingCollection
             $collectionObject->ReturnedResults = $collectionObject->TotalResults;
             $collectionObject->Results = $results;
         }
-
         if (!property_exists($collectionObject, 'TotalResults')) {
             throw new ModelCollectionException(
                 ModelCollectionException::MISSING_REQUIRED_PROPERTY,
