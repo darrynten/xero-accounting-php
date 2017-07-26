@@ -415,17 +415,21 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $value = $reflectValue->getValue($model);
         $this->assertArrayHasKey('all', $value);
         $this->assertArrayHasKey('get', $value);
-        $this->assertArrayHasKey('save', $value);
+        $this->assertArrayHasKey('create', $value);
         $this->assertArrayHasKey('delete', $value);
         $this->assertArrayHasKey('update', $value);
+        $this->assertArrayHasKey('order', $value);
+        $this->assertArrayHasKey('filter', $value);
         $this->assertEquals('boolean', gettype($value['all']));
         $this->assertEquals('boolean', gettype($value['get']));
-        $this->assertEquals('boolean', gettype($value['save']));
+        $this->assertEquals('boolean', gettype($value['create']));
         $this->assertEquals('boolean', gettype($value['delete']));
         $this->assertEquals('boolean', gettype($value['update']));
+        $this->assertEquals('boolean', gettype($value['order']));
+        $this->assertEquals('boolean', gettype($value['filter']));
         $this->assertCount(7, $value);
 
-        foreach (['all', 'get', 'save', 'update', 'delete'] as $feature) {
+        foreach (['all', 'get', 'create', 'update', 'delete', 'order', 'filter'] as $feature) {
             $expected = $features[$feature] ? 'true' : 'false';
             $actual = $value[$feature] ? 'true' : 'false';
             $this->assertEquals(
@@ -528,17 +532,17 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Verifies that we can save model
+     * Verifies that we can create model
      *
      * @param string $class Full path to the class
-     * @param callable $beforeSave Modifies model before saving
-     * @param callable $afterSave Verifies model after saving
+     * @param callable $beforeCreate Modifies model before saving
+     * @param callable $afterCreate Verifies model after saving
      */
-    protected function verifySave(string $class, callable $beforeSave, callable $afterSave)
+    protected function verifyCreate(string $class, callable $beforeCreate, callable $afterCreate)
     {
         $className = $this->getClassName($class);
         $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/PUT_{$className}_NewAssetAccount_BareMinimum_REQ.xml";
-        $path = sprintf('%s/Save', $className);
+        $path = sprintf('%s/Create', $className);
         $mockFileResponse = sprintf('%s/PUT_%s_NewAssetAccount_BareMinimum_REQ.xml', $className, $className);
         $model = $this->setUpRequestMock(
             'PUT',
@@ -548,26 +552,25 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         );
 
         $data = json_decode(json_encode(simplexml_load_file($pathToMock)));
-        // die(var_dump($data->Account));
         $model->loadResult($data->Account);
 
-        $beforeSave($model);
-        $savedModel = $model->save();
-        $afterSave($savedModel);
+        $beforeCreate($model);
+        $createdModel = $model->create();
+        $afterCreate($createdModel);
     }
 
     /**
      * Verifies that we can update model
      *
      * @param string $class Full path to the class
-     * @param callable $beforeSave Modifies model before saving
-     * @param callable $afterSave Verifies model after saving
+     * @param callable $beforeUpdate Modifies model before saving
+     * @param callable $afterUpdate Verifies model after saving
      */
-    protected function verifyUpdate(string $class, callable $beforeSave, callable $afterSave)
+    protected function verifyUpdate(string $class, callable $beforeUpdate, callable $afterUpdate)
     {
         $className = $this->getClassName($class);
         $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/POST_{$className}_UpdateAccount_REQ.xml";
-        $path = sprintf('%s/Save', $className);
+        $path = sprintf('%s/Update', $className);
         $mockFileResponse = sprintf('%s/POST_%s_UpdateAccount_REQ.xml', $className, $className);
         $model = $this->setUpRequestMock(
             'PUT',
@@ -580,9 +583,9 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         // die(var_dump($data->Account));
         $model->loadResult($data->Account);
 
-        $beforeSave($model);
-        $savedModel = $model->save();
-        $afterSave($savedModel);
+        $beforeUpdate($model);
+        $updatedModel = $model->update();
+        $afterUpdate($updatedModel);
     }
 
     /**

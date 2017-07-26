@@ -12,7 +12,6 @@
 
 namespace DarrynTen\Xero;
 
-//use DarrynTen\SageOne\Models\Accounting\AccountModelCollection;
 use DarrynTen\Xero\Request\RequestHandler;
 use DarrynTen\Xero\Exception\ModelException;
 use DarrynTen\Xero\Validation;
@@ -31,6 +30,7 @@ use DarrynTen\Xero\Validation;
 abstract class BaseModel
 {
     use Validation;
+
     /**
      * A request object
      *
@@ -48,8 +48,16 @@ abstract class BaseModel
     protected $features = [
         'all' => false,
         'get' => false,
-        'save' => false,
-        'delete' => false
+        'create' => false,
+        'update' => false,
+        /**
+         * Non-system accounts and accounts not used on transactions
+         * can be deleted using the delete method. If an account is
+         * not able to be deleted you can update the status to ARCHIVED
+         */
+        'delete' => false,
+        'order' => true,
+        'filter' => true,
     ];
 
     /**
@@ -237,10 +245,10 @@ abstract class BaseModel
      *
      * @return stdClass Representaion of response
      */
-    public function save()
+    public function create()
     {
-        if (!$this->features['save']) {
-            $this->throwException(ModelException::NO_SAVE_SUPPORT);
+        if (!$this->features['create']) {
+            $this->throwException(ModelException::NO_CREATE_SUPPORT);
         }
         $data = $this->toObject();
         $xml = $this->generate_valid_xml_from_array($data);

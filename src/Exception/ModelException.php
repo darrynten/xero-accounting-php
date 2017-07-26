@@ -24,7 +24,7 @@ class ModelException extends Exception
     // Methods
     const NO_GET_ALL_SUPPORT = 10101;
     const NO_GET_ONE_SUPPORT = 10102;
-    const NO_SAVE_SUPPORT = 10103;
+    const NO_CREATE_SUPPORT = 10103;
     const NO_DELETE_SUPPORT = 10104;
     const NO_UPDATE_SUPPORT = 10105;
     const NO_SORT_SUPPORT = 10106;

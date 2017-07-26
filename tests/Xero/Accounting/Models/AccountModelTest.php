@@ -56,7 +56,8 @@ class AccountsModelTest extends BaseAccountingModelTest
 
     public function testAttributes()
     {
-        $this->verifyAttributes(AccountModel::class,
+        $this->verifyAttributes(
+            AccountModel::class,
             [
                 'accountID' => [
                     'type' => 'string',
@@ -165,7 +166,8 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'nullable' => true,
                     'readonly' => true,
                 ],
-            ]);
+            ]
+        );
     }
 
     public function testFeatures()
@@ -174,9 +176,9 @@ class AccountsModelTest extends BaseAccountingModelTest
             'all' => true,
             'get' => true,
             'delete' => true,
-            'save' => true,
+            'create' => true,
             'update' => true,
-            'sort' => true,
+            'order' => true,
             'filter' => true,
         ]);
     }
@@ -187,29 +189,28 @@ class AccountsModelTest extends BaseAccountingModelTest
             AccountModel::class,
             ['297c2dc5-cc47-4afd-8ec8-74990b8761e9', '5040915e-8ce7-4177-8d08-fde416232f18'],
             function ($results) {
-            $this->assertEquals(2, count($results));
-            $model = $results[0];
-            $this->assertEquals($model->accountID, '297c2dc5-cc47-4afd-8ec8-74990b8761e9');
-            $this->assertFalse($model->enablePaymentsToAccount);
-            $this->assertEquals($model->type, 'BANK');
-
-        });
+                $this->assertEquals(2, count($results));
+                $model = $results[0];
+                $this->assertEquals($model->accountID, '297c2dc5-cc47-4afd-8ec8-74990b8761e9');
+                $this->assertFalse($model->enablePaymentsToAccount);
+                $this->assertEquals($model->type, 'BANK');
+            }
+        );
     }
 
-    public function testSave()
+    public function testCreate()
     {
-        $this->verifySave(
+        $this->verifyCreate(
             AccountModel::class,
             function ($response) {
                 $this->assertEquals(304, $response->code);
             // TODO Do actual checks
-        },
+            },
             function ($response) {
                 $this->assertEquals(304, $response->code);
             }
-            );
+        );
     }
-
 
     public function testUpdate()
     {
@@ -231,9 +232,4 @@ class AccountsModelTest extends BaseAccountingModelTest
             // TODO do actual checks
         });
     }
-
-//    public function testAuth()
-//    {
-//        $this->verifyRequestWithAuth(AccountModel::class, 'Save');
-//    }
 }
