@@ -13,10 +13,6 @@ namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
 
-//use DarrynTen\Xero\Types\BankAccountTypes;
-//use DarrynTen\Xero\Types\AccountTypes;
-//use DarrynTen\Xero\Codes\AccountStatusCodes;
-
 /**
  * Account Model
  *
@@ -184,16 +180,11 @@ class AccountModel extends BaseModel
     protected $features = [
         'all' => true,
         'get' => true,
-        'save' => true,
+        'create' => true,
         'update' => true,
+        'delete' => true,
         'order' => true,
         'filter' => true,
-        /**
-         * Non-system accounts and accounts not used on transactions
-         * can be deleted using the delete method. If an account is
-         * not able to be deleted you can update the status to ARCHIVED
-         */
-        'delete' => true,
     ];
 
     // TODO Attachments

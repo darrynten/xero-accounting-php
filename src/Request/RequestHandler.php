@@ -42,6 +42,8 @@ class RequestHandler
      *
      * API version to connect to
      *
+     * TODO version differs per type of api
+     *
      * @var string $model
      */
     public $version = '2.0';
@@ -95,7 +97,6 @@ class RequestHandler
     {
         $this->key = $config['key'];
         $this->endpoint = $config['endpoint'];
-        $this->version = $config['version'];
 
         $this->client = new Client();
     }
@@ -140,7 +141,7 @@ class RequestHandler
             $this->handleException($exception);
         }
 
-        return json_decode(json_encode(simplexml_load_string((string) $response->getBody())));;
+        return json_decode(json_encode(simplexml_load_string((string) $response->getBody())));
     }
 
     /**

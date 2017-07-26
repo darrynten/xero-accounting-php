@@ -18,30 +18,21 @@ use Exception;
  */
 class ModelCollectionException extends Exception
 {
-    const GETTING_UNDEFINED_PROPERTY = 10201;
-    const MISSING_REQUIRED_PROPERTY = 10202;
-
-    /**
-     * @var array $modelCollectionErrorMessages [102xx codes]
-     */
-    public static $modelCollectionErrorMessages = [
-        10200 => 'Undefined model collection exception',
-        10201 => 'Attempting to access undefined property',
-        10202 => 'Missing required property in object'
-    ];
+    const GETTING_UNDEFINED_PROPERTY = 20201;
+    const MISSING_REQUIRED_PROPERTY = 20202;
 
     /**
      * Custom Model collection exception handler
      *
-     * @var integer $code The error code [10200 is default]
+     * @var integer $code The error code [20200 is default]
      * @var string $extra Any additional information to be included
      */
-    public function __construct($code = 10200, $extra = '')
+    public function __construct($code = 20200, $extra = '')
     {
         $message = sprintf(
             'ModelCollection %s %s',
-            self::$modelCollectionErrorMessages[$code],
-            $extra
+            $extra,
+            ExceptionMessages::$validationMessages[$code]
         );
 
         parent::__construct($message, $code);
