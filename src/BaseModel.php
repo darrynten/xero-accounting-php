@@ -657,7 +657,8 @@ abstract class BaseModel
             if (!in_array($parameters['order']['field'], array_keys($this->fieldsData))) {
                 $this->throwException(ModelException::TRYING_SORT_BY_UNKNOWN_FIELD);
             }
-            if (array_key_exists('direction', $parameters['order']) && !in_array($parameters['order']['direction'], ['ASC','DESC'])) {
+            if (array_key_exists('direction', $parameters['order']) &&
+              !in_array($parameters['order']['direction'], ['ASC','DESC'])) {
                 unset($parameters['order']['direction']);
             }
             $queryParams['order'] = $parameters['order']['field'];
