@@ -52,6 +52,15 @@ abstract class BaseConfig
     ];
 
     /**
+     * The application types
+     *
+     * API version to connect to, depending on service
+     *
+     * @var array $applicationTypes
+     */
+    public $applicationTypes = ['private', 'public', 'partner'];
+
+    /**
      * The project ID
      *
      * @var string $projectId
@@ -210,19 +219,41 @@ abstract class BaseConfig
      */
     private function checkAndSetEssentials($config)
     {
-        if (!isset($config['username']) || empty($config['username'])) {
-            throw new ApiException('Missing username');
+        if (!isset($config['applicationType']) || empty($config['applicationType'])) {
+            throw new ApiException('Missing application type');
         }
-        if (!isset($config['password']) || empty($config['password'])) {
-            throw new ApiException('Missing password');
-        }
+
         if (!isset($config['key']) || empty($config['key'])) {
             throw new ApiException('Missing API key');
         }
 
-        $this->username = (string)$config['username'];
-        $this->password = (string)$config['password'];
+        // Secret is required for public apps
+        if ((!isset($config['secret']) || empty($config['secret'])) && $config['applicationType'] === 'public') {
+            throw new ApiException('Missing API secret for public app');
+        }
+
+        if (!isset($config['version']) || empty($config['version'])) {
+            throw new ApiException('Missing API version number');
+        }
+
+        if (!isset($config['applicationName']) || empty($config['applicationName'])) {
+            throw new ApiException('Missing application name');
+        }
+
+        if (!isset($config['callbackUrl']) || empty($config['callbackUrl'])) {
+            throw new ApiException('Missing callback url');
+        }
+
+        $this->applicationType = (string)$config['applicationType'];
+        $this->applicationName = (string)$config['applicationName'];
+        $this->version = (string)$config['version'];
+        $this->callbackUrl = (string)$config['callbackUrl'];
         $this->key = (string)$config['key'];
+
+        // secret only for public apps
+        if ($config['applicationType'] === 'public') {
+            $this->secret = (string)$config['key'];
+        }
     }
 
     /**

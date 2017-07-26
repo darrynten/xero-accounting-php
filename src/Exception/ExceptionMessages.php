@@ -9,36 +9,51 @@ namespace DarrynTen\Xero\Exception;
  */
 class ExceptionMessages
 {
-    // Model codes 101xx
+    // Model codes 201xx
     public static $modelErrorMessages = [
         // Methods
-        10100 => 'Undefined model exception',
-        10101 => 'Get all is not supported',
-        10102 => 'Get single is not supported',
-        10103 => 'Save is not supported',
-        10104 => 'Delete is not supported',
-        10105 => 'Update is not supported',
-        10106 => 'Sort is not supported',
-        10107 => 'Filter is not supported',
+        20100 => 'Undefined model exception',
+        20101 => 'Get all is not supported',
+        20102 => 'Get single is not supported',
+        20103 => 'Save is not supported',
+        20104 => 'Delete is not supported',
+        20105 => 'Update is not supported',
+        20106 => 'Sort is not supported',
+        20107 => 'Filter is not supported',
         // Properties
-        10110 => 'Property is referencing an undefined, non-primitive class',
-        10111 => 'Property is null without nullable permission',
-        10112 => 'A property is missing in the loadResult payload',
-        10113 => 'Attempting to set a property that is not defined in the model',
-        10114 => 'Attempting to set a read-only property',
-        10115 => 'Unexpected class encountered while preparing row',
-        10116 => 'Attempting to get an undefined property',
-        10117 => 'Unknown property for sorting',
-        10118 => 'Unknown property for filtering',
+        20110 => 'Property is referencing an undefined, non-primitive class',
+        20111 => 'Property is null without nullable permission',
+        20112 => 'A property is missing in the loadResult payload',
+        20113 => 'Attempting to set a property that is not defined in the model',
+        20114 => 'Attempting to set a read-only property',
+        20115 => 'Unexpected class encountered while preparing row',
+        20116 => 'Attempting to get an undefined property',
+        20117 => 'Unknown property for sorting',
+        20118 => 'Unknown property for filtering',
     ];
 
-    // Validation codes 1012x
+    // Collections are 202xx
+    public static $collectionMessages = [
+        20200 => 'Undefined model collection exception',
+        20201 => 'Attempting to access undefined property',
+        20202 => 'Missing required property in object'
+    ];
+
+    // Validation codes 203xx
     public static $validationMessages = [
-        10200 => 'Unknown validation error',
-        10201 => 'Integer value is out of range',
-        10202 => 'String length is out of range',
-        10203 => 'String did not match validation regex',
-        10204 => 'Validation type is invalid',
+        20300 => 'Unknown validation error',
+        20301 => 'Integer value is out of range',
+        20302 => 'String length is out of range',
+        20303 => 'String did not match validation regex',
+        20304 => 'Validation type is invalid',
+    ];
+
+    // Validation codes 204xx
+    public static $configErrorMessages = [
+        20400 => 'Undefined config exception',
+        20401 => 'Missing key',
+        20402 => 'Missing application type',
+        20403 => 'Unknown application type',
     ];
 
     // Maps to standard HTTP error codes

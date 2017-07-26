@@ -20,9 +20,10 @@ class XeroTest extends \PHPUnit_Framework_TestCase
      * @var array
      */
     private $config = [
-      'username' => 'xxx',
-      'password' => 'xxx',
-      'key' => 'xxx',
+        'username' => 'xxx',
+        'password' => 'xxx',
+        'key' => 'xxx',
+        'applicationType' => 'public',
     ];
 
     public function setUp()
@@ -30,11 +31,13 @@ class XeroTest extends \PHPUnit_Framework_TestCase
         $this->xero = new Xero($this->config);
 
         $this->assertEquals($this->xero->config->version, '1.1.2');
-        $this->assertEquals($this->xero->config->endpoint, '//accounting.xeroone.co.za');
+        $this->assertEquals($this->xero->config->endpoint, '//api.xero.com/api.xro');
         $this->assertEquals($this->xero->config->cache, true);
         $this->assertEquals($this->xero->config->rateLimit, 5000);
         $this->assertEquals($this->xero->config->rateLimitPeriod, 86400);
         $this->assertEquals($this->xero->config->retries, 3);
+        $this->assertEquals($this->xero->config->maxPostSize, 35000);
+        $this->assertEquals($this->xero->config->maxFileSize, 100000);
 
         $expected = [
             'key' => 'xxx',
