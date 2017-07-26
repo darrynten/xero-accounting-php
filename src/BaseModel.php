@@ -251,7 +251,7 @@ abstract class BaseModel
             $this->throwException(ModelException::NO_CREATE_SUPPORT);
         }
         $data = $this->toObject();
-        $xml = $this->generate_valid_xml_from_array($data);
+        $xml = $this->generateValidXmlFromArray($data);
 
         // TODO Submission Body and Validation
         $data = $this->request->request('PUT', $this->endpoint, 'Save', ['body' => $xml]);
@@ -280,7 +280,7 @@ abstract class BaseModel
         }
         $id = $this->accountID;
         $data = $this->toObject();
-        $xml = $this->generate_valid_xml_from_array($data);
+        $xml = $this->generateValidXmlFromArray($data);
 
         // TODO Submission Body and Validation
         $data = $this->request->request('POST', $this->endpoint, $id, ['body' => $xml]);
@@ -462,7 +462,7 @@ abstract class BaseModel
                 ));
             }
 
-            if ($config['type'] != 'string') {
+            if ($config['type'] !== 'string') {
                 $result->$remoteKey = $this->castToType($config['type'], $result->$remoteKey);
             }
 
@@ -598,14 +598,14 @@ abstract class BaseModel
      *
      * @return string
      */
-    private function generate_xml_from_array($array)
+    private function generateXmlFromArray($array)
     {
         $xml = '';
 
         if (is_array($array) || is_object($array)) {
             foreach ($array as $key => $value) {
                 if ($value) {
-                    $xml .= '<' . $key . '>' . "\n" . $this->generate_xml_from_array($value) . '</' . $key . '>' . "\n";
+                    $xml .= '<' . $key . '>' . "\n" . $this->generateXmlFromArray($value) . '</' . $key . '>' . "\n";
                 }
             }
         } else {
@@ -621,14 +621,17 @@ abstract class BaseModel
      *
      * @param $array
      *
+     * TODO what is difference between generate valid xml and the
+     * other method?
+     *
      * @return string
      */
-    private function generate_valid_xml_from_array(array $array)
+    private function generateValidXmlFromArray(array $array)
     {
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
 
         $xml .= '<' . $this->entity . '>' . "\n";
-        $xml .= $this->generate_xml_from_array($array);
+        $xml .= $this->generateXmlFromArray($array);
         $xml .= '</' . $this->entity . '>' . "\n";
 
         return $xml;
@@ -694,10 +697,10 @@ abstract class BaseModel
      */
     private function castToType(string $expectedType, $value)
     {
-        if ($expectedType == 'integer') {
+        if ($expectedType === 'integer') {
             return (int) $value;
         }
-        if ($expectedType == 'boolean') {
+        if ($expectedType === 'boolean') {
             return filter_var($value, FILTER_VALIDATE_BOOLEAN);
         }
 
