@@ -598,7 +598,8 @@ abstract class BaseModel
      *
      * @return string
      */
-    private function generate_xml_from_array($array) {
+    private function generate_xml_from_array($array)
+    {
         $xml = '';
 
         if (is_array($array) || is_object($array)) {
@@ -622,7 +623,8 @@ abstract class BaseModel
      *
      * @return string
      */
-    private function generate_valid_xml_from_array(array $array) {
+    private function generate_valid_xml_from_array(array $array)
+    {
         $xml = '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
 
         $xml .= '<' . $this->entity . '>' . "\n";

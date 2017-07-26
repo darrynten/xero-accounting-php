@@ -85,6 +85,17 @@ class XeroTest extends \PHPUnit_Framework_TestCase
         $request = new Xero([]);
     }
 
+    public function testBadApplicationType()
+    {
+        $this->expectException(ConfigException::class);
+        $this->expectExceptionMessage('Config error xxx Unknown application type');
+        $this->expectExceptionCode(20403);
+
+        $request = new Xero([
+            'applicationType' => 'xxx'
+        ]);
+    }
+
     public function testMissingName()
     {
         $this->expectException(ConfigException::class);

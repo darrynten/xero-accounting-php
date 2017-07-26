@@ -54,7 +54,7 @@ class ExceptionMessages
         20401 => 'Missing application key',
         20402 => 'Missing application type',
         20403 => 'Unknown application type',
-        20404 => 'Public app but secret is missing',
+        20404 => 'Non-Private app but secret is missing',
         20405 => 'Missing application name',
         20406 => 'Missing callback url',
     ];

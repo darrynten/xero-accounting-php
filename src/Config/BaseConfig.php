@@ -240,7 +240,7 @@ abstract class BaseConfig
         }
         // Secret is required for public and partner apps
         if ((!isset($config['secret']) || empty($config['secret'])) && $config['applicationType'] !== 'private') {
-            throw new ConfigException(ConfigException::MISSING_PUBLIC_SECRET);
+            throw new ConfigException(ConfigException::MISSING_APPLICATION_SECRET);
         }
 
         $this->applicationType = (string)$config['applicationType'];
