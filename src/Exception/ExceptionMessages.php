@@ -59,6 +59,12 @@ class ExceptionMessages
         20406 => 'Missing callback url',
     ];
 
+    public static $libraryErrorMessages = [
+        20500 => 'Library Error',
+        20501 => 'Method not yet implemented. This still needs to be added, '
+               . 'please consider contributing to the project.',
+    ];
+
     // Maps to standard HTTP error codes
     public static $strings = [
         400 => '400',
