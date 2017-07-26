@@ -51,9 +51,12 @@ class ExceptionMessages
     // Validation codes 204xx
     public static $configErrorMessages = [
         20400 => 'Undefined config exception',
-        20401 => 'Missing key',
+        20401 => 'Missing application key',
         20402 => 'Missing application type',
         20403 => 'Unknown application type',
+        20404 => 'Public app but secret is missing',
+        20405 => 'Missing application name',
+        20406 => 'Missing callback url',
     ];
 
     // Maps to standard HTTP error codes

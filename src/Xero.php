@@ -11,8 +11,8 @@
 
 namespace DarrynTen\Xero;
 
-use DarrynTen\Xero\Config\ConfigFactory;
 use DarrynTen\Xero\Request\RequestHandler;
+use DarrynTen\Xero\Config\ConfigFactory;
 use DarrynTen\AnyCache\AnyCache;
 
 /**
@@ -55,5 +55,13 @@ class Xero
         $this->config = $configFactory->getConfig($config);
         $this->cache = new AnyCache();
         $this->request = new RequestHandler($this->config->getRequestHandlerConfig());
+    }
+
+    /**
+     * @return RequestHandler
+     */
+    public function getRequest()
+    {
+        return $this->request;
     }
 }

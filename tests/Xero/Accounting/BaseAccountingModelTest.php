@@ -16,12 +16,8 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     use HttpMockTrait;
 
     protected $config = [
-        'username' => 'username',
-        'password' => 'password',
         'key' => 'key',
         'endpoint' => '//localhost:8082',
-        'version' => '2.0',
-        'companyId' => null
     ];
 
     public static function setUpBeforeClass()
@@ -78,7 +74,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" key doesNotExist value xyz Attempting to set a property that is not defined in the model");
-        $this->expectExceptionCode(10113);
+        $this->expectExceptionCode(20113);
 
         $model = new $class($this->config);
         $model->doesNotExist = 'xyz';
@@ -95,7 +91,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" key doesNotExist Attempting to get an undefined property");
-        $this->expectExceptionCode(10116);
+        $this->expectExceptionCode(20116);
 
         $model = new $class($this->config);
         $throw = $model->doesNotExist;
@@ -113,7 +109,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" attempting to nullify key {$key} Property is null without nullable permission");
-        $this->expectExceptionCode(10111);
+        $this->expectExceptionCode(20111);
 
         $model = new $class($this->config);
         $model->{$key} = null;
@@ -148,7 +144,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" Defined key \"{$key}\" not present in payload A property is missing in the loadResult payload");
-        $this->expectExceptionCode(10112);
+        $this->expectExceptionCode(20112);
 
         $obj = new \stdClass;
         $obj->ID = 1;
@@ -616,7 +612,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Save is not supported");
-        $this->expectExceptionCode(10103);
+        $this->expectExceptionCode(20103);
 
         $model = new $class($this->config);
         $model->save();
@@ -633,7 +629,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" id 1 Delete is not supported");
-        $this->expectExceptionCode(10104);
+        $this->expectExceptionCode(20104);
 
         $model = new $class($this->config);
         $model->delete(1);
@@ -650,7 +646,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Get all is not supported");
-        $this->expectExceptionCode(10101);
+        $this->expectExceptionCode(20101);
 
         $model = new $class($this->config);
         $model->all();
@@ -732,12 +728,8 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $className = $this->getClassName($class);
 
         $config = [
-          'username' => 'username',
-          'password' => 'password',
           'key' => 'key',
           'endpoint' => '//api.xero.com/api.xro/2.0',
-          'version' => '2.0',
-          'companyId' => null
         ];
 
         // Creates a partially mock of RequestHandler with mocked `handleRequest` method

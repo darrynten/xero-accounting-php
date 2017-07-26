@@ -4,7 +4,7 @@ namespace DarrynTen\Xero\Tests\Xero;
 
 use DarrynTen\Xero\Xero;
 use DarrynTen\Xero\Request\RequestHandler;
-use DarrynTen\Xero\Exception\ApiException;
+use DarrynTen\Xero\Exception\ConfigException;
 use DarrynTen\Xero\Tests\Xero\Helpers\DataHelper;
 
 class XeroTest extends \PHPUnit_Framework_TestCase
@@ -20,17 +20,25 @@ class XeroTest extends \PHPUnit_Framework_TestCase
      * @var array
      */
     private $config = [
-        'username' => 'xxx',
-        'password' => 'xxx',
         'key' => 'xxx',
+        'secret' => 'xxx',
         'applicationType' => 'public',
+        'applicationName' => 'test application',
+        'callbackUrl' => 'localhost',
     ];
 
     public function setUp()
     {
         $this->xero = new Xero($this->config);
 
-        $this->assertEquals($this->xero->config->version, '1.1.2');
+        // Passed in
+        $this->assertEquals($this->xero->config->key, 'xxx');
+        $this->assertEquals($this->xero->config->secret, 'xxx');
+        $this->assertEquals($this->xero->config->applicationType, 'public');
+        $this->assertEquals($this->xero->config->applicationName, 'test application');
+        $this->assertEquals($this->xero->config->callbackUrl, 'localhost');
+
+        // Defaults
         $this->assertEquals($this->xero->config->endpoint, '//api.xero.com/api.xro');
         $this->assertEquals($this->xero->config->cache, true);
         $this->assertEquals($this->xero->config->rateLimit, 5000);
@@ -41,11 +49,7 @@ class XeroTest extends \PHPUnit_Framework_TestCase
 
         $expected = [
             'key' => 'xxx',
-            'username' => 'xxx',
-            'password' => 'xxx',
-            'endpoint' => '//accounting.xeroone.co.za',
-            'version' => '1.1.2',
-            'companyId' => null
+            'endpoint' => '//api.xero.com/api.xro',
         ];
         $this->assertEquals($this->xero->config->getRequestHandlerConfig(), $expected);
     }
@@ -54,53 +58,67 @@ class XeroTest extends \PHPUnit_Framework_TestCase
     {
         $this->xero = new Xero([
             'key' => 'xxx',
-            'username' => 'xxx',
-            'password' => 'xxx',
+            'secret' => 'xxx',
             'endpoint' => 'xxx',
-            'version' => 'xxx',
-            'companyId' => 2,
-            'cache' => false
+            'applicationType' => 'private',
+            'applicationName' => 'private app name',
+            'callbackUrl' => 'localhost',
+            'cache' => false,
         ]);
 
-        $this->assertEquals($this->xero->config->version, 'xxx');
         $this->assertEquals($this->xero->config->endpoint, 'xxx');
         $this->assertEquals($this->xero->config->cache, false);
 
         $expected = [
             'key' => 'xxx',
-            'username' => 'xxx',
-            'password' => 'xxx',
             'endpoint' => 'xxx',
-            'version' => 'xxx',
-            'companyId' => 2
         ];
         $this->assertEquals($this->xero->config->getRequestHandlerConfig(), $expected);
     }
 
-    public function testMissingUsername()
+    public function testMissingApplicationType()
     {
-        $this->expectException(ApiException::class);
+        $this->expectException(ConfigException::class);
+        $this->expectExceptionMessage('Config error  Missing application type');
+        $this->expectExceptionCode(20402);
+
         $request = new Xero([]);
-        $this->assertEquals($request->config->version, '1.1.2');
     }
 
-    public function testMissingPassword()
+    public function testMissingName()
     {
-        $this->expectException(ApiException::class);
+        $this->expectException(ConfigException::class);
+        $this->expectExceptionMessage('Config error  Missing application name');
+        $this->expectExceptionCode(20405);
+
         $request = new Xero([
-            'username' => 'username'
+            'applicationType' => 'public'
         ]);
-        $this->assertEquals($request->config->version, '1.1.2');
+    }
+
+    public function testMissingCallback()
+    {
+        $this->expectException(ConfigException::class);
+        $this->expectExceptionMessage('Config error  Missing callback url');
+        $this->expectExceptionCode(20406);
+
+        $request = new Xero([
+            'applicationType' => 'public',
+            'applicationName' => 'failing config',
+        ]);
     }
 
     public function testMissingKey()
     {
-        $this->expectException(ApiException::class);
+        $this->expectException(ConfigException::class);
+        $this->expectExceptionMessage('Config error  Missing application key');
+        $this->expectExceptionCode(20401);
+
         $request = new Xero([
-            'username' => 'username',
-            'password' => 'password'
+            'applicationType' => 'public',
+            'applicationName' => 'failing config',
+            'callbackUrl' => 'localhost',
         ]);
-        $this->assertEquals($request->config->version, '1.1.2');
     }
 
     public function testRequestGetterResult()

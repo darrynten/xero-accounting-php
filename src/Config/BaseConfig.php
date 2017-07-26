@@ -2,7 +2,7 @@
 
 namespace DarrynTen\Xero\Config;
 
-use DarrynTen\Xero\Exception\ApiException;
+use DarrynTen\Xero\Exception\ConfigException;
 
 /**
  * Xero Config
@@ -23,9 +23,11 @@ abstract class BaseConfig
      * You will need to generate a public/private key-pair, of which the
      * public part will be uploaded to Xero during application registration.
      *
+     * TODO not public
+     *
      * @var string $key
      */
-    private $key = null;
+    public $key = null;
 
     /**
      * Shared secret
@@ -34,9 +36,18 @@ abstract class BaseConfig
      *
      * The consumer secret is not used for private/partner apps.
      *
+     * TODO not public
+     *
      * @var string $secret
      */
-    private $secret = null;
+    public $secret = null;
+
+    /**
+     * Valid application types
+     *
+     * @var array $validApplicationTypes
+     */
+    private $validApplicationTypes = ['private', 'public', 'partner'];
 
     /**
      * The api versions
@@ -50,15 +61,6 @@ abstract class BaseConfig
         'payroll' => '1.0',
         'files' => '1.0',
     ];
-
-    /**
-     * The application types
-     *
-     * API version to connect to, depending on service
-     *
-     * @var array $applicationTypes
-     */
-    public $applicationTypes = ['private', 'public', 'partner'];
 
     /**
      * The project ID
@@ -220,38 +222,34 @@ abstract class BaseConfig
     private function checkAndSetEssentials($config)
     {
         if (!isset($config['applicationType']) || empty($config['applicationType'])) {
-            throw new ApiException('Missing application type');
+            throw new ConfigException(ConfigException::MISSING_APPLICATION_TYPE);
         }
-
-        if (!isset($config['key']) || empty($config['key'])) {
-            throw new ApiException('Missing API key');
-        }
-
-        // Secret is required for public apps
-        if ((!isset($config['secret']) || empty($config['secret'])) && $config['applicationType'] === 'public') {
-            throw new ApiException('Missing API secret for public app');
-        }
-
-        if (!isset($config['version']) || empty($config['version'])) {
-            throw new ApiException('Missing API version number');
+        // Make sure the type is valid
+        if (!in_array($config['applicationType'], $this->validApplicationTypes)) {
+            throw new ConfigException(ConfigException::UNKNOWN_APPLICATION_TYPE);
         }
 
         if (!isset($config['applicationName']) || empty($config['applicationName'])) {
-            throw new ApiException('Missing application name');
+            throw new ConfigException(ConfigException::MISSING_APPLICATION_NAME);
         }
-
         if (!isset($config['callbackUrl']) || empty($config['callbackUrl'])) {
-            throw new ApiException('Missing callback url');
+            throw new ConfigException(ConfigException::MISSING_CALLBACK_URL);
+        }
+        if (!isset($config['key']) || empty($config['key'])) {
+            throw new ConfigException(ConfigException::MISSING_APPLICATION_KEY);
+        }
+        // Secret is required for public and partner apps
+        if ((!isset($config['secret']) || empty($config['secret'])) && $config['applicationType'] !== 'private') {
+            throw new ConfigException(ConfigException::MISSING_PUBLIC_SECRET);
         }
 
         $this->applicationType = (string)$config['applicationType'];
         $this->applicationName = (string)$config['applicationName'];
-        $this->version = (string)$config['version'];
         $this->callbackUrl = (string)$config['callbackUrl'];
         $this->key = (string)$config['key'];
 
-        // secret only for public apps
-        if ($config['applicationType'] === 'public') {
+        // secret only for public and partner apps
+        if ($config['applicationType'] !== 'private') {
             $this->secret = (string)$config['key'];
         }
     }
@@ -261,7 +259,6 @@ abstract class BaseConfig
      *
      * Optionals:
      *
-     *   - Version
      *   - Endpoint
      *   - Caching
      *   - Rate Limit
@@ -272,14 +269,6 @@ abstract class BaseConfig
      */
     private function checkAndSetOverrides($config)
     {
-        if (isset($config['companyId']) && !empty($config['companyId'])) {
-            $this->companyId = (string)$config['companyId'];
-        }
-
-        if (isset($config['version']) && !empty($config['version'])) {
-            $this->version = (string)$config['version'];
-        }
-
         if (isset($config['endpoint']) && !empty($config['endpoint'])) {
             $this->endpoint = (string)$config['endpoint'];
         }
@@ -315,11 +304,7 @@ abstract class BaseConfig
     {
         $config = [
             'key' => $this->key,
-            'username' => $this->username,
-            'password' => $this->password,
             'endpoint' => $this->endpoint,
-            'version' => $this->version,
-            'companyId' => $this->companyId,
         ];
 
         return $config;
