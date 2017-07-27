@@ -80,7 +80,7 @@ class XeroTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(ConfigException::class);
         $this->expectExceptionMessage('Config error  Missing application type');
-        $this->expectExceptionCode(20402);
+        $this->expectExceptionCode(ConfigException::MISSING_APPLICATION_TYPE);
 
         $request = new Xero([]);
     }
@@ -89,7 +89,7 @@ class XeroTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(ConfigException::class);
         $this->expectExceptionMessage('Config error xxx Unknown application type');
-        $this->expectExceptionCode(20403);
+        $this->expectExceptionCode(ConfigException::UNKNOWN_APPLICATION_TYPE);
 
         $request = new Xero([
             'applicationType' => 'xxx'
@@ -100,7 +100,7 @@ class XeroTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(ConfigException::class);
         $this->expectExceptionMessage('Config error  Missing application name');
-        $this->expectExceptionCode(20405);
+        $this->expectExceptionCode(ConfigException::MISSING_APPLICATION_NAME);
 
         $request = new Xero([
             'applicationType' => 'public'
@@ -111,7 +111,7 @@ class XeroTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(ConfigException::class);
         $this->expectExceptionMessage('Config error  Missing callback url');
-        $this->expectExceptionCode(20406);
+        $this->expectExceptionCode(ConfigException::MISSING_CALLBACK_URL);
 
         $request = new Xero([
             'applicationType' => 'public',
@@ -123,7 +123,7 @@ class XeroTest extends \PHPUnit_Framework_TestCase
     {
         $this->expectException(ConfigException::class);
         $this->expectExceptionMessage('Config error  Missing application key');
-        $this->expectExceptionCode(20401);
+        $this->expectExceptionCode(ConfigException::MISSING_APPLICATION_KEY);
 
         $request = new Xero([
             'applicationType' => 'public',
