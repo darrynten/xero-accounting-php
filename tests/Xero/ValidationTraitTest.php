@@ -97,7 +97,7 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
 
     }
 
-    public function testValidateEncodedType()
+    public function testValidateURLHexEncodedType()
     {
         //URLEncoding
         //Should this be valid?
@@ -113,5 +113,54 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
         );
         $this->expectExceptionCode(ValidationException::STRING_LENGTH_OUT_OF_RANGE);
         $this->validateRange(bin2hex("foo\nbar"), 5, 10);
+    }
+
+    public function testValidateBaseSixtyFourEncodedType()
+    {
+        //b64 encoding tests
+        $this->assertTrue($this->isValidPrimitive(base64_encode("foobar"), 'string'));
+        $this->validateRange(base64_encode("foobar"), 5, 15);
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage(
+            sprintf("Validation error value Zm9vYmFyIGJhcmZvbyAKIHpvbw== out of min(5) max(15) String length is out of range")
+        );
+        $this->expectExceptionCode(ValidationException::STRING_LENGTH_OUT_OF_RANGE);
+        $this->validateRange(base64_encode("foobar barfoo \n zoo"), 5, 15);
+    }
+
+    public function testEmojiValidation()
+    {
+        //is this valid?
+        $this->validateRange(json_decode('"\uD83D\uDE00"'), 1, 8);
+        //Emoji is one character, can this lead to problems?
+        $this->validateRange(json_decode('"\uD83D\uDE00"'), 1, 2);
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage(
+            sprintf("Validation error value 😀😀😀 out of min(1) max(2) String length is out of range")
+        );
+        $this->expectExceptionCode(ValidationException::STRING_LENGTH_OUT_OF_RANGE);
+        $this->validateRange(json_decode('"\uD83D\uDE00"')
+            . json_decode('"\uD83D\uDE00"') . json_decode('"\uD83D\uDE00"'),
+            1, 2);
+    }
+
+    public function testLargeIntValidation(){
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage(
+            sprintf("Validation error value 1.0E+25 is type double Validation type is invalid")
+        );
+        $this->expectExceptionCode(ValidationException::VALIDATION_TYPE_ERROR);
+        $this->validateRange(9999999999999999999999999, 1, 8);
+    }
+
+    public function testOutlierChars(){
+        $this->validateRange(0x00, 0, 8);
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage(
+            sprintf("Validation error value 255 out of min(0) max(8) Integer value is out of range")
+        );
+        $this->expectExceptionCode(ValidationException::INTEGER_OUT_OF_RANGE);
+        $this->validateRange(0xFF, 0, 8);
+
     }
 }
