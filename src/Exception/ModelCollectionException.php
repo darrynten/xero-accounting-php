@@ -32,7 +32,7 @@ class ModelCollectionException extends Exception
         $message = sprintf(
             'ModelCollection %s %s',
             $extra,
-            ExceptionMessages::$validationMessages[$code]
+            ExceptionMessages::$collectionMessages[$code]
         );
 
         parent::__construct($message, $code);
