@@ -26,6 +26,7 @@ class RequestHandlerException extends Exception
     const MALFORMED_REQUEST = 400;
     const USER_AUTHENTICATION_ERROR = 401;
     const ENTITY_NOT_FOUND = 404;
+    const HTTP_VERB_ERROR = 405;
     const INTERNAL_SERVER_ERROR = 500;
     const NOT_IMPLEMENTED = 501;
     const SCHEDULED_MAINTENANCE = 503;

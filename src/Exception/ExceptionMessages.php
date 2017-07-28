@@ -73,6 +73,7 @@ class ExceptionMessages
              . 'authentication. The user does not have access rights for this method.',
         404 => 'The requested entity was not found. Entities are bound to '
              . 'companies. Ensure the entity belongs to the company.',
+        405 => '',
         500 => 'Internal server error',
         501 => 'The method you have called is not implemented',
         503 => 'The service is down for scheduled maintenance or '
