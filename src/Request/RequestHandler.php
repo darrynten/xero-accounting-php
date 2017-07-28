@@ -148,9 +148,9 @@ class RequestHandler
      * Handles all API exceptions, and adds the official exception terms
      * to the message.
      *
-     * @param RequestException the original exception
+     * @param RequestException the original exception.
      *
-     * @throws RequestHandlerException
+     * @throws RequestHandlerException.
      */
     private function handleException($exception)
     {
