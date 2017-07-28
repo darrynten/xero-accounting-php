@@ -20,6 +20,9 @@ use Exception;
  */
 class RequestHandlerException extends Exception
 {
+    /**
+     * @link https://developer.xero.com/documentation/api/http-response-codes
+     */
     const MALFORMED_REQUEST = 400;
     const USER_AUTHENTICATION_ERROR = 401;
     const ENTITY_NOT_FOUND = 404;
