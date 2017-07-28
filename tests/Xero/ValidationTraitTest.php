@@ -32,7 +32,7 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertException(ValidationException::class,
                               'Validation error value 20 out of min(5) max(15) Integer value is out of range',
                                ValidationException::INTEGER_OUT_OF_RANGE
-            );
+        );
         $this->validateRange(20, 5, 15);
     }
 
@@ -51,7 +51,7 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertException(ValidationException::class,
                               'Validation error value 7.2336 is type double Validation type is invalid',
                                ValidationException::VALIDATION_TYPE_ERROR
-            );
+        );
         $this->validateRange(7.2336, 5, 15);
     }
 
@@ -71,7 +71,8 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
         //These strings need the double inverted comma for the null character to register properly
         $this->assertException(ValidationException::class,
                               "Validation error value \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0asdhd out of min(5) max(15) String length is out of range",
-                               ValidationException::STRING_LENGTH_OUT_OF_RANGE);
+                               ValidationException::STRING_LENGTH_OUT_OF_RANGE
+        );
         $this->validateRange("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0asdhd", 5, 15);
     }
 
@@ -114,7 +115,7 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertException(ValidationException::class,
                               'Validation error value Zm9vYmFyIGJhcmZvbyAKIHpvbw== out of min(5) max(15) String length is out of range',
                                ValidationException::STRING_LENGTH_OUT_OF_RANGE
-            );
+        );
         $this->validateRange(base64_encode("foobar barfoo \n zoo"), 5, 15);
     }
 
@@ -145,7 +146,8 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
         $this->validateRange(0x00, 0, 8);
         $this->assertException(ValidationException::class,
                               "Validation error value 255 out of min(0) max(8) Integer value is out of range",
-                               ValidationException::INTEGER_OUT_OF_RANGE);
+                               ValidationException::INTEGER_OUT_OF_RANGE
+        );
         $this->validateRange(0xFF, 0, 8);
 
     }
