@@ -46,7 +46,7 @@ class RequestHandlerExceptionTest extends \PHPUnit_Framework_TestCase
 
     public function testApiExceptionMessages()
     {
-        $this->assertEquals(6, sizeof(ExceptionMessages::$strings));
+        $this->assertEquals(7, sizeof(ExceptionMessages::$strings));
     }
 
     public function testApiException()
