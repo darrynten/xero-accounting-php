@@ -78,7 +78,8 @@ class BaseConfigTest extends \PHPUnit_Framework_TestCase
         $constructor->invoke($this->configMock, [ ]);
     }
 
-    public function testUnknownApplication(){
+    public function testUnknownApplication()
+    {
         $this->expectException(ConfigException::class);
         $this->expectExceptionCode(ConfigException::UNKNOWN_APPLICATION_TYPE);
         $this->expectExceptionMessage('Config error  Unknown application type');
@@ -94,7 +95,8 @@ class BaseConfigTest extends \PHPUnit_Framework_TestCase
         ]);
     }
 
-    public function testMissingApplicationSecret(){
+    public function testMissingApplicationSecret()
+    {
         $this->expectException(ConfigException::class);
         $this->expectExceptionCode(ConfigException::MISSING_APPLICATION_SECRET);
         $this->expectExceptionMessage('Config error  Non-Private app but secret is missing');
