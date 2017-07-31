@@ -1,6 +1,6 @@
 <?php
 
-namespace DarrynTen\Xero;
+namespace DarrynTen\Xero\Types;
 
 /**
  * Xero Bank Account Types

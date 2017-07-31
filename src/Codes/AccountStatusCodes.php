@@ -1,6 +1,6 @@
 <?php
 
-namespace DarrynTen\Xero;
+namespace DarrynTen\Xero\Codes;
 
 /**
  * Xero Account Status Codes
