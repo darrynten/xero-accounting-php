@@ -152,6 +152,272 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Verifies that model will throw error when we try method all that not supported by model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotSupportedAll(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $features = [
+            'all' => false,
+        ];
+        $model = $this->injectPropertyInModel($class, 'features', $features);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\"  Get all is not supported");
+        $this->expectExceptionCode(20101);
+
+        $model->all();
+    }
+
+    /**
+     * Verifies that model will throw error when we try method get that not supported by model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotSupportedGet(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $features = [
+            'get' => false,
+        ];
+        $model = $this->injectPropertyInModel($class, 'features', $features);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\" id some_id Get single is not supported");
+        $this->expectExceptionCode(20102);
+
+        $model->get('some_id');
+    }
+
+    /**
+     * Verifies that model will throw error when we try method getByIds that not supported by model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotSupportedGetByIds(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $features = [
+            'get' => false,
+        ];
+        $model = $this->injectPropertyInModel($class, 'features', $features);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\" id some_id Get single is not supported");
+        $this->expectExceptionCode(20102);
+
+        $model->getByIds(['some_id']);
+    }
+
+    /**
+     * Verifies that model will throw error when we try method delete that not supported by model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotSupportedDelete(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $features = [
+            'delete' => false,
+        ];
+        $model = $this->injectPropertyInModel($class, 'features', $features);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\" id some_id Delete is not supported");
+        $this->expectExceptionCode(20104);
+
+        $model->delete('some_id');
+    }
+
+    /**
+     * Verifies that model will throw error when we try method create not supported by model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotSupportedCreate(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $features = [
+            'create' => false,
+        ];
+        $model = $this->injectPropertyInModel($class, 'features', $features);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\"  Create is not supported");
+        $this->expectExceptionCode(20103);
+
+        $model->create();
+    }
+
+    /**
+     * Verifies that model will throw error when we try method update not supported by model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotSupportedUpdate(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $features = [
+            'update' => false,
+        ];
+        $model = $this->injectPropertyInModel($class, 'features', $features);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\"  Update is not supported");
+        $this->expectExceptionCode(20105);
+
+        $model->update('some_id');
+    }
+
+    /**
+     * Verifies that model will throw error when we try apply filter on all() method
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotSupportedFilter(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $features = [
+            'all' => true,
+            'filter' => false,
+        ];
+        $model = $this->injectPropertyInModel($class, 'features', $features);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\"  Filter is not supported");
+        $this->expectExceptionCode(20107);
+
+        $model->all(['filter' => 'some']);
+    }
+
+    /**
+     * Verifies that model will throw error when we try apply filter on unknown field
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyFilterByUnknownValue(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $model = new $class($this->config);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\"  Unknown property for filtering");
+        $this->expectExceptionCode(20118);
+
+        $model->all(['filter' => ['not_exists' => 'foo']]);
+    }
+
+    /**
+     * Verifies that model will throw error when we try apply order with wrong parameters
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyOrderWithWrongParameters(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $model = new $class($this->config);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\"  Unknown property for sorting");
+        $this->expectExceptionCode(20117);
+
+        $model->all(['order' => []]);
+    }
+
+    /**
+     * Verifies that model will throw error when we try apply order with wrong fieldname
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyOrderWithUnknownField(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $model = new $class($this->config);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\"  Unknown property for sorting");
+        $this->expectExceptionCode(20117);
+
+        $model->all(['order' => ['field' => 'not_exists']]);
+    }
+
+    /**
+     * Verifies that model will throw error when we try apply order on all() method
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotSupportedOrder(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $features = [
+            'all' => true,
+            'order' => false,
+        ];
+        $model = $this->injectPropertyInModel($class, 'features', $features);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\"  Sort is not supported");
+        $this->expectExceptionCode(20106);
+
+        $model->all(['order' => 'some']);
+    }
+
+    /**
+     * Verifies that model will throw error when we try toObject method on null field that hasn't nullable attribute
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyCantBeNull(string $class)
+    {
+        $className = $this->getClassName($class);
+
+        $model = new $class($this->config);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\" key name Property is null without nullable permission");
+        $this->expectExceptionCode(20111);
+
+        $model->create();
+    }
+
+    /**
+     * Verifies that model will throw error when we try to set value with readonly attribute
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyCantBeWritten(string $class)
+    {
+        $className = $this->getClassName($class);
+        $fields = [
+            'accountID' => [
+                'type' => 'string',
+                'nullable' => true,
+                'readonly' => true,
+            ]
+        ];
+        $model = $this->injectPropertyInModel($class, 'fields', $fields);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\" key accountID value some_id Attempting to set a read-only property");
+        $this->expectExceptionCode(20114);
+
+        $model->accountID = 'some_id';
+    }
+
+    /**
      * Verifies that all fields has expected types, nullable and read only properties
      *
      * @param string $class Full path to the class
@@ -467,14 +733,23 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
             $className,
             $mockFile
         );
+        $parameters =[
+            'order' => [
+                'field' => 'accountID',
+                'direction' => 'ASC',
+            ],
+            'filter' => [
+                'name' => ['foo','bar']
+            ]
+        ];
 
-        $allInstances = $model->all();
+        $allInstances = $model->all($parameters);
         $this->assertInstanceOf(ModelCollection::class, $allInstances);
         $this->assertObjectHasAttribute('totalResults', $allInstances);
         $this->assertObjectHasAttribute('returnedResults', $allInstances);
         $this->assertObjectHasAttribute('results', $allInstances);
 
-        $whatToCheck($allInstances->results);
+        $whatToCheck($allInstances);
     }
 
     /**
@@ -507,7 +782,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
      * Verifies that we can load single model
      *
      * @param string $class Full path to the class
-     * @param ind $id id of the model
+     * @param string $id id of the model
      * @param callable $whatToCheck Verifies fields on single model
      */
     protected function verifyGetId(string $class, string $id, callable $whatToCheck)
@@ -839,5 +1114,59 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $model->loadResult($data->Account);
 
         return $model;
+    }
+
+    protected function injectPropertyInModel(string $class, string $propertyName,  $property)
+    {
+        $model = new $class($this->config);
+        $reflection = new ReflectionClass($model);
+        $reflectedFeatures = $reflection->getProperty($propertyName);
+        $reflectedFeatures->setAccessible(true);
+        $reflectedFeatures->setValue($model, $property);
+
+        return $model;
+    }
+
+    /**
+     * Verifies that base model validates range
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyValidateRange(string $class)
+    {
+        $fields = [
+            'integer' => [
+                'type' => 'integer',
+                'min' => 0,
+                'max' => 10,
+                'nullable' => true,
+                'readonly' => false,
+            ]
+        ];
+        $model = $this->injectPropertyInModel($class, 'fields', $fields);
+
+        $model->integer = 5;
+        $this->assertEquals(5, $model->integer);
+    }
+
+    /**
+     * Verifies that base model validates regexp
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyValidateRegexp(string $class)
+    {
+        $fields = [
+            'string' => [
+                'type' => 'string',
+                'regex' => '/^bar$/',
+                'nullable' => true,
+                'readonly' => false,
+            ]
+        ];
+        $model = $this->injectPropertyInModel($class, 'fields', $fields);
+
+        $model->string = 'bar';
+        $this->assertEquals('bar', $model->string);
     }
 }

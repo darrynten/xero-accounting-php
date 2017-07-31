@@ -15,7 +15,7 @@ class ExceptionMessages
         20100 => 'Undefined model exception',
         20101 => 'Get all is not supported',
         20102 => 'Get single is not supported',
-        20103 => 'Save is not supported',
+        20103 => 'Create is not supported',
         20104 => 'Delete is not supported',
         20105 => 'Update is not supported',
         20106 => 'Sort is not supported',

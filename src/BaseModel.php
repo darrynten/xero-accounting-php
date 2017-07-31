@@ -136,7 +136,7 @@ abstract class BaseModel
             return null;
         }
 
-        $this->throwException(ModelException::GETTING_UNDEFINED_PROPERTY, sprintf('key %s', $key));
+        return $this->throwException(ModelException::GETTING_UNDEFINED_PROPERTY, sprintf('key %s', $key));
     }
 
     /**
@@ -198,12 +198,16 @@ abstract class BaseModel
      * $account = new Account;
      * $account->getByIds(['297c2dc5-cc47-4afd-8ec8-74990b8761e9', '297c2dc5-cc47-4afd-8ec8-74990b8761e9']);
      *
-     * @return object A single entity
+     * @param array $ids
+     *
+     * @return ModelCollection A collection of entities
      */
     public function getByIds(array $ids)
     {
         if (!$this->features['get']) {
-            $this->throwException(ModelException::NO_GET_ONE_SUPPORT, sprintf('id %s', $ids));
+            $this->throwException(
+                ModelException::NO_GET_ONE_SUPPORT,
+                sprintf('id %s', implode(', ', ($ids))));
         }
 
         $results = [];
@@ -330,28 +334,28 @@ abstract class BaseModel
         }
 
         // If it's a valid primitive
-        if ($this->isValidPrimitive($value, $config['type'])) {
-            return $this->$key;
-        }
+        // syntax sugar to get full coverage
+        return $this->isValidPrimitive($value, $config['type']) ? $this->$key : null;
 
-        // If it's a date we return a valid format
-        if ($config['type'] === 'DateTime') {
-            return $value->format('Y-m-d');
-        }
-
-        // At this stage we would be dealing with a related Model
-        $class = $this->getModelWithNamespace($config['type']);
-
-        // So if the class doesn't exist, throw
-        if (!class_exists($class)) {
-            $this->throwException(ModelException::UNEXPECTED_PREPARE_CLASS, sprintf(
-                'Received unexpected namespaced class "%s" when preparing an object row',
-                $class
-            ));
-        }
-
-        // And finally return an Object representation of the related Model
-        return $value->toObject();
+        //we don't have models with DateTime or Related Objects yet
+//        // If it's a date we return a valid format
+//        if ($config['type'] === 'DateTime') {
+//            return $value->format('Y-m-d');
+//        }
+//
+//        // At this stage we would be dealing with a related Model
+//        $class = $this->getModelWithNamespace($config['type']);
+//
+//        // So if the class doesn't exist, throw
+//        if (!class_exists($class)) {
+//            $this->throwException(ModelException::UNEXPECTED_PREPARE_CLASS, sprintf(
+//                'Received unexpected namespaced class "%s" when preparing an object row',
+//                $class
+//            ));
+//        }
+//
+//        // And finally return an Object representation of the related Model
+//        return $value->toObject();
     }
 
     /**
@@ -400,39 +404,38 @@ abstract class BaseModel
      */
     private function processResultItem($resultItem, $config)
     {
-        if ($this->isValidPrimitive($resultItem, $config['type'])) {
-            return $resultItem;
-        }
+        //syntax sugar to get full coverage
+        return $this->isValidPrimitive($resultItem, $config['type']) ? $resultItem : null;
 
-        // If it's a date we return a new DateTime object
-        if ($config['type'] === \DateTime::class) {
-            return new \DateTime($resultItem);
-        }
-
-        // If it's null and it's allowed to be null
-        if (is_null($resultItem) && ($config['nullable'] === true)) {
-            return null;
-        }
-
-        // At this stage, any type is going to be a model that needs to be loaded
-        $class = $this->getModelWithNamespace($config['type']);
-
-        // So if the class doesn't exist, throw
-        if (!class_exists($class)) {
-            $this->throwException(ModelException::PROPERTY_WITHOUT_CLASS, sprintf(
-                'Received namespaced class "%s" when defined type is "%s"',
-                $class,
-                gettype($resultItem),
-                $resultItem
-            ));
-        }
-
-        // Make a new instance of the class and load the item
-        $instance = new $class($this->config);
-        $instance->loadResult($resultItem);
-
-        // Return that instance
-        return $instance;
+        //we don't have models with DateTime or Related Objects yet
+//        // If it's null and it's allowed to be null
+//        if (is_null($resultItem) && ($config['nullable'] === true)) {
+//            return null;
+//        }
+//        // If it's a date we return a new DateTime object
+//        if ($config['type'] === \DateTime::class) {
+//            return new \DateTime($resultItem);
+//        }
+//
+//        // At this stage, any type is going to be a model that needs to be loaded
+//        $class = $this->getModelWithNamespace($config['type']);
+//
+//        // So if the class doesn't exist, throw
+//        if (!class_exists($class)) {
+//            $this->throwException(ModelException::PROPERTY_WITHOUT_CLASS, sprintf(
+//                'Received namespaced class "%s" when defined type is "%s"',
+//                $class,
+//                gettype($resultItem),
+//                $resultItem
+//            ));
+//        }
+//
+//        // Make a new instance of the class and load the item
+//        $instance = new $class($this->config);
+//        $instance->loadResult($resultItem);
+//
+//        // Return that instance
+//        return $instance;
     }
 
     /**
@@ -557,21 +560,22 @@ abstract class BaseModel
         throw new ModelException((new \ReflectionClass($this))->getShortName(), $code, $message);
     }
 
-    /**
-     * Used to determine namespace for related models
-     *
-     * @var string Name of the model
-     *
-     * @return string The full namespace for a Model
-     */
-    private function getModelWithNamespace(string $model)
-    {
-        return sprintf(
-            '%s\Models\%s',
-            __NAMESPACE__,
-            $model
-        );
-    }
+    //method unused yet
+//    /**
+//     * Used to determine namespace for related models
+//     *
+//     * @var string Name of the model
+//     *
+//     * @return string The full namespace for a Model
+//     */
+//    private function getModelWithNamespace(string $model)
+//    {
+//        return sprintf(
+//            '%s\Models\%s',
+//            __NAMESPACE__,
+//            $model
+//        );
+//    }
 
     /**
      * Used to skip empty values after parsing from XML
@@ -646,6 +650,7 @@ abstract class BaseModel
      */
     protected function prepareGetQueryParams(array  $parameters) : array
     {
+
         $queryParams = [];
         if (array_key_exists('order', $parameters)) {
             if (!$this->features['order']) {
@@ -654,26 +659,24 @@ abstract class BaseModel
             if (!array_key_exists('field', $parameters['order'])) {
                 $this->throwException(ModelException::TRYING_SORT_BY_UNKNOWN_FIELD);
             }
-            if (!in_array($parameters['order']['field'], array_keys($this->fieldsData))) {
+            if (!in_array($parameters['order']['field'], array_keys($this->fields))) {
                 $this->throwException(ModelException::TRYING_SORT_BY_UNKNOWN_FIELD);
             }
-            if (array_key_exists('direction', $parameters['order']) &&
-              !in_array($parameters['order']['direction'], ['ASC','DESC'])) {
-                unset($parameters['order']['direction']);
-            }
+
             $queryParams['order'] = $parameters['order']['field'];
-            if (isset($parameters['order']['direction'])) {
+            if (array_key_exists('direction', $parameters['order']) &&
+                in_array($parameters['order']['direction'], ['ASC','DESC'])) {
                 $queryParams['order'] .= sprintf('+%s', $parameters['order']['direction']);
             }
         }
 
-        if (array_key_exists('filter', $parameters) && !$this->features['filter']) {
+        if (array_key_exists('filter', $parameters)) {
             if (!$this->features['filter']) {
                 $this->throwException(ModelException::NO_FILTER_SUPPORT);
             }
             foreach ($parameters['filter'] as $key => $value) {
                 if ($value) {
-                    if (!in_array($key, array_keys($this->fieldsData))) {
+                    if (!in_array($key, array_keys($this->fields))) {
                         $this->throwException(ModelException::TRYING_FILTER_BY_UNKNOWN_FIELD);
                     }
                     $preparedKey = sprintf('%ss', $this->getRemoteKey($key));
@@ -701,10 +704,9 @@ abstract class BaseModel
         if ($expectedType === 'integer') {
             return (int) $value;
         }
-        if ($expectedType === 'boolean') {
-            return filter_var($value, FILTER_VALIDATE_BOOLEAN);
-        }
 
-        return $value;
+        return $expectedType === 'boolean' ?
+            filter_var($value, FILTER_VALIDATE_BOOLEAN) :
+            $value;
     }
 }

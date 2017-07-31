@@ -2,6 +2,7 @@
 
 namespace DarrynTen\Xero\Tests\Xero\Accounting\Models;
 
+use DarrynTen\Xero\ModelCollection;
 use DarrynTen\Xero\Models\Accounting\AccountModel;
 use DarrynTen\Xero\Tests\Xero\Accounting\BaseAccountingModelTest;
 use DarrynTen\Xero\Request\RequestHandler;
@@ -40,6 +41,71 @@ class AccountsModelTest extends BaseAccountingModelTest
     public function testBadImport()
     {
         $this->verifyBadImport(AccountModel::class, 'name');
+    }
+
+    public function testNotSupportedAll()
+    {
+        $this->verifyNotSupportedAll(AccountModel::class);
+    }
+
+    public function testNotSupportedGet()
+    {
+        $this->verifyNotSupportedGet(AccountModel::class);
+    }
+
+    public function testNotSupportedGetByIds()
+    {
+        $this->verifyNotSupportedGetByIds(AccountModel::class);
+    }
+
+    public function testNotSupportedDelete()
+    {
+        $this->verifyNotSupportedDelete(AccountModel::class);
+    }
+
+    public function testNotSupportedCreate()
+    {
+        $this->verifyNotSupportedCreate(AccountModel::class);
+    }
+
+    public function testNotSupportedUpdate()
+    {
+        $this->verifyNotSupportedUpdate(AccountModel::class);
+    }
+
+    public function testNullWithoutNullableAtribute()
+    {
+        $this->verifyCantBeNull(AccountModel::class);
+    }
+
+    public function testWriteWithReadOnly()
+    {
+        $this->verifyCantBeWritten(AccountModel::class);
+    }
+
+    public function testNotSupportedFilter()
+    {
+        $this->verifyNotSupportedFilter(AccountModel::class);
+    }
+
+    public function testNotSupportedOrder()
+    {
+        $this->verifyNotSupportedOrder(AccountModel::class);
+    }
+
+    public function testFilterByUnknownValue()
+    {
+        $this->verifyFilterByUnknownValue(AccountModel::class);
+    }
+
+    public function testOrderWithWrongParameters()
+    {
+        $this->verifyOrderWithWrongParameters(AccountModel::class);
+    }
+
+    public function testOrderWithUnknownField()
+    {
+        $this->verifyOrderWithUnknownField(AccountModel::class);
     }
 
     public function testInject()
@@ -170,6 +236,19 @@ class AccountsModelTest extends BaseAccountingModelTest
         );
     }
 
+    public function testDefaultValueGet()
+    {
+        $fields = [
+            'accountID' => [
+                'default' => 'some'
+            ]
+        ];
+
+        $model = $this->injectPropertyInModel(AccountModel::class, 'fields', $fields);
+
+        $this->assertEquals('some', $model->accountID);
+    }
+
     public function testFeatures()
     {
         $this->verifyFeatures(AccountModel::class, [
@@ -181,6 +260,29 @@ class AccountsModelTest extends BaseAccountingModelTest
             'order' => true,
             'filter' => true,
         ]);
+    }
+
+    public function testGetAll()
+    {
+        $this->verifyGetAll(AccountModel::class, function ($collectionModel) {
+            $this->assertEquals(ModelCollection::class, get_class($collectionModel));
+            $this->assertEquals(2, $collectionModel->totalResults);
+            $this->assertEquals(2, $collectionModel->returnedResults);
+            $this->assertEquals(2, count($collectionModel->results));
+
+            $model = $collectionModel->results[0];
+            $this->assertEquals(AccountModel::class, get_class($model));
+            $this->assertEquals('297c2dc5-cc47-4afd-8ec8-74990b8761e9', $model->accountID);
+            $this->assertEquals('BANK', $model->type);
+        });
+    }
+
+    public function testGetId()
+    {
+        $this->verifyGetId(AccountModel::class, '297c2dc5-cc47-4afd-8ec8-74990b8761e9', function ($model) {
+            $this->assertEquals('297c2dc5-cc47-4afd-8ec8-74990b8761e9', $model->accountID);
+            $this->assertEquals('BNZ Cheque Account', $model->name);
+        });
     }
 
     public function testGetByIds()
@@ -231,5 +333,15 @@ class AccountsModelTest extends BaseAccountingModelTest
         $this->verifyDelete(AccountModel::class, 11, function () {
             // TODO do actual checks
         });
+    }
+
+    public function testValidateRange()
+    {
+        $this->verifyValidateRange(AccountModel::class);
+    }
+
+    public function testValidateRegexp()
+    {
+        $this->verifyValidateRegexp(AccountModel::class);
     }
 }
