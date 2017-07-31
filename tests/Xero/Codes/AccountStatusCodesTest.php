@@ -12,10 +12,10 @@ class AccountStatusCodesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('ARCHIVED', AccountStatusCodes::ARCHIVED);
 
         $expected = [
-            self::ACTIVE => 'Active account',
-            self::ARCHIVED => 'Archived account',
+            AccountStatusCodes::ACTIVE => 'Active account',
+            AccountStatusCodes::ARCHIVED => 'Archived account',
         ];
 
-        $this->assertEquals($expected, $accountCodes->descriptions, "\$canonicalize = true", $delta = 0.0, $maxDepth = 10, $canonicalize = true);
+        $this->assertEquals($expected, $accountCodes->descriptions, "\$canonicalize = true", $delta = 0.0, $maxDepth = 2, $canonicalize = true);
     }
 }
