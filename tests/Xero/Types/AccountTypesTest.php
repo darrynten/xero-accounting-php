@@ -60,6 +60,6 @@ class AccountTypesTest extends \PHPUnit_Framework_TestCase
             AccountTypes::WAGESPAYABLELIABILITY => 'Wages Payable Liability account',
         ];
 
-        $this->assertEquals($expected, $account->descriptions, "\$canonicalize = true", $delta = 0.0, $maxDepth = 2, $canonicalize = true);
+        $this->assertEquals($expected, $account->descriptions);
     }
 }

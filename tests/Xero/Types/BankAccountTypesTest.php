@@ -19,6 +19,6 @@ class BankAccountTypesTest extends \PHPUnit_Framework_TestCase
             BankAccountTypes::PAYPAL => 'Paypal account',
         ];
 
-        $this->assertEquals($expected, $account->descriptions, "\$canonicalize = true", $delta = 0.0, $maxDepth = 2, $canonicalize = true);
+        $this->assertEquals($expected, $account->descriptions);
     }
 }
