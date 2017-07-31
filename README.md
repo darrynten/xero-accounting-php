@@ -356,33 +356,7 @@ TODO - Models marked with an asterix are pure CRUD models
     - [x] Tax Type
     - [x] Tracking Category
     - [x] Tracking Options
-  - [x] Additional Item Price *
-  - [x] Analysis Category
-  - [x] Analysis Type
-  - [x] Asset Note *
-  - [x] Company
-    - [x] Company Entity Type *
-    - [x] Company Note
-  - [x] Currency *
-  - [x] Exchange Rates
-  - [x] Supplier *
-    - [x] Supplier Additional Contact Detail
-    - [x] Supplier Adjustment
-    - [x] Supplier Ageing
-    - [x] Supplier Bank Detail *
-    - [x] Supplier Category *
-    - [x] Supplier Invoice
-    - [ ] Supplier Invoice Attachment
-    - [x] Supplier Note *
-    - [ ] Supplier Note Attachment
-    - [x] Supplier Opening Balance *
-    - [ ] Supplier Payment
-    - [x] Supplier Purchase History
-    - [ ] Supplier Return
-    - [ ] Supplier Return Attachment
-    - [x] Supplier Statement *
-    - [ ] Supplier Transaction Listing
-  - [x] Tax Type *
+
 
 And any related models not listed, so if ExampleModel has a reference to ExampleCategory but that is not on the list above it too must get processed
 
