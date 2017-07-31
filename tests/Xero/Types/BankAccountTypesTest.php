@@ -2,12 +2,12 @@
 
 namespace DarrynTen\Xero\Tests\Xero\Types;
 
-
 use DarrynTen\Xero\BankAccountTypes;
 
 class BankAccountTypesTest extends \PHPUnit_Framework_TestCase
 {
-    public function testBankAccountTypes(){
+    public function testBankAccountTypes()
+    {
         $this->assertEquals(BankAccountTypes::BANK, 'BANK');
         $this->assertEquals(BankAccountTypes::CREDITCARD, 'CREDITCARD');
         $this->assertEquals(BankAccountTypes::PAYPAL, 'PAYPAL');

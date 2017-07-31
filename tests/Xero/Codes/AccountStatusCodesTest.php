@@ -6,7 +6,8 @@ use DarrynTen\Xero\AccountStatusCodes;
 
 class AccountStatusCodesTest extends \PHPUnit_Framework_TestCase
 {
-    public function testCodes(){
+    public function testCodes()
+    {
         $accountCodes = new AccountStatusCodes();
         $this->assertEquals('ACTIVE', AccountStatusCodes::ACTIVE);
         $this->assertEquals('ARCHIVED', AccountStatusCodes::ARCHIVED);

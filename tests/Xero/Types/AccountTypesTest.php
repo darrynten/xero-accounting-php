@@ -6,7 +6,8 @@ use DarrynTen\Xero\AccountTypes;
 
 class AccountTypesTest extends \PHPUnit_Framework_TestCase
 {
-    public function testAccountTypesConstants(){
+    public function testAccountTypesConstants()
+    {
         $this->assertEquals(AccountTypes::BANK, 'BANK');
         $this->assertEquals(AccountTypes::CURRENT, 'CURRENT');
         $this->assertEquals(AccountTypes::CURRLIAB, 'CURRLIAB');
@@ -31,7 +32,8 @@ class AccountTypesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(AccountTypes::WAGESPAYABLELIABILITY, 'WAGESPAYABLELIABILITY');
     }
 
-    public function testAccountTypesDescriptions(){
+    public function testAccountTypesDescriptions()
+    {
         $account = new AccountTypes();
         $expected = [
             AccountTypes::BANK => 'Bank account',
