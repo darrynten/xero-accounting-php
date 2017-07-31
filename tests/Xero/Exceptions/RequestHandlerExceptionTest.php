@@ -497,7 +497,4 @@ class RequestHandlerExceptionTest extends \PHPUnit_Framework_TestCase
 
         $request->request('GET', 'Fail', '500');
     }
-
-
-    // test requests
 }
