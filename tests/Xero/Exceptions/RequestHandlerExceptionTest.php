@@ -1,6 +1,6 @@
 <?php
 
-namespace DarrynTen\Xero\Tests\SageOne;
+namespace DarrynTen\Xero\Tests\Exceptions;
 
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 use GuzzleHttp\Client;

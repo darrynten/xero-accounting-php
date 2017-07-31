@@ -1,9 +1,9 @@
 <?php
 /**
- * SageOne API Exception
+ * Xero API Exception
  *
  * @category Exception
- * @package  SageOne
+ * @package  Xero
  * @author   Vitaliy Likhachev <make.it.git@gmail.com>
  * @license  MIT <https://github.com/darrynten/sage-one-php/blob/master/LICENSE>
  * @link     https://github.com/darrynten/sage-one-php

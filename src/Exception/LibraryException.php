@@ -1,9 +1,9 @@
 <?php
 /**
- * SageOne API Exception
+ * Xero Library Exception
  *
  * @category Exception
- * @package  SageOne
+ * @package  Xero
  * @author   Fergus Strangways-Dixon <fergusdixon@github.com>
  * @license  MIT <https://github.com/darrynten/sage-one-php/blob/master/LICENSE>
  * @link     https://github.com/darrynten/sage-one-php
@@ -15,9 +15,9 @@ use Exception;
 use DarrynTen\Xero\Exception\ExceptionMessages;
 
 /**
- * Library exception for SageOne
+ * Library exception for Xero
  *
- * @package SageOne
+ * @package Xero
  */
 class LibraryException extends Exception
 {
