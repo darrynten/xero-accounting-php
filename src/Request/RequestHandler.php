@@ -11,7 +11,7 @@
 
 namespace DarrynTen\Xero\Request;
 
-use DarrynTen\Xero\Exception\ApiException;
+use DarrynTen\Xero\Exception\RequestHandlerException;
 use DarrynTen\Xero\Exception\ExceptionMessages;
 
 use GuzzleHttp\Client;
@@ -113,12 +113,12 @@ class RequestHandler
      * @see RequestHandler::request()
      *
      * @return array
-     * @throws ApiException
+     * @throws RequestHandlerException
      */
     public function handleRequest(string $method, string $uri, array $options, array $parameters = [])
     {
         if (!in_array($method, $this->verbs)) {
-            throw new ApiException('405 Bad HTTP Verb', 405);
+            throw new RequestHandlerException('Bad HTTP Verb', RequestHandlerException::HTTP_VERB_ERROR);
         }
 
         if (!empty($parameters)) {
@@ -148,9 +148,9 @@ class RequestHandler
      * Handles all API exceptions, and adds the official exception terms
      * to the message.
      *
-     * @param RequestException the original exception
+     * @param RequestException the original exception.
      *
-     * @throws ApiException
+     * @throws RequestHandlerException.
      */
     private function handleException($exception)
     {
@@ -164,7 +164,7 @@ class RequestHandler
             $message
         );
 
-        throw new ApiException($title, $exception->getCode(), $exception);
+        throw new RequestHandlerException($title, $exception->getCode(), $exception);
     }
 
     /**
@@ -215,7 +215,7 @@ class RequestHandler
      *
      * @return []
      *
-     * @throws ApiException
+     * @throws RequestHandlerException
      */
     public function request(string $verb, string $service, string $method = null, array $parameters = [])
     {

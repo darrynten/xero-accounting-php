@@ -59,17 +59,24 @@ class ExceptionMessages
         20406 => 'Missing callback url',
     ];
 
+    public static $libraryErrorMessages = [
+        20500 => 'Library Error',
+        20501 => 'Method not yet implemented. This still needs to be added, '
+               . 'please consider contributing to the project.',
+    ];
+
     // Maps to standard HTTP error codes
     public static $strings = [
-        400 => '400',
-        401 => '401',
-        402 => '402',
-        404 => '404',
-        405 => '405',
-        409 => '409',
-        415 => '415',
-        429 => '429',
-        500 => '500',
-        503 => '503',
+        400 => 'A malformed request was sent through or when a validation rule '
+             . 'failed. Validation messages are returned in the response body.',
+        401 => 'The user is not correctly authenticated and the call requires '
+             . 'authentication. The user does not have access rights for this method.',
+        404 => 'The requested entity was not found. Entities are bound to '
+             . 'companies. Ensure the entity belongs to the company.',
+        405 => '',
+        500 => 'Internal server error',
+        501 => 'The method you have called is not implemented',
+        503 => 'The service is down for scheduled maintenance or '
+             . 'you have exceeded your API rate limit',
     ];
 }
