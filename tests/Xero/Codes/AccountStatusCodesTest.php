@@ -2,7 +2,7 @@
 
 namespace DarrynTen\Xero\Tests\Codes;
 
-use DarrynTen\Xero\AccountStatusCodes;
+use DarrynTen\Xero\Codes\AccountStatusCodes;
 
 class AccountStatusCodesTest extends \PHPUnit_Framework_TestCase
 {

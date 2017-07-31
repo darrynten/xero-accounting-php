@@ -2,7 +2,7 @@
 
 namespace DarrynTen\Xero\Tests\Xero\Types;
 
-use DarrynTen\Xero\BankAccountTypes;
+use DarrynTen\Xero\Types\BankAccountTypes;
 
 class BankAccountTypesTest extends \PHPUnit_Framework_TestCase
 {
