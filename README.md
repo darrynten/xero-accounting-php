@@ -80,9 +80,6 @@ The client is not 100% complete and is a work in progress, details below.
 
 There are over 100 API endpoints, initial focus is only on a handful of these
 
-This will eventually fully mimic the documentation available on the site.
-https://accounting.sageone.co.za/api/1.1.2
-
 Each section must have a short explaination and some example code like on
 the API docs page.
 
@@ -174,7 +171,7 @@ class AccountModel extends BaseModel
      *   - `default` is when it's indicated in the docs
      *   - `regex` is generally used with email address fields
      *   - `enum` is for enumerated lists
-     *   - `optional` is true when this field can be omitted in SageOne response
+     *   - `optional` is true when this field can be omitted in Xero response
      *     - Example is Company's model all() method
      *       By default when we execute all() it is the same as all(['includeStatus' = false])
      *       So `status` field is not returned in response
