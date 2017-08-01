@@ -350,20 +350,99 @@ TODO - Models marked with an asterix are pure CRUD models
 - [ ] Pagination
 - [ ] Rate Limiting
 - [ ] Models
-  - [x] Users
-  - [x] Receipts
-    - [x] Line items
-    - [x] Tax Type
-    - [x] Tracking Category
-    - [x] Tracking Options
-
+  - [ ] ExpenseClaims
+  - [ ] Users
+  - [ ] Contacts
+    - [ ] Contact Persons
+  - [ ] Receipts
+    - [ ] Tracking Categories
+    - [ ] Tracking Options
+    - [ ] Line items
+  - [ ] Payments
+    - [x] Accounts
+    - [ ] Credit Notes ?
+    - [ ] Invoices
+      - [ ] Items ?
+    - [ ] Overepayments ?
+    - [ ] Prepayments ?
+- [ ] Types
+  - [x] Account Type
+  - [ ] Account Class Type
+  - [ ] Address types
+  - [x] Bank Account Types
+  - [ ] Contact Status
+  - [ ] Credit Note Types
+  - [ ] Invoice Types
+  - [ ] Line Amount Types
+  - [ ] Overpayment Types
+  - [ ] Payment Terms
+  - [ ] Payment Types
+  - [ ] Phone types
+  - [ ] Prepayment Types
+  - [ ] Receipt Status
+  - [ ] System Account Types
+  - [ ] Tax Types
+  - [ ] User Roles
+- [ ] Codes
+  - [x] Account Status Codes
+  - [ ] Credit Note Status Codes
+  - [ ] Expense Claim Status Codes
+  - [ ] Invoice Status Codes
+  - [ ] OverPayment Status Codes
+  - [ ] Payment Status Codes
+  - [ ] Prepayment Status Codes
 
 And any related models not listed, so if ExampleModel has a reference to ExampleCategory but that is not on the list above it too must get processed
 
 # ==== END OF INITIAL DELIVERY ====
 
+## Deliverables
 
+* 100% Test Coverage
+* Full, extensive, verbose, and defensive unit tests
+* Mocks if there are none for the model in the `tests/mocks` directory (convention
+can be inferred from the existing names in the folders)
 
+## Caching
+
+### Request Limits
+
+Minute Limit: 60 calls in a rolling 60 second window, Daily Limit: 5000 calls in a rolling 24 hour window. A maximum of 100 results will be returned for list methods, regardless of the parameter sent through.
+
+[Details](https://developer.xero.com/documentation/auth-and-limits/xero-api-limits)
+
+Because of this some of them can
+benefit from being cached. All caching should be off by default and only
+used if explicity set.
+
+No caching has been implemented yet but support is in place
+
+### Details
+
+These run through the `darrynten/any-cache` package, and no extra config
+is needed. Please ensure that any features that include caching have it
+be optional and initially set to `false` to avoid unexpected behaviour.
+
+### Rate Limiting and Queueing
+See [Xero API Limits](https://developer.xero.com/documentation/auth-and-limits/xero-api-limits)
+
+# TODO
+
+## Contributing and Testing
+
+There is currently 100% test coverage in the project, please ensure that
+when contributing you update the tests. For more info see CONTRIBUTING.md
+
+We would love help getting decent documentation going, please get in touch
+if you have any ideas.
+
+## Additional Documentation
+
+* [Xero API Overview](https://developer.xero.com/documentation/api/api-overview)
+
+## Acknowledgements
+
+* [Fergus Strangways-Dixon](https://github.com/fergusdixon)
 
 
 
