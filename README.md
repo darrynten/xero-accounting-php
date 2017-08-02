@@ -19,7 +19,8 @@ PHP 7.0+
 
 ## Basic use
 
-[JSON support](https://devblog.xero.com/json-for-the-accounting-api-974a3b8adfb4) is finally here, although the current models in the documentation are still in XML.
+[JSON support](https://devblog.xero.com/json-for-the-accounting-api-974a3b8adfb4) is finally here, 
+although the current models in the documentation are still in XML.
 
 # TODO
 
@@ -97,6 +98,7 @@ all other models extend off, which covers the following functionalities:
 - GET Model/{id}
 - POST Model/   //Create & update
 - PUT Model/    //Create only, throws an error if the model already exists
+- DELETE Model/{id}
 
 This means that it's trivial to add new models that only use these calls (or a
 combination of any of them) as there is a very simple 'recipe' to constructing
@@ -118,10 +120,11 @@ As such we only need to focus on the tricky bits.
 Name             | Type             | Additional Information
 -------------------------------------------------------------------
 Name             | string           | None.
-typw         	 | AccountType	    | Required, 'only' => 'BANK'
+type         	 | AccountType	    | Required, 'only' => 'BANK'
 Balance          | decimal          | Read Only / System Generated
 ReportingGroupId | nullable integer | None.
 status           | nullable string  | 'valid' => 'accountStatusCodes'
+except           | type		    | 'BANK'
 ```
 
 We'll be using that for this example (docblocks excluded from example but are
@@ -140,7 +143,7 @@ testing and getting good defensive coverage quite trivial for most things.
 # TODO
 Add example test
 
-Currently lots of things are tested against mocks provided by Xero's docs.
+We aim to have all models tested against mocks provided by Xero's docs.
 
 # NB initial delivery consists of only these models:
 
@@ -195,7 +198,8 @@ TODO - Models marked with an asterix are pure CRUD models
   - [ ] Payment Status Codes
   - [ ] Prepayment Status Codes
 
-And any related models not listed, so if ExampleModel has a reference to ExampleCategory but that is not on the list above it too must get processed
+And any related models not listed, so if ExampleModel has a reference to ExampleCategory 
+but that is not on the list above it too must get processed
 
 # ==== END OF INITIAL DELIVERY ====
 
@@ -210,7 +214,8 @@ can be inferred from the existing names in the folders)
 
 ### Request Limits
 
-Minute Limit: 60 calls in a rolling 60 second window, Daily Limit: 5000 calls in a rolling 24 hour window. A maximum of 100 results will be returned for list methods, regardless of the parameter sent through.
+Minute Limit: 60 calls in a rolling 60 second window, Daily Limit: 5000 calls in a rolling 24 hour window. 
+A maximum of 100 results will be returned for list methods, regardless of the parameter sent through.
 
 [Details](https://developer.xero.com/documentation/auth-and-limits/xero-api-limits)
 
