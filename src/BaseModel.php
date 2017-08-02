@@ -207,7 +207,11 @@ abstract class BaseModel
         if (!$this->features['get']) {
             $this->throwException(
                 ModelException::NO_GET_ONE_SUPPORT,
-                sprintf('id %s', implode(', ', ($ids))));
+                sprintf(
+                    'id %s',
+                    implode(', ', ($ids))
+                )
+            );
         }
 
         $results = [];
@@ -334,8 +338,9 @@ abstract class BaseModel
         }
 
         // If it's a valid primitive
-        // syntax sugar to get full coverage
-        return $this->isValidPrimitive($value, $config['type']) ? $this->$key : null;
+        if ($this->isValidPrimitive($value, $config['type'])) {
+            return $this->$key;
+        }
 
         //we don't have models with DateTime or Related Objects yet
 //        // If it's a date we return a valid format
@@ -705,8 +710,10 @@ abstract class BaseModel
             return (int) $value;
         }
 
-        return $expectedType === 'boolean' ?
-            filter_var($value, FILTER_VALIDATE_BOOLEAN) :
-            $value;
+        if ($expectedType === 'boolean') {
+            filter_var($value, FILTER_VALIDATE_BOOLEAN);
+        }
+
+        return $value;
     }
 }

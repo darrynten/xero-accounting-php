@@ -740,7 +740,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
             ],
             'filter' => [
                 'name' => ['foo','bar']
-            ]
+            ],
         ];
 
         $allInstances = $model->all($parameters);
@@ -1162,7 +1162,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
                 'regex' => '/^bar$/',
                 'nullable' => true,
                 'readonly' => false,
-            ]
+            ],
         ];
         $model = $this->injectPropertyInModel($class, 'fields', $fields);
 
