@@ -131,7 +131,9 @@ We'll be using that for this example (docblocks excluded from example but are
 required)
 
 # TODO
-Add example model
+- Add example model
+- Add example type
+- Add example code
 
 Following that template will very quickly create models for the project.
 
@@ -147,7 +149,7 @@ We aim to have all models tested against mocks provided by Xero's docs.
 
 # NB initial delivery consists of only these models:
 
-TODO - Models marked with an asterix are pure CRUD models
+TODO - Mark models with an asterix that are pure CRUD models
 
 - [x] Base
 - [x] Exception Handling
@@ -171,7 +173,7 @@ TODO - Models marked with an asterix are pure CRUD models
       - [ ] Items ?
     - [ ] Overpayments ?
     - [ ] Prepayments ?
-- [ ] Types
+- [ ] Types	//These are essentially simple enums
   - [x] Account Type
   - [ ] Account Class Type
   - [ ] Address types
@@ -189,7 +191,7 @@ TODO - Models marked with an asterix are pure CRUD models
   - [ ] System Account Types
   - [ ] Tax Types
   - [ ] User Roles
-- [ ] Codes
+- [ ] Codes	//These are essentially simple enums
   - [x] Account Status Codes
   - [ ] Credit Note Status Codes
   - [ ] Expense Claim Status Codes
@@ -210,20 +212,72 @@ but that is not on the list above it too must get processed
 * Mocks if there are none for the model in the `tests/mocks` directory (convention
 can be inferred from the existing names in the folders)
 
-## Caching
+### Future Planned Roadmap, as and when needed
+
+Please feel free to open PRs for any of the following :)
+
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+- [ ] 
+
 
 ### Request Limits
 
-Minute Limit: 60 calls in a rolling 60 second window, Daily Limit: 5000 calls in a rolling 24 hour window. 
-A maximum of 100 results will be returned for list methods, regardless of the parameter sent through.
+Minute Limit: 60 calls in a rolling 60 second window, 
+Daily Limit: 5000 calls in a rolling 24 hour window. 
+A maximum of 100 results will be returned for list methods, 
+regardless of the parameter sent through.
 
 [Details](https://developer.xero.com/documentation/auth-and-limits/xero-api-limits)
 
 Because of this some of them can
 benefit from being cached. All caching should be off by default and only
 used if explicity set.
-
-No caching has been implemented yet but support is in place
 
 ### Details
 
