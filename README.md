@@ -93,10 +93,10 @@ This software is under active development and is not production ready
 The API calls are mostly _very_ generic, so there is a base model in place that
 all other models extend off, which covers the following functionalities:
 
-- GET Model/Get
-- GET Model/Get/{id}
-- DELETE Model/Delete/{id}
-- POST Model/Save ** Incomplete **
+- GET Model/
+- GET Model/{id}
+- POST Model/ *Create & update*
+- PUT Model/ *Create only, throws an error if the model already exists*
 
 This means that it's trivial to add new models that only use these calls (or a
 combination of any of them) as there is a very simple 'recipe' to constructing
