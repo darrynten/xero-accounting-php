@@ -158,7 +158,7 @@ TODO - Mark models with an asterix that are pure CRUD models
 - [ ] Real CRUD Response Mocks
 - [ ] Pagination
 - [ ] Models
-  - [ ] ExpenseClaims
+  - [ ] Expense Claims
   - [ ] Users
   - [ ] Contacts
     - [ ] Contact Persons
@@ -166,6 +166,7 @@ TODO - Mark models with an asterix that are pure CRUD models
     - [ ] Tracking Categories
     - [ ] Tracking Options
     - [ ] Line items
+    - [ ] Attachments
   - [ ] Payments
     - [x] Accounts
     - [ ] Credit Notes ?
@@ -178,7 +179,7 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [ ] Account Class Type
   - [ ] Address types
   - [x] Bank Account Types
-  - [ ] Contact Status
+  - [ ] Contact Status Types
   - [ ] Credit Note Types
   - [ ] Invoice Types
   - [ ] Line Amount Types
@@ -216,54 +217,29 @@ can be inferred from the existing names in the folders)
 
 Please feel free to open PRs for any of the following :)
 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
-- [ ] 
+- [ ] Bank Transactions
+- [ ] Bank Transataction Types
+- [ ] Bank Transatcions
+- [ ] Bank Transaction Status Codes
+- [ ] Bank Transfers
+- [ ] Branding Themes
+- [ ] Contact Groups
+- [ ] Currencies
+- [ ] Currency Codes
+- [ ] Employees
+- [ ] Invoice Reminders
+- [ ] Journals
+- [ ] Linked Transactions
+- [ ] Manual Journals
+- [ ] Organisation
+- [ ] Organisation Types
+- [ ] Purchase Orders
+- [ ] Purchase Order Status Codes
+- [ ] Repeating Invoices
+- [ ] Reports
+- [ ] Tax Rates
+- [ ] Tracking
+- [ ] Version Types
 
 
 ### Request Limits
