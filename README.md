@@ -79,7 +79,7 @@ The client is not 100% complete and is a work in progress, details below.
 
 ## Documentation
 
-There are over 100 API endpoints, initial focus is only on a handful of these
+Initial focus is only on a handful of of the existing endpoints
 
 Each section must have a short explaination and some example code like on
 the API docs page.
@@ -218,8 +218,8 @@ can be inferred from the existing names in the folders)
 Please feel free to open PRs for any of the following :)
 
 - [ ] Bank Transactions
-- [ ] Bank Transataction Types
-- [ ] Bank Transatcions
+- [ ] Bank Transaction Types
+- [ ] Bank Transactions
 - [ ] Bank Transaction Status Codes
 - [ ] Bank Transfers
 - [ ] Branding Themes
