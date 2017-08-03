@@ -19,7 +19,7 @@ PHP 7.0+
 
 ## Basic use
 
-[JSON support](https://devblog.xero.com/json-for-the-accounting-api-974a3b8adfb4) is finally here, 
+[JSON support](https://devblog.xero.com/json-for-the-accounting-api-974a3b8adfb4) is finally here,
 although the current models in the documentation are still in XML.
 
 # TODO
@@ -201,7 +201,7 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [ ] Payment Status Codes
   - [ ] Prepayment Status Codes
 
-And any related models not listed, so if ExampleModel has a reference to ExampleCategory 
+And any related models not listed, so if ExampleModel has a reference to ExampleCategory
 but that is not on the list above it too must get processed
 
 # ==== END OF INITIAL DELIVERY ====
