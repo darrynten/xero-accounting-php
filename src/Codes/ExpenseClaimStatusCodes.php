@@ -16,8 +16,7 @@ class ExpenseClaimStatusCodes
     const SUBMITTED = 'SUBMITTED';
     const AUTHORISED = 'AUTHORISED';
     const PAID = 'PAID';
-
-
+    
     public $descriptions = [
         self::SUBMITTED => 'Submitted expense claim',
         self::AUTHORISED => 'Authorised expense claim',
