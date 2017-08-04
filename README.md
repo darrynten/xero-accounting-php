@@ -217,7 +217,7 @@ can be inferred from the existing names in the folders)
 
 Please feel free to open PRs for any of the following :)
 
-# Models
+#### Models
 - [ ] Bank Transactions
 - [ ] Bank Transfers
 - [ ] Branding Themes
@@ -235,11 +235,11 @@ Please feel free to open PRs for any of the following :)
 - [ ] Tax Rates
 - [ ] Tracking
 
-# Types
+#### Types
 - [ ] Bank Transaction Types
 - [ ] Organisation Types
 - [ ] Version Types
-# Codes
+#### Codes
 
 - [ ] Bank Transaction Status Codes
 - [ ] Currency Codes
