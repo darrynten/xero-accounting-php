@@ -176,17 +176,18 @@ TODO - Mark models with an asterix that are pure CRUD models
     - [ ] Prepayments ?
 - [ ] Types	//These are essentially simple enums
   - [x] Account Type
-  - [ ] Account Class Type
+  - [x] Account Class Type
   - [ ] Address types
   - [x] Bank Account Types
-  - [ ] Credit Note Types
-  - [ ] Invoice Types
-  - [ ] Line Amount Types
-  - [ ] Overpayment Types
+  - [x] Bank Transaction Types
+  - [x] Credit Note Types
+  - [x] Invoice Types
+  - [x] Line Amount Types
+  - [x] Overpayment Types
   - [ ] Payment Terms
-  - [ ] Payment Types
-  - [ ] Phone types
-  - [ ] Prepayment Types
+  - [x] Payment Types
+  - [x] Phone types
+  - [x] Prepayment Types
   - [ ] Receipt Status
   - [ ] System Account Types
   - [ ] Tax Types
@@ -284,3 +285,4 @@ if you have any ideas.
 ## Acknowledgements
 
 * [Fergus Strangways-Dixon](https://github.com/fergusdixon)
+* [Igor Sergiichuk](https://github.com/igorsergiichuk)
