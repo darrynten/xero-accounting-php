@@ -3,7 +3,7 @@
 namespace DarrynTen\Xero\Codes;
 
 /**
- * Xero Account Status Codes
+ * Xero ExpenseClaimStatus Codes
  *
  * @category Codes
  * @package  XeroPHP
