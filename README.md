@@ -217,30 +217,33 @@ can be inferred from the existing names in the folders)
 
 Please feel free to open PRs for any of the following :)
 
+# Models
 - [ ] Bank Transactions
-- [ ] Bank Transaction Types
-- [ ] Bank Transactions
-- [ ] Bank Transaction Status Codes
 - [ ] Bank Transfers
 - [ ] Branding Themes
 - [ ] Contact Groups
 - [ ] Currencies
-- [ ] Currency Codes
 - [ ] Employees
 - [ ] Invoice Reminders
 - [ ] Journals
 - [ ] Linked Transactions
 - [ ] Manual Journals
 - [ ] Organisation
-- [ ] Organisation Types
 - [ ] Purchase Orders
-- [ ] Purchase Order Status Codes
 - [ ] Repeating Invoices
 - [ ] Reports
 - [ ] Tax Rates
 - [ ] Tracking
-- [ ] Version Types
 
+# Types
+- [ ] Bank Transaction Types
+- [ ] Organisation Types
+- [ ] Version Types
+# Codes
+
+- [ ] Bank Transaction Status Codes
+- [ ] Currency Codes
+- [ ] Purchase Order Status Codes
 
 ### Request Limits
 
