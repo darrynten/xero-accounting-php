@@ -179,7 +179,6 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [ ] Account Class Type
   - [ ] Address types
   - [x] Bank Account Types
-  - [ ] Contact Status Types
   - [ ] Credit Note Types
   - [ ] Invoice Types
   - [ ] Line Amount Types
@@ -194,6 +193,7 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [ ] User Roles
 - [ ] Codes	//These are essentially simple enums
   - [x] Account Status Codes
+  - [ ] Contact Status Codes
   - [ ] Credit Note Status Codes
   - [ ] Expense Claim Status Codes
   - [ ] Invoice Status Codes
