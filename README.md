@@ -285,3 +285,5 @@ if you have any ideas.
 ## Acknowledgements
 
 * [Fergus Strangways-Dixon](https://github.com/fergusdixon)
+* [Igor Sergiichuk](https://github.com/igorsergiichuk)
+
