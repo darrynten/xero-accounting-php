@@ -3,7 +3,7 @@
 namespace DarrynTen\Xero\Types;
 
 /**
- * Xero Account Types
+ * Xero Address Types
  *
  * @category Types
  * @package  XeroPHP
