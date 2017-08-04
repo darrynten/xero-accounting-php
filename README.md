@@ -286,4 +286,3 @@ if you have any ideas.
 
 * [Fergus Strangways-Dixon](https://github.com/fergusdixon)
 * [Igor Sergiichuk](https://github.com/igorsergiichuk)
-
