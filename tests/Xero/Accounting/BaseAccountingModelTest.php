@@ -2,6 +2,7 @@
 
 namespace DarrynTen\Xero\Tests\Xero\Accounting;
 
+use DarrynTen\Xero\BaseModel;
 use DarrynTen\Xero\Request\RequestHandler;
 use InterNations\Component\HttpMock\PHPUnit\HttpMockTrait;
 use GuzzleHttp\Client;
@@ -74,7 +75,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" key doesNotExist value xyz Attempting to set a property that is not defined in the model");
-        $this->expectExceptionCode(20113);
+        $this->expectExceptionCode(ModelException::SETTING_UNDEFINED_PROPERTY);
 
         $model = new $class($this->config);
         $model->doesNotExist = 'xyz';
@@ -91,7 +92,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" key doesNotExist Attempting to get an undefined property");
-        $this->expectExceptionCode(20116);
+        $this->expectExceptionCode(ModelException::GETTING_UNDEFINED_PROPERTY);
 
         $model = new $class($this->config);
         $throw = $model->doesNotExist;
@@ -109,7 +110,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" attempting to nullify key {$key} Property is null without nullable permission");
-        $this->expectExceptionCode(20111);
+        $this->expectExceptionCode(ModelException::NULL_WITHOUT_NULLABLE);
 
         $model = new $class($this->config);
         $model->{$key} = null;
@@ -144,7 +145,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" Defined key \"{$key}\" not present in payload A property is missing in the loadResult payload");
-        $this->expectExceptionCode(20112);
+        $this->expectExceptionCode(ModelException::INVALID_LOAD_RESULT_PAYLOAD);
 
         $obj = new \stdClass;
         $obj->ID = 1;
@@ -167,7 +168,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Get all is not supported");
-        $this->expectExceptionCode(20101);
+        $this->expectExceptionCode(ModelException::NO_GET_ALL_SUPPORT);
 
         $model->all();
     }
@@ -188,7 +189,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" id some_id Get single is not supported");
-        $this->expectExceptionCode(20102);
+        $this->expectExceptionCode(ModelException::NO_GET_ONE_SUPPORT);
 
         $model->get('some_id');
     }
@@ -209,7 +210,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" id some_id Get single is not supported");
-        $this->expectExceptionCode(20102);
+        $this->expectExceptionCode(ModelException::NO_GET_ONE_SUPPORT);
 
         $model->getByIds(['some_id']);
     }
@@ -230,7 +231,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" id some_id Delete is not supported");
-        $this->expectExceptionCode(20104);
+        $this->expectExceptionCode(ModelException::NO_DELETE_SUPPORT);
 
         $model->delete('some_id');
     }
@@ -251,7 +252,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Create is not supported");
-        $this->expectExceptionCode(20103);
+        $this->expectExceptionCode(ModelException::NO_CREATE_SUPPORT);
 
         $model->create();
     }
@@ -272,7 +273,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Update is not supported");
-        $this->expectExceptionCode(20105);
+        $this->expectExceptionCode(ModelException::NO_UPDATE_SUPPORT);
 
         $model->update('some_id');
     }
@@ -294,7 +295,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Filter is not supported");
-        $this->expectExceptionCode(20107);
+        $this->expectExceptionCode(ModelException::NO_FILTER_SUPPORT);
 
         $model->all(['filter' => 'some']);
     }
@@ -312,7 +313,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Unknown property for filtering");
-        $this->expectExceptionCode(20118);
+        $this->expectExceptionCode(ModelException::TRYING_FILTER_BY_UNKNOWN_FIELD);
 
         $model->all(['filter' => ['not_exists' => 'foo']]);
     }
@@ -330,7 +331,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Unknown property for sorting");
-        $this->expectExceptionCode(20117);
+        $this->expectExceptionCode(ModelException::TRYING_SORT_BY_UNKNOWN_FIELD);
 
         $model->all(['order' => []]);
     }
@@ -348,9 +349,61 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Unknown property for sorting");
-        $this->expectExceptionCode(20117);
+        $this->expectExceptionCode(ModelException::TRYING_SORT_BY_UNKNOWN_FIELD);
 
         $model->all(['order' => ['field' => 'not_exists']]);
+    }
+
+    /**
+     * Verifies that model will throw error when we try update on object that not has accountID
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyIdMissingOnCreate(string $class)
+    {
+        $className = $this->getClassName($class);
+        $fields = [
+            'accountID' => [
+                'type' => 'string',
+                'nullable' => true,
+                'readonly' => false,
+            ],
+            'name' => [
+                'type' => 'string',
+                'nullable' => false,
+                'readonly' => false,
+                'required' => true,
+                'min' => 0,
+                'max' => 150,
+            ],
+        ];
+
+        $model = $this->injectPropertyInModel($class, 'fields', $fields);
+        $model->name = 'some name';
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage("Model \"{$className}\"  Model identifier missing");
+        $this->expectExceptionCode(ModelException::ID_MISSING_FOR_UPDATE);
+
+        $model->update();
+    }
+
+    /**
+     * Verifies that model will throw error when we try update on object that not has accountID
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyMissingRequiredProperty(string $class)
+    {
+        $className = $this->getClassName($class);
+        $model = new $class($this->config);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage(
+            "Model \"{$className}\" Defined key \"name\" not present in model Required property missing in model"
+        );
+        $this->expectExceptionCode(ModelException::REQUIRED_PROPERTY_MISSING);
+
+        $model->create();
     }
 
     /**
@@ -370,7 +423,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Sort is not supported");
-        $this->expectExceptionCode(20106);
+        $this->expectExceptionCode(ModelException::NO_SORT_SUPPORT);
 
         $model->all(['order' => 'some']);
     }
@@ -383,12 +436,20 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyCantBeNull(string $class)
     {
         $className = $this->getClassName($class);
+        $fields = [
+            'name' => [
+                'type' => 'string',
+                'nullable' => false,
+                'readonly' => false,
+                'min' => 0,
+                'max' => 150,
+            ],
+        ];
 
-        $model = new $class($this->config);
-
+        $model = $this->injectPropertyInModel($class, 'fields', $fields);
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" key name Property is null without nullable permission");
-        $this->expectExceptionCode(20111);
+        $this->expectExceptionCode(ModelException::NULL_WITHOUT_NULLABLE);
 
         $model->create();
     }
@@ -412,7 +473,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" key accountID value some_id Attempting to set a read-only property");
-        $this->expectExceptionCode(20114);
+        $this->expectExceptionCode(ModelException::SETTING_READ_ONLY_PROPERTY);
 
         $model->accountID = 'some_id';
     }
@@ -465,7 +526,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     {
         $validKeys = array_fill_keys([
             'type', 'nullable', 'readonly', 'default',
-            'required', 'min', 'max', 'regex', 'valid', 'only', 'except'
+            'required', 'min', 'max', 'regex', 'valid', 'only', 'except', 'create'
         ], true);
         foreach (array_keys($options) as $option) {
             if (!isset($validKeys[$option])) {
@@ -887,7 +948,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Save is not supported");
-        $this->expectExceptionCode(20103);
+        $this->expectExceptionCode(ModelException::NO_CREATE_SUPPORT);
 
         $model = new $class($this->config);
         $model->save();
@@ -904,7 +965,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" id 1 Delete is not supported");
-        $this->expectExceptionCode(20104);
+        $this->expectExceptionCode(ModelException::NO_DELETE_SUPPORT);
 
         $model = new $class($this->config);
         $model->delete(1);
@@ -921,7 +982,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\"  Get all is not supported");
-        $this->expectExceptionCode(20101);
+        $this->expectExceptionCode(ModelException::NO_GET_ALL_SUPPORT);
 
         $model = new $class($this->config);
         $model->all();
@@ -964,7 +1025,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
                 $max
             )
         );
-        $this->expectExceptionCode(10001);
+        $this->expectExceptionCode(ValidationException::INTEGER_OUT_OF_RANGE);
 
         $model = new $class($this->config);
 
@@ -991,7 +1052,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
                 $max
             )
         );
-        $this->expectExceptionCode(10002);
+        $this->expectExceptionCode(ValidationException::STRING_LENGTH_OUT_OF_RANGE);
 
         $model = new $class($this->config);
 
@@ -1168,5 +1229,126 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 
         $model->string = 'bar';
         $this->assertEquals('bar', $model->string);
+    }
+
+    /**
+     * Verifies that we can create model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotAllowedPropertyForTypeOnly(string $class)
+    {
+        $className = $this->getClassName($class);
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$className}_Invalid_Property_For_Type_Only.xml";
+
+        $model = new $class($this->config);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage(
+            "Model \"{$className}\" property bankAccountNumber Property not allowed for this type"
+        );
+        $this->expectExceptionCode(ModelException::NOT_ALLOWED_PROPERTY_FOR_TYPE);
+
+        $data = json_decode(json_encode(simplexml_load_file($pathToMock)));
+        $model->loadResult($data->Account);
+    }
+
+    /**
+     * Verifies that we can create model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyAbsentPropertyForType(string $class)
+    {
+        $className = $this->getClassName($class);
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$className}_Absent_Property_For_Type.xml";
+
+        $model = new $class($this->config);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage(
+            "Model \"{$className}\" property bankAccountNumber Required property for this type missing"
+        );
+        $this->expectExceptionCode(ModelException::REQUIRED_PROPERTY_MISSING_FOR_TYPE);
+
+        $data = json_decode(json_encode(simplexml_load_file($pathToMock)));
+        $model->loadResult($data->Account);
+    }
+
+    /**
+     * Verifies that we can create model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyAbsentPropertyForTypeExcept(string $class)
+    {
+        $className = $this->getClassName($class);
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$className}_Invalid_Property_For_Type_Except.xml";
+
+        $model = new $class($this->config);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage(
+            "Model \"{$className}\" property description Property not allowed for this type"
+        );
+        $this->expectExceptionCode(ModelException::NOT_ALLOWED_PROPERTY_FOR_TYPE);
+
+        $data = json_decode(json_encode(simplexml_load_file($pathToMock)));
+        $model->loadResult($data->Account);
+    }
+
+    /**
+     * Verifies that we can create model
+     *
+     * @param string $class Full path to the class
+     */
+    protected function verifyNotHaveMinimumPropertiesForCreate(string $class)
+    {
+        $className = $this->getClassName($class);
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$className}_not_have_minimum_for_create.xml";
+        $fields = [
+            'code' => [
+                'type' => 'string',
+                'nullable' => true,
+                'readonly' => false,
+                'min' => 0,
+                'max' => 10,
+                'create' => [
+                    'exceptType' => 'CURRENT',
+                ],
+            ],
+            'name' => [
+                'type' => 'string',
+                'nullable' => false,
+                'readonly' => false,
+                'min' => 0,
+                'max' => 150,
+                'create' => [
+                    'required' => true,
+                ],
+            ],
+            'type' => [
+                'type' => 'string',
+                'nullable' => false,
+                'readonly' => false,
+                'required' => true,
+                'valid' => 'accountTypes',
+                'create' => [
+                    'required' => true,
+                ],
+            ],
+        ];
+
+        $model = $this->injectPropertyInModel($class, 'fields', $fields);
+        $data = json_decode(json_encode(simplexml_load_file($pathToMock)));
+        $model->loadResult($data->Account);
+
+        $this->expectException(ModelException::class);
+        $this->expectExceptionMessage(
+            "Model \"{$className}\" property name Required property missing for create"
+        );
+        $this->expectExceptionCode(ModelException::REQUIRED_PROPERTY_MISSING_FOR_CREATE);
+
+        $model->create();
     }
 }

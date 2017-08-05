@@ -90,7 +90,7 @@ trait Validation
         }
 
         if (gettype($value) === 'string') {
-            if ((mb_strlen($value) < $min) || (mb_strlen($value) > $max)) {
+            if ((mb_strlen($value) <= $min) || (mb_strlen($value) > $max)) {
                 throw new ValidationException(
                     ValidationException::STRING_LENGTH_OUT_OF_RANGE,
                     sprintf(

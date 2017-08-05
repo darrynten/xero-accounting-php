@@ -30,6 +30,15 @@ class ExceptionMessages
         20116 => 'Attempting to get an undefined property',
         20117 => 'Unknown property for sorting',
         20118 => 'Unknown property for filtering',
+        20119 => 'Required property missing in model',
+        // Types
+        20120 => 'Property not allowed for this type',
+        20121 => 'Required property for this type missing',
+        // Create/update operations
+        20130 => 'Object must be loaded before this operation',
+        20131 => 'Model identifier missing',
+        20132 => 'Required property missing for create',
+        20133 => 'Property not allowed for this type',
     ];
 
     // Collections are 202xx

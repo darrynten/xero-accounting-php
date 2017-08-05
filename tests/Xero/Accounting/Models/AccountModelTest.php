@@ -108,6 +108,16 @@ class AccountsModelTest extends BaseAccountingModelTest
         $this->verifyOrderWithUnknownField(AccountModel::class);
     }
 
+    public function testIdMissingOnCreate()
+    {
+        $this->verifyIdMissingOnCreate(AccountModel::class);
+    }
+
+    public function testMissingRequiredProperty()
+    {
+        $this->verifyMissingRequiredProperty(AccountModel::class);
+    }
+
     public function testInject()
     {
         $this->verifyInject(AccountModel::class, function ($model) {
@@ -131,15 +141,25 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'readonly' => true,
                 ],
                 'code' => [
-                    'type' => 'integer',
+                    'type' => 'string',
                     'nullable' => true,
-                    'readonly' => true,
+                    'readonly' => false,
+                    'min' => 0,
+                    'max' => 10,
+                    'create' => [
+                        'exceptType' => 'BANK',
+                    ],
                 ],
                 'name' => [
                     'type' => 'string',
                     'nullable' => false,
                     'readonly' => false,
                     'required' => true,
+                    'min' => 0,
+                    'max' => 150,
+                    'create' => [
+                        'required' => true,
+                    ],
                 ],
                 'type' => [
                     'type' => 'string',
@@ -147,6 +167,9 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'readonly' => false,
                     'required' => true,
                     'valid' => 'accountTypes',
+                    'create' => [
+                        'required' => true,
+                    ],
                 ],
                 'bankAccountNumber' => [
                     'type' => 'integer',
@@ -154,6 +177,10 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'readonly' => false,
                     'only' => [
                         'type' => 'BANK',
+                        'required' => true,
+                    ],
+                    'create' => [
+                        'onlyType' => 'BANK'
                     ],
                 ],
                 'status' => [
@@ -166,8 +193,11 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'type' => 'string',
                     'nullable' => true,
                     'readonly' => false,
+                    'min' => 0,
+                    'max' => 4000,
                     'except' => [
                         'type' => 'BANK',
+                        'required' => false,
                     ],
                 ],
                 'bankAccountType' => [
@@ -177,6 +207,7 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'valid' => 'bankAccountTypes',
                     'only' => [
                         'type' => 'BANK',
+                        'required' => false,
                     ],
                 ],
                 'currencyCode' => [
@@ -185,6 +216,7 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'readonly' => false,
                     'only' => [
                         'type' => 'BANK',
+                        'required' => false,
                     ]
                 ],
                 'taxType' => [
@@ -343,5 +375,25 @@ class AccountsModelTest extends BaseAccountingModelTest
     public function testValidateRegexp()
     {
         $this->verifyValidateRegexp(AccountModel::class);
+    }
+
+    public function testNotAllowedPropertyForTypeOnly()
+    {
+        $this->verifyNotAllowedPropertyForTypeOnly(AccountModel::class);
+    }
+
+    public function testAbsentPropertyForType()
+    {
+        $this->verifyAbsentPropertyForType(AccountModel::class);
+    }
+
+    public function testNotAllowedPropertyForTypeExcept()
+    {
+        $this->verifyAbsentPropertyForTypeExcept(AccountModel::class);
+    }
+
+    public function testNotHaveMinimumPropertiesForCreate()
+    {
+        $this->verifyNotHaveMinimumPropertiesForCreate(AccountModel::class);
     }
 }

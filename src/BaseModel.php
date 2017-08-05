@@ -61,6 +61,13 @@ abstract class BaseModel
     ];
 
     /**
+     * String required to detect if we need to validate model by types
+     *
+     * @var string $typeField
+     */
+    protected $typeField  = '';
+
+    /**
      * A models configuration is stored here
      *
      * @var array $config
@@ -249,19 +256,18 @@ abstract class BaseModel
     /**
      * Submits a save call to Xero
      *
-     * TODO: Actually perform this action!
-     *
-     * @return stdClass Representaion of response
+     * @return BaseModel
      */
     public function create()
     {
         if (!$this->features['create']) {
             $this->throwException(ModelException::NO_CREATE_SUPPORT);
         }
+        $this->validateModel();
+        $this->validateMinimumFieldsRequiredForCreate();
+
         $data = $this->toObject();
         $xml = $this->generateValidXmlFromArray($data);
-
-        // TODO Submission Body and Validation
         $data = $this->request->request('PUT', $this->endpoint, 'Save', ['body' => $xml]);
         /**
          * we do not need to verify results here because loadResult will throw exception
@@ -277,20 +283,22 @@ abstract class BaseModel
     /**
      * Submits a update call to Xero
      *
-     * TODO: Actually perform this action!
-     *
-     * @return stdClass Representaion of response
+     * @return BaseModel
      */
     public function update()
     {
         if (!$this->features['update']) {
             $this->throwException(ModelException::NO_UPDATE_SUPPORT);
         }
-        $id = $this->accountID;
+        if (!$this->{$this->idField}) {
+            $this->throwException(ModelException::ID_MISSING_FOR_UPDATE);
+        }
+        $this->validateModel();
+
+        $id = $this->{$this->idField};
         $data = $this->toObject();
         $xml = $this->generateValidXmlFromArray($data);
 
-        // TODO Submission Body and Validation
         $data = $this->request->request('POST', $this->endpoint, $id, ['body' => $xml]);
         /**
          * we do not need to verify results here because loadResult will throw exception
@@ -321,7 +329,7 @@ abstract class BaseModel
      * @var string $key The objects key
      * @var array $config The configuration for the object field
      *
-     * @return mixed
+     * @return mixed|null|void
      */
     private function prepareObjectRow($key, $config)
     {
@@ -341,7 +349,6 @@ abstract class BaseModel
         if ($this->isValidPrimitive($value, $config['type'])) {
             return $this->$key;
         }
-
         //we don't have models with DateTime or Related Objects yet
 //        // If it's a date we return a valid format
 //        if ($config['type'] === 'DateTime') {
@@ -361,7 +368,7 @@ abstract class BaseModel
 //
 //        // And finally return an Object representation of the related Model
 //        return $value->toObject();
-    }
+    }// @codeCoverageIgnore
 
     /**
      * Switches between our id format and xeros id format
@@ -409,8 +416,9 @@ abstract class BaseModel
      */
     private function processResultItem($resultItem, $config)
     {
-        //syntax sugar to get full coverage
-        return $this->isValidPrimitive($resultItem, $config['type']) ? $resultItem : null;
+        if ($this->isValidPrimitive($resultItem, $config['type'])) {
+            return $resultItem;
+        }
 
         //we don't have models with DateTime or Related Objects yet
 //        // If it's null and it's allowed to be null
@@ -461,7 +469,7 @@ abstract class BaseModel
             $remoteKey = $this->getRemoteKey($key);
             // If the payload is missing an item
             if (!property_exists($result, $remoteKey)) {
-                if (!isset($config['required'])) {
+                if (!array_key_exists('required', $config)) {
                     continue;
                 }
                 $this->throwException(ModelException::INVALID_LOAD_RESULT_PAYLOAD, sprintf(
@@ -470,10 +478,7 @@ abstract class BaseModel
                 ));
             }
 
-            if ($config['type'] !== 'string') {
-                $result->$remoteKey = $this->castToType($config['type'], $result->$remoteKey);
-            }
-
+            $result->$remoteKey = $this->castToType($config['type'], $result->$remoteKey);
             $value = $this->processResultItem($result->$remoteKey, $config);
 
             // This is similar to __set but it can fill read only fields
@@ -482,6 +487,10 @@ abstract class BaseModel
             $this->checkValidation($key, $value);
 
             $this->fieldsData[$key] = $value;
+        }
+
+        if ($this->typeField) {
+            $this->validateModelByType();
         }
     }
 
@@ -711,9 +720,111 @@ abstract class BaseModel
         }
 
         if ($expectedType === 'boolean') {
-            filter_var($value, FILTER_VALIDATE_BOOLEAN);
+            return filter_var($value, FILTER_VALIDATE_BOOLEAN);
         }
 
         return $value;
+    }
+
+    /**
+     * Validates all required properties in model
+     */
+    public function validateModel()
+    {
+        foreach ($this->fields as $key => $config) {
+            if (
+                !array_key_exists($key, $this->fieldsData) &&
+                array_key_exists('required', $config)
+            ) {
+                $this->throwException(ModelException::REQUIRED_PROPERTY_MISSING, sprintf(
+                    'Defined key "%s" not present in model',
+                    $key
+                ));
+            }
+        }
+
+        if ($this->typeField) {
+            $this->validateModelByType();
+        }
+    }
+
+    /**
+     * Validate model properties by model type
+     *
+     * @throws ModelException
+     */
+    private function validateModelByType()
+    {
+        foreach ($this->fields as $key => $config) {
+            if (array_key_exists('only', $config)) {
+                //property exist and not allowed
+                if (
+                    array_key_exists($key, $this->fieldsData) &&
+                    $this->fieldsData[$this->typeField] !== $config['only']['type']
+                ) {
+                    $this->throwException(
+                        ModelException::NOT_ALLOWED_PROPERTY_FOR_TYPE,
+                        sprintf('property %s', $key)
+                    );
+                }
+                //property not exists but required
+                if (
+                    !array_key_exists($key, $this->fieldsData) &&
+                    $this->fieldsData[$this->typeField] === $config['only']['type'] &&
+                    $config['only']['required']
+                ) {
+                    $this->throwException(
+                        ModelException::REQUIRED_PROPERTY_MISSING_FOR_TYPE,
+                        sprintf('property %s', $key)
+                    );
+                }
+            }
+
+            if (array_key_exists('except', $config)) {
+                if (
+                    array_key_exists($key, $this->fieldsData) &&
+                    $this->fieldsData[$this->typeField] === $config['except']['type']
+                ) {
+                    $this->throwException(
+                        ModelException::NOT_ALLOWED_PROPERTY_FOR_TYPE,
+                        sprintf('property %s', $key)
+                    );
+                }
+            }
+        }
+    }
+
+    /**
+     * Validate that model has minimum amount of fields for create operation
+     *
+     * @throws ModelException
+     */
+    private function validateMinimumFieldsRequiredForCreate()
+    {
+        foreach ($this->fields as $key => $config) {
+            if (
+                array_key_exists('create', $config) &&
+                !array_key_exists($key, $this->fieldsData)
+            ) {
+                if (
+                    array_key_exists('exceptType', $config['create']) &&
+                    $this->fieldsData[$this->typeField] === $config['create']['exceptType']
+                ) {
+                    continue;
+                }
+
+                if (
+                    array_key_exists('onlyType', $config['create']) &&
+                    $this->fieldsData[$this->typeField] !== $config['create']['onlyType']
+                ) {
+                    continue;
+                }
+
+                $this->throwException(
+                    ModelException::REQUIRED_PROPERTY_MISSING_FOR_CREATE,
+                    sprintf('property %s', $key)
+                );
+            }
+        }
     }
 }
