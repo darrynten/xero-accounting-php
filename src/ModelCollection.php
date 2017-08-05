@@ -1,9 +1,9 @@
 <?php
 /**
- * SageOne Library
+ * Xero Library
  *
  * @category Library
- * @package  SageOne
+ * @package  Xero
  * @author   Vitaliy Likhachev <make.it.git@gmail.com>
  * @license  MIT <https://github.com/darrynten/sage-one-php/blob/master/LICENSE>
  * @link     https://github.com/darrynten/sage-one-php
@@ -58,7 +58,7 @@ class ModelCollection
      * @var string $class Full path to the class
      * @var array $config Configuration array
      * @var stdClass|array $results
-     * object in format of pagination response from SageOne (stdClass)
+     * object in format of pagination response from Xero (stdClass)
      * or array of models (it's converted into required format)
      */
     public function __construct($class, $config, $results)
