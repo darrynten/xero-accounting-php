@@ -17,7 +17,7 @@ class ContactStatusCodes
     const ARCHIVED = 'ARCHIVED';
 
     public $descriptions = [
-        self::ACTIVE => 'Active account',
-        self::ARCHIVED => 'Archived account',
+        self::ACTIVE => 'Active Contact',
+        self::ARCHIVED => 'Archived Contact',
     ];
 }
