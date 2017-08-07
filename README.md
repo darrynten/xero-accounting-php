@@ -199,7 +199,7 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [x] Expense Claim Status Codes
   - [ ] Invoice Status Codes
   - [ ] OverPayment Status Codes
-  - [ ] Payment Status Codes
+  - [x] Payment Status Codes
   - [ ] Prepayment Status Codes
 
 And any related models not listed, so if ExampleModel has a reference to ExampleCategory
