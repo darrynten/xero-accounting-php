@@ -195,9 +195,9 @@ TODO - Mark models with an asterix that are pure CRUD models
 - [ ] Codes	//These are essentially simple enums
   - [x] Account Status Codes
   - [ ] Contact Status Codes
-  - [ ] Credit Note Status Codes
+  - [x] Credit Note Status Codes (Covered by invoice status codes)
   - [x] Expense Claim Status Codes
-  - [ ] Invoice Status Codes
+  - [x] Invoice Status Codes
   - [ ] OverPayment Status Codes
   - [ ] Payment Status Codes
   - [ ] Prepayment Status Codes
