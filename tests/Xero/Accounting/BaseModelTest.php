@@ -11,7 +11,7 @@ use DarrynTen\Xero\Exception\ModelException;
 use DarrynTen\Xero\ModelCollection;
 use DarrynTen\Xero\Exception\ValidationException;
 
-abstract class BaseContactModelTest extends \PHPUnit_Framework_TestCase
+abstract class BaseModelTest extends \PHPUnit_Framework_TestCase
 {
     use HttpMockTrait;
 
@@ -144,7 +144,7 @@ abstract class BaseContactModelTest extends \PHPUnit_Framework_TestCase
 
         $this->expectException(ModelException::class);
         $this->expectExceptionMessage("Model \"{$className}\" Defined key \"{$key}\" not present in payload A property is missing in the loadResult payload");
-        $this->expectExceptionCode(20112);
+        $this->expectExceptionCode(10112);
 
         $obj = new \stdClass;
         $obj->ID = 1;
@@ -182,6 +182,7 @@ abstract class BaseContactModelTest extends \PHPUnit_Framework_TestCase
             $this->verifyIfOptionsAreValid($className, $name, $options);
             $this->verifyCommonAttributes($className, $name, $options, $value);
             $this->verifyMinMaxAttributes($className, $name, $options, $value);
+            $this->verifyMinMaxLengthAttributes($className, $name, $options, $value);
             $this->verifyRequiredAttribute($className, $name, $options, $value);
             $this->verifyRegexAttribute($className, $name, $options, $value);
             $this->verifyDefaultAttribute($className, $name, $options, $value);
@@ -199,7 +200,7 @@ abstract class BaseContactModelTest extends \PHPUnit_Framework_TestCase
     {
         $validKeys = array_fill_keys([
             'type', 'nullable', 'readonly', 'default',
-            'required', 'min', 'max', 'regex', 'valid', 'only', 'except'
+            'required', 'min', 'max', 'regex', 'valid', 'only', 'except', 'minLength', 'maxLength',
         ], true);
         foreach (array_keys($options) as $option) {
             if (!isset($validKeys[$option])) {
@@ -304,6 +305,57 @@ abstract class BaseContactModelTest extends \PHPUnit_Framework_TestCase
                     $value[$name]['max']
                 )
             );
+        }
+    }
+
+    /**
+     * Verifies that field $name has expected minLength/maxLength attributes (if any)
+     *
+     * @param string $className name of the class under checking
+     * @param string $name name of the attribute
+     * @param array $options what we check
+     *      Contains data in the following format
+     *      [
+     *          'minLength' => 0,
+     *          'maxLength' => 10
+     *      ]
+     * @param array $value actual field attributes under check
+     *      has the same format as $options
+     */
+    private function verifyMinMaxLengthAttributes($className, $name, $options, $value)
+    {
+        if (isset($options['minLength']) && isset($options['maxLength'])) {
+            if (!($options['type'] === 'integer')) {
+                throw new \Exception('You can validate minLength & maxLength length only for integer');
+            }
+
+            $this->assertTrue(isset($value[$name]['minLength']), sprintf('"minLength" is not present for %s', $name));
+            $this->assertTrue(isset($value[$name]['maxLength']), sprintf('"maxLength" is not present for %s', $name));
+
+            $this->assertEquals('integer', gettype($value[$name]['maxLength']));
+            $this->assertEquals('integer', gettype($value[$name]['minLength']));
+
+            if ($options['minLength'] < $value[$name]['minLength'])
+            {
+                sprintf(
+                    'Model %s "minLength" for %s should be %s but got %s',
+                    $className,
+                    $name,
+                    $options['minLength'],
+                    $value[$name]['minLength']
+                );
+            }
+
+            if($options['maxLength'] < strlen(strval($value[$name]['maxLength'])))
+            {
+                sprintf(
+                    'Model %s "maxLength" for %s should be %s but got %s',
+                    $className,
+                    $name,
+                    $options['maxLength'],
+                    strlen(strval($value[$name]['maxLength']))
+                );
+        }
         }
     }
 
@@ -827,7 +879,7 @@ abstract class BaseContactModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * Used to load initial data from file to Contact model
+     * Used to load initial data from file to model
      *
      * @param string $class
      * @param string $path

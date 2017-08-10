@@ -14,12 +14,12 @@ namespace DarrynTen\Xero\Models\Accounting;
 use DarrynTen\Xero\BaseModel;
 
 /**
- * Contacts Model
+ * Address Model
  *
  * Details on writable properties for Contacts:
  * https://developer.xero.com/documentation/api/contacts
  */
-class AddressTypesModel extends BaseModel
+class AddressModel extends BaseModel
 {
     /**
      * The API Endpoint
@@ -36,7 +36,7 @@ class AddressTypesModel extends BaseModel
 
     /**
      *
-     * Details on writable properties for Contacts:
+     * Details on writable properties for Address:
      * https://developer.xero.com/documentation/api/Types
      *
      * @var array $fields

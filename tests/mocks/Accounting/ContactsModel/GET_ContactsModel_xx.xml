@@ -7,11 +7,11 @@
     <LastName>Dutchess</LastName>
     <EmailAddress>a.dutchess@abclimited.com</EmailAddress>
     <SkypeUserName>skype.dutchess@abclimited.com</SkypeUserName>
-    <BankAccountDetails>45465844</BankAccountDetails>
+    <BankAccountDetails>454611121</BankAccountDetails>
     <TaxNumber>415465456454</TaxNumber>
     <AccountsReceivableTaxType>INPUT2</AccountsReceivableTaxType>
     <AccountsPayableTaxType>OUTPUT2</AccountsPayableTaxType>
-    <Addresses>s
+    <Addresses>
       <Address>
         <AddressType>POBOX</AddressType>
         <AddressLine1>P O Box 123</AddressLine1>
@@ -44,5 +44,44 @@
     <IsSupplier>false</IsSupplier>
     <IsCustomer>true</IsCustomer>
     <DefaultCurrency>NZD</DefaultCurrency>
+    <PurchasesDefaultAccountCode>300</PurchasesDefaultAccountCode>
+    <SalesDefaultAccountCode>200</SalesDefaultAccountCode>
+    <SalesTrackingCategories>
+      <SalesTrackingCategory>
+        <TrackingCategoryName>Region</TrackingCategoryName>
+        <TrackingOptionName>Eastside</TrackingOptionName>
+      </SalesTrackingCategory>
+    </SalesTrackingCategories>
+    <PurchasesTrackingCategories>
+      <PurchasesTrackingCategory>
+        <TrackingCategoryName>Region</TrackingCategoryName>
+        <TrackingOptionName>North</TrackingOptionName>
+      </PurchasesTrackingCategory>
+    </PurchasesTrackingCategories>
+    <Balances>
+      <AccountsReceivable>
+        <Outstanding>849.50</Outstanding>
+        <Overdue>910.00</Overdue>
+      </AccountsReceivable>
+      <AccountsPayable>
+        <Outstanding>0.00</Outstanding>
+        <Overdue>0.00</Overdue>
+      </AccountsPayable>
+    </Balances>
+    <BatchPayments>
+      <BankAccountNumber>123456</BankAccountNumber>
+      <BankAccountName>bank acccount</BankAccountName>
+      <Details>details</Details>
+    </BatchPayments>
+    <PaymentTerms>
+      <Bills>
+        <Day>4</Day>
+        <Type>OFFOLLOWINGMONTH</Type>
+      </Bills>
+      <Sales>
+        <Day>2</Day>
+        <Type>OFFOLLOWINGMONTH</Type>
+      </Sales>
+    </PaymentTerms>
   </Contact>
 </Contacts>

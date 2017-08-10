@@ -9,163 +9,232 @@
  * @link     https://github.com/darrynten/xero-php
  */
 
-namespace DarrynTen\Xero\Models\Contacts;
+namespace DarrynTen\Xero\Models\Accounting;
+
 use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\Models\Accounting\AddressModel;
 
 /**
- * Account Model
+ * Contacts Model
  *
- * Details on writable properties for Account:
- * https://developer.xero.com/documentation/api/accounts
+ * Details on writable properties for Contacts:
+ * https://developer.xero.com/documentation/api/contacts
  */
-class AccountModel extends BaseModel
+class ContactsModel extends BaseModel
 {
     /**
      * The API Endpoint
      *
-     * If it's null it's a model that would be part of a collecton
-     * that has an endpoint
-     *
      * @var string $endpoint
      */
-    protected $endpoint = 'Accounts';
+    protected $endpoint = 'Contacts';
 
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'Account';
+    protected $entity = 'Contact';
 
     /**
-     * Defines all possible fields.
      *
-     * Used by the base class to decide what gets submitted in a save call,
-     * validation, etc
-     *
-     * All must include a type, whether or not it's nullable, and whether or
-     * not it's readonly.
-     *
-     * NB: Naming convention for keys is to lowercase the first character of the
-     * field returned by Xero (they use PascalCase and we use camelCase)
-     *
-     * Details on writable properties for Accounts:
-     * https://developer.xero.com/documentation/api/accounts
+     * Details on writable properties for Contacts:
+     * https://developer.xero.com/documentation/api/contact
      *
      * @var array $fields
      */
     protected $fields = [
-        'accountID' => [
+        'contactID' => [
             'type' => 'string',
             'nullable' => true,
             'readonly' => true,
         ],
-        'code' => [
-            'type' => 'integer',
+        'contactNumber' => [
+            'type' => 'string',
             'nullable' => true,
             'readonly' => true,
+            'min' => 0,
+            'max' => 50,
+        ],
+        'accountNumber' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+            'min' => 0,
+            'max' => 50,
+        ],
+        'contactStatus' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
         ],
         'name' => [
             'type' => 'string',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => false,
-            'required' => true,
+            'min' => 0,
+            'max' => 255,
         ],
-        // An inconvenient name as we use type
-        'type' => [
+        'firstName' => [
             'type' => 'string',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => false,
-            'required' => true,
-            'valid' => 'accountTypes',
+            'min' => 0,
+            'max' => 255,
         ],
-        'bankAccountNumber' => [
+        'lastName' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+            'min' => 0,
+            'max' => 255,
+        ],
+        'emailAddress' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+            'min' => 0,
+            'max' => 255,
+        ],
+        'skypeUserName' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'bankAccountDetails' => [
             'type' => 'integer',
             'nullable' => true,
             'readonly' => false,
-            // This is *only* required if type is bank
-            // This is *only* allowed if type is bank
-            'only' => [
-                'type' => 'BANK',
-            ],
         ],
-        'status' => [
+        'taxNumber' => [
+            'type' => 'integer',
+            'nullable' => true,
+            'readonly' => false,
+            'minLength' => 0,
+            'maxLength' => 50,
+        ],
+        'accountsReceivableTaxType' => [
             'type' => 'string',
             'nullable' => true,
             'readonly' => false,
-            'valid' => 'accountStatusCodes',
         ],
-        'description' => [
+        'accountsPayableTaxType' => [
             'type' => 'string',
             'nullable' => true,
             'readonly' => false,
-            // This is not allowed if type is bank
-            'except' => [
-                'type' => 'BANK',
-            ],
         ],
-        'bankAccountType' => [
-            'type' => 'string',
+        'addresses' => [
+            'type' => 'AddressModel',
             'nullable' => true,
             'readonly' => false,
-            'valid' => 'bankAccountTypes',
-            // These are probably not a good idea...
-            'only' => [
-                'type' => 'BANK',
-            ],
         ],
-        'currencyCode' => [
-            'type' => 'string',
+        'phones' => [
+            'type' => 'Phones',
             'nullable' => true,
             'readonly' => false,
-            'only' => [
-                'type' => 'BANK',
-            ]
         ],
-        'taxType' => [
-            'type' => 'string',
-            'nullable' => true,
-            'readonly' => true,
-        ],
-        'enablePaymentsToAccount' => [
+        'isSupplier' => [
             'type' => 'boolean',
             'nullable' => true,
             'readonly' => true,
         ],
-        'showInExpenseClaims' => [
+        'isCustomer' => [
             'type' => 'boolean',
             'nullable' => true,
             'readonly' => true,
         ],
-        'class' => [
-            'type' => 'string',
-            'nullable' => true,
-            'readonly' => true,
-        ],
-        //  Note that non-system accounts may have this element set as either "" or null.
-        'systemAccount' => [
-            'type' => 'boolean',
-            'nullable' => true,
-            'readonly' => true,
-        ],
-        'reportingCode' => [
+        'defaultCurrency' => [
             'type' => 'string',
             'nullable' => true,
             'readonly' => false,
         ],
-        'reportingCodeName' => [
+        'UpdatedDateUTC' => [
+            'type' => 'DateTime',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        /*
+         * The following are only retrieved on GET requests for a single contact or when pagination is used
+         */
+        'contactPersons' => [
+            'type' => 'ContactPersons',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'XeroNetworkKey' => [
             'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'salesDefaultAccountCode' => [
+            'type' => 'integer',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'purchasesDefaultAccountCode' => [
+            'type' => 'integer',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'salesTrackingCategories' => [
+            'type' => 'SalesTrackingCategories',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'purchasesTrackingCategories' => [
+            'type' => 'PurchasesTrackingCategories',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'trackingCategoryName' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        // maybe TrackingOptionName as in mocks ???????
+        'trackingCategoryOption' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'paymentTerms' => [
+            'type' => 'PaymentTerms',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'contactGroups' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'website' => [
+            'type' => 'string',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'brandingTheme' => [
+            'type' => 'BrandingTheme',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'batchPayments' => [
+            'type' => 'BatchPayments',
+            'nullable' => true,
+            'readonly' => false,
+        ],
+        'discount' => [
+            'type' => 'integer',
             'nullable' => true,
             'readonly' => false,
         ],
         'hasAttachments' => [
             'type' => 'boolean',
             'nullable' => true,
-            'readonly' => true,
+            'readonly' => false,
         ],
-        'updatedDateUTC' => [
-            'type' => 'DateTime',
+        'contactPerson' => [
+            'type' => 'ContactPerson',
             'nullable' => true,
-            'readonly' => true,
+            'readonly' => false,
         ],
     ];
 
@@ -181,7 +250,7 @@ class AccountModel extends BaseModel
         'get' => true,
         'create' => true,
         'update' => true,
-        'delete' => true,
+        'delete' => false,
         'order' => true,
         'filter' => true,
     ];
