@@ -1,0 +1,16 @@
+<Contacts>
+  <Contact>
+    <Name>24 locks</Name>
+    <FirstName>Ben</FirstName>
+    <LastName>Bowden</LastName>
+    <EmailAddress>ben.bowden@24locks.com</EmailAddress>
+    <ContactPersons>
+      <ContactPerson>
+        <FirstName>John</FirstName>
+        <LastName>Smith</LastName>
+        <EmailAddress>john.smith@24locks.com</EmailAddress>
+        <IncludeInEmails>true</IncludeInEmails>
+      </ContactPerson>
+    </ContactPersons>
+  </Contact>
+</Contacts>
