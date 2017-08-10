@@ -184,14 +184,13 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [x] Invoice Types
   - [x] Line Amount Types
   - [x] Overpayment Types
-  - [ ] Payment Terms
+  - [x] Payment Terms
   - [x] Payment Types
   - [x] Phone types
   - [x] Prepayment Types
-  - [ ] Receipt Status
   - [ ] System Account Types
   - [ ] Tax Types
-  - [ ] User Roles
+  - [x] User Roles
 - [ ] Codes	//These are essentially simple enums
   - [x] Account Status Codes
   - [ ] Contact Status Codes
