@@ -14,6 +14,7 @@ namespace DarrynTen\Xero\Models\Accounting;
 use DarrynTen\Xero\BaseModel;
 use DarrynTen\Xero\Models\Accounting\AddressModel;
 
+
 /**
  * Contacts Model
  *
@@ -45,165 +46,179 @@ class ContactsModel extends BaseModel
     protected $fields = [
         'contactID' => [
             'type' => 'string',
-            'nullable' => true,
-            'readonly' => true,
+            'nullable' => false,
+            'readonly' => false,
+            'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
         ],
         'contactNumber' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => true,
-            'min' => 0,
+            'min' => 1,
             'max' => 50,
         ],
         'accountNumber' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
-            'min' => 0,
+            // the min/max fields defined in online docs but not in XeroAPI-schemas
+            'min' => 1,
             'max' => 50,
         ],
         'contactStatus' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
         ],
         'name' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
-            'min' => 0,
-            'max' => 255,
+            'min' => 1,
+            'max' => 500,
         ],
         'firstName' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
-            'min' => 0,
+            'min' => 1,
             'max' => 255,
         ],
         'lastName' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
-            'min' => 0,
+            'min' => 1,
             'max' => 255,
         ],
         'emailAddress' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
-            'min' => 0,
-            'max' => 255,
+            // the max field defined in online docs = 255, in XeroAPI-schemas 500
+            'min' => 1,
+            'max' => 500,
         ],
         'skypeUserName' => [
             'type' => 'string',
             'nullable' => true,
             'readonly' => false,
+            // the min/max fields  not defined in online docs, but not defined in XeroAPI-schemas
+            'min' => 1,
+            'max' => 50,
         ],
-        'bankAccountDetails' => [
-            'type' => 'integer',
-            'nullable' => true,
-            'readonly' => false,
-        ],
-        'taxNumber' => [
-            'type' => 'integer',
-            'nullable' => true,
-            'readonly' => false,
-            'minLength' => 0,
-            'maxLength' => 50,
-        ],
-        'accountsReceivableTaxType' => [
-            'type' => 'string',
-            'nullable' => true,
-            'readonly' => false,
-        ],
-        'accountsPayableTaxType' => [
-            'type' => 'string',
-            'nullable' => true,
-            'readonly' => false,
-        ],
-        'addresses' => [
-            'type' => 'AddressModel',
-            'nullable' => true,
-            'readonly' => false,
-        ],
-        'phones' => [
-            'type' => 'Phones',
-            'nullable' => true,
-            'readonly' => false,
-        ],
-        'isSupplier' => [
-            'type' => 'boolean',
-            'nullable' => true,
-            'readonly' => true,
-        ],
-        'isCustomer' => [
-            'type' => 'boolean',
-            'nullable' => true,
-            'readonly' => true,
-        ],
-        'defaultCurrency' => [
-            'type' => 'string',
-            'nullable' => true,
-            'readonly' => false,
-        ],
-        'UpdatedDateUTC' => [
-            'type' => 'DateTime',
-            'nullable' => true,
-            'readonly' => false,
-        ],
-        /*
-         * The following are only retrieved on GET requests for a single contact or when pagination is used
-         */
         'contactPersons' => [
             'type' => 'ContactPersons',
             'nullable' => true,
             'readonly' => false,
         ],
+        'bankAccountDetails' => [
+            'type' => 'integer',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        'taxNumber' => [
+            'type' => 'string',
+            'nullable' => false,
+            'readonly' => false,
+            'regex' => '/^[0-9a-zA-Z-_]+$/',
+            'min' => 1,
+            'max' => 50,
+        ],
+        'accountsReceivableTaxType' => [
+            'type' => 'string',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        'accountsPayableTaxType' => [
+            'type' => 'string',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        'addresses' => [
+            'type' => 'Address',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        'phones' => [
+            'type' => 'Phones',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        'isSupplier' => [
+            'type' => 'boolean',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        'isCustomer' => [
+            'type' => 'boolean',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        // https://github.com/XeroAPI/XeroAPI-Schemas/blob/master/src/main/resources/XeroSchemas/v2.00/CurrencyCode.xsd
+        // do we need a model for this?
+        // in the XMLSchemas type for defaultCurrency is defined as CurrencyCode
+        'defaultCurrency' => [
+            'type' => 'string',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        'UpdatedDateUTC' => [
+            'type' => 'DateTime',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        /*
+         * The following are only retrieved on GET requests for a single contact or when pagination is used
+         */
         'XeroNetworkKey' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
         ],
         'salesDefaultAccountCode' => [
-            'type' => 'integer',
-            'nullable' => true,
+            'type' => 'string',
+            'nullable' => false,
             'readonly' => false,
         ],
         'purchasesDefaultAccountCode' => [
             'type' => 'integer',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
+            'min' => 1,
+            'max' => 50,
         ],
         'salesTrackingCategories' => [
-            'type' => 'SalesTrackingCategories',
-            'nullable' => true,
+            'type' => 'ContactTrackingCategories',
+            'nullable' => false,
             'readonly' => false,
+            'min' => 1,
+            'max' => 50,
         ],
         'purchasesTrackingCategories' => [
-            'type' => 'PurchasesTrackingCategories',
-            'nullable' => true,
+            'type' => 'ContactTrackingCategories',
+            'nullable' => false,
             'readonly' => false,
         ],
         'trackingCategoryName' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
         ],
         // maybe TrackingOptionName as in mocks ???????
         'trackingCategoryOption' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
         ],
         'paymentTerms' => [
             'type' => 'PaymentTerms',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
         ],
         'contactGroups' => [
-            'type' => 'string',
-            'nullable' => true,
+            'type' => 'ContactGroup',
+            'nullable' => false,
             'readonly' => false,
         ],
         'website' => [
@@ -213,27 +228,27 @@ class ContactsModel extends BaseModel
         ],
         'brandingTheme' => [
             'type' => 'BrandingTheme',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
         ],
         'batchPayments' => [
             'type' => 'BatchPayments',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
         ],
         'discount' => [
-            'type' => 'integer',
-            'nullable' => true,
+            'type' => 'double',
+            'nullable' => false,
             'readonly' => false,
         ],
         'hasAttachments' => [
             'type' => 'boolean',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
         ],
         'contactPerson' => [
             'type' => 'ContactPerson',
-            'nullable' => true,
+            'nullable' =>  true,
             'readonly' => false,
         ],
     ];
