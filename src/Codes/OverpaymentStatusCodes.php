@@ -18,7 +18,7 @@ class OverpaymentStatusCodes
     const VOIDED = 'VOIDED';
 
     public $descriptions = [
-        self::AUTHORISED => 'An overpayment has been authorised',
+        self::AUTHORISED => 'An authorised overpayment',
         self::PAID => 'An overpayment has been paid',
         self::VOIDED => 'An overpayment has been voided',
     ];
