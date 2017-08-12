@@ -3,7 +3,7 @@
 namespace DarrynTen\Xero\Codes;
 
 /**
- * Xero Invoice Status Codes (also covers credit note status codes)
+ * Xero Credit Note Status Codes (alias for Invoice Status Codes)
  *
  * @category Codes
  * @package  XeroPHP
@@ -11,7 +11,7 @@ namespace DarrynTen\Xero\Codes;
  * @license  MIT <https://github.com/darrynten/xero-accounting-php/LICENSE>
  * @link     https://github.com/darrynten/xero-accounting-php
  */
-class InvoiceStatusCodes
+class CreditNoteStatusCodes
 {
     const DRAFT = 'DRAFT';
     const SUBMITTED = 'SUBMITTED';
