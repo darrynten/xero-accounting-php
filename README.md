@@ -193,7 +193,7 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [x] User Roles
 - [ ] Codes	//These are essentially simple enums
   - [x] Account Status Codes
-  - [ ] Contact Status Codes
+  - [x] Contact Status Codes
   - [ ] Credit Note Status Codes
   - [x] Expense Claim Status Codes
   - [ ] Invoice Status Codes
@@ -285,3 +285,4 @@ if you have any ideas.
 
 * [Fergus Strangways-Dixon](https://github.com/fergusdixon)
 * [Igor Sergiichuk](https://github.com/igorsergiichuk)
+* [Brian Maiyo](https://github.com/kiproping)
