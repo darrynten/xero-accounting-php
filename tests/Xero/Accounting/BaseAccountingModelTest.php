@@ -10,6 +10,7 @@ use ReflectionClass;
 use DarrynTen\Xero\Exception\ModelException;
 use DarrynTen\Xero\ModelCollection;
 use DarrynTen\Xero\Exception\ValidationException;
+use DarrynTen\Xero\BaseModel;
 
 abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
 {

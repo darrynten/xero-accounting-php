@@ -567,7 +567,7 @@ abstract class BaseModel
     private function getModelWithNamespace(string $model)
     {
         return sprintf(
-            '%s\Models\%s',
+            '%s\Models\Accounting\%s',
             __NAMESPACE__,
             $model
         );

@@ -13,7 +13,16 @@ namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
 use DarrynTen\Xero\Models\Accounting\AddressModel;
-
+use DarrynTen\Xero\Models\Accounting\BatchPaymentsModel;
+use DarrynTen\Xero\Models\Accounting\BrandingThemesModel;
+use DarrynTen\Xero\Models\Accounting\ContactGroupModel;
+use DarrynTen\Xero\Models\Accounting\ContactPersonsModel;
+use DarrynTen\Xero\Models\Accounting\PaymentTermsBillsModel;
+use DarrynTen\Xero\Models\Accounting\PaymentTermsSalesModel;
+use DarrynTen\Xero\Models\Accounting\PhonesModel;
+use DarrynTen\Xero\Models\Accounting\PurchasesTrackingCategoriesModel;
+use DarrynTen\Xero\Models\Accounting\SalesTrackingCategoryModel;
+use DarrynTen\Xero\Models\Accounting\TrackingCategoriesOptionsModel;
 
 /**
  * Contacts Model
@@ -50,16 +59,26 @@ class ContactsModel extends BaseModel
             'readonly' => false,
             'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
         ],
+        /*
+         * contactNumber property is missing in the provided Mock. Therefore I assume it is nullable.
+         * Contrary, the property description in XML tables do not have indication that the field is nullable.
+         * We need to contact Xero to clarify the question.
+         */
         'contactNumber' => [
             'type' => 'string',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => true,
             'min' => 1,
             'max' => 50,
         ],
+        /*
+         * accountNumber property is missing in the provided Mock. Therefore I assume it is nullable.
+         * Contrary, the property description in XML tables do not have indication that the field is nullable.
+         * We need to contact Xero to clarify the question.
+         */
         'accountNumber' => [
             'type' => 'string',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => false,
             // the min/max fields defined in online docs but not in XeroAPI-schemas
             'min' => 1,
@@ -108,7 +127,7 @@ class ContactsModel extends BaseModel
             'max' => 50,
         ],
         'contactPersons' => [
-            'type' => 'ContactPersons',
+            'type' => 'ContactPersonsModel',
             'nullable' => true,
             'readonly' => false,
         ],
@@ -136,12 +155,12 @@ class ContactsModel extends BaseModel
             'readonly' => false,
         ],
         'addresses' => [
-            'type' => 'Address',
+            'type' => 'AddressModel',
             'nullable' => false,
             'readonly' => false,
         ],
         'phones' => [
-            'type' => 'Phones',
+            'type' => 'PhonesModel',
             'nullable' => false,
             'readonly' => false,
         ],
@@ -171,9 +190,14 @@ class ContactsModel extends BaseModel
         /*
          * The following are only retrieved on GET requests for a single contact or when pagination is used
          */
+        /*
+         * XeroNetworkKey property is missing in the provided Mock. Therefore I assume it is nullable.
+         * Contrary, the property description in XML tables do not have indication that the field is nullable.
+         * We need to contact Xero to clarify the question.
+         */
         'XeroNetworkKey' => [
             'type' => 'string',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => false,
         ],
         'salesDefaultAccountCode' => [
@@ -182,43 +206,30 @@ class ContactsModel extends BaseModel
             'readonly' => false,
         ],
         'purchasesDefaultAccountCode' => [
-            'type' => 'integer',
+            'type' => 'string',
             'nullable' => false,
             'readonly' => false,
             'min' => 1,
             'max' => 50,
         ],
         'salesTrackingCategories' => [
-            'type' => 'ContactTrackingCategories',
+            'type' => 'SalesTrackingCategoryModel',
             'nullable' => false,
             'readonly' => false,
-            'min' => 1,
-            'max' => 50,
         ],
         'purchasesTrackingCategories' => [
-            'type' => 'ContactTrackingCategories',
-            'nullable' => false,
-            'readonly' => false,
-        ],
-        'trackingCategoryName' => [
-            'type' => 'string',
-            'nullable' => false,
-            'readonly' => false,
-        ],
-        // maybe TrackingOptionName as in mocks ???????
-        'trackingCategoryOption' => [
-            'type' => 'string',
+            'type' => 'PurchasesTrackingCategoriesModel',
             'nullable' => false,
             'readonly' => false,
         ],
         'paymentTerms' => [
-            'type' => 'PaymentTerms',
+            'type' => 'PaymentTermsModel',
             'nullable' => false,
             'readonly' => false,
         ],
         'contactGroups' => [
-            'type' => 'ContactGroup',
-            'nullable' => false,
+            'type' => 'ContactGroupModel',
+            'nullable' => true,
             'readonly' => false,
         ],
         'website' => [
@@ -227,27 +238,37 @@ class ContactsModel extends BaseModel
             'readonly' => false,
         ],
         'brandingTheme' => [
-            'type' => 'BrandingTheme',
-            'nullable' => false,
+            'type' => 'BrandingThemeModel',
+            'nullable' => true,
             'readonly' => false,
         ],
         'batchPayments' => [
-            'type' => 'BatchPayments',
+            'type' => 'BatchPaymentsModel',
             'nullable' => false,
             'readonly' => false,
         ],
+        /*
+         * discount property is missing in the provided Mock. Therefore I assume it is nullable.
+         * Contrary, the property description in XML tables do not have indication that the field is nullable.
+         * We need to contact Xero to clarify the question.
+         */
         'discount' => [
             'type' => 'double',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => false,
         ],
+        /*
+         * hasAttachments property is missing in the provided Mock. Therefore I assume it is nullable.
+         * Contrary, the property description in XML tables do not have indication that the field is nullable.
+         * We need to contact Xero to clarify the question.
+         */
         'hasAttachments' => [
             'type' => 'boolean',
-            'nullable' => false,
+            'nullable' => true,
             'readonly' => false,
         ],
         'contactPerson' => [
-            'type' => 'ContactPerson',
+            'type' => 'ContactPersonModel',
             'nullable' =>  true,
             'readonly' => false,
         ],
