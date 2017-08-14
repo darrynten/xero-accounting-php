@@ -1,0 +1,21 @@
+<ContactGroups>
+    <ContactGroup>
+        <ContactGroupID>97bbd0e6-ab4d-4117-9304-d90dd4779199</ContactGroupID>
+        <Name>Adam's Contacts</Name>
+        <Status>ACTIVE</Status>
+        <Contacts>
+            <Contact>
+                <ContactID>9ce626d2-14ea-463c-9fff-6785ab5f9bfb</ContactID>
+                <Name>Boom FM</Name>
+            </Contact>
+            <Contact>
+                <ContactID>b9d4332a-26a3-4577-8db2-6e830d4b07cd</ContactID>
+                <Name>Berry Brew</Name>
+            </Contact>
+            <Contact>
+                <ContactID>2dc0ef7c-582f-4542-963b-dbdc069e4819</ContactID>
+                <Name>Bayside Wholesale</Name>
+            </Contact>
+        </Contacts>
+    </ContactGroup>
+</ContactGroups>

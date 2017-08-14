@@ -26,7 +26,7 @@ class AddressModel extends BaseModel
      *
      * @var string $endpoint
      */
-    protected $endpoint = 'Address';
+    protected $endpoint = 'Addresses';
 
     /**
      * String required to get right property from \stdObj after parsing from xml

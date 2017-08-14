@@ -1,0 +1,12 @@
+<ContactGroups>
+    <ContactGroup>
+        <ContactGroupID>97bbd0e6-ab4d-4117-9304-d90dd4779199</ContactGroupID>
+        <Name>VIP Customers</Name>
+        <Status>ACTIVE</Status>
+    </ContactGroup>
+    <ContactGroup>
+        <ContactGroupID>d0c68f1a-e5dd-4a45-aa02-27d8fdbfd562</ContactGroupID>
+        <Name>Preferred Suppliers</Name>
+        <Status>ACTIVE</Status>
+    </ContactGroup>
+</ContactGroups>

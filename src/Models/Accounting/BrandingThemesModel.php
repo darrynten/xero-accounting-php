@@ -51,6 +51,7 @@ class BrandingThemesModel extends BaseModel
             'type' => 'integer',
             'nullable' => false,
             'readonly' => false,
+            'default' => 0,
         ],
         'brandingThemeID' => [
             'type' => 'string',
@@ -64,5 +65,23 @@ class BrandingThemesModel extends BaseModel
             'nullable' => false,
             'readonly' => false,
         ],
+    ];
+
+
+    /**
+     * Features supported by the endpoint
+     *
+     * These features enable and disable certain calls from the base model
+     *
+     * @var array $features
+     */
+    protected $features = [
+        'all' => true,
+        'get' => true,
+        'create' => false,
+        'update' => false,
+        'delete' => false,
+        'order' => false,
+        'filter' => false,
     ];
 }

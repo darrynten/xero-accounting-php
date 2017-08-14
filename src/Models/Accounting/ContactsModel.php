@@ -22,7 +22,6 @@ use DarrynTen\Xero\Models\Accounting\PaymentTermsSalesModel;
 use DarrynTen\Xero\Models\Accounting\PhonesModel;
 use DarrynTen\Xero\Models\Accounting\PurchasesTrackingCategoriesModel;
 use DarrynTen\Xero\Models\Accounting\SalesTrackingCategoryModel;
-use DarrynTen\Xero\Models\Accounting\TrackingCategoriesOptionsModel;
 
 /**
  * Contacts Model
@@ -238,7 +237,7 @@ class ContactsModel extends BaseModel
             'readonly' => false,
         ],
         'brandingTheme' => [
-            'type' => 'BrandingThemeModel',
+            'type' => 'BrandingThemesModel',
             'nullable' => true,
             'readonly' => false,
         ],

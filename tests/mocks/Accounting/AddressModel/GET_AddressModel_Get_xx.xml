@@ -1,0 +1,10 @@
+<!-- This Mock is based on Contacts Mock -->
+<Addresses>
+    <Address>
+        <AddressType>POBOX</AddressType>
+        <AddressLine1>P O Box 123</AddressLine1>
+        <City>Wellington</City>
+        <PostalCode>6011</PostalCode>
+        <AttentionTo>Andrea</AttentionTo>
+    </Address>
+</Addresses>

@@ -66,4 +66,22 @@ class ContactGroupModel extends BaseModel
             'readonly' => false,
         ],
     ];
+
+    /**
+     * Features supported by the endpoint
+     *
+     * These features enable and disable certain calls from the base model
+     *
+     * @var array $features
+     */
+    protected $features = [
+        'all' => true,
+        'get' => true,
+        'create' => true,
+        'update' => true,
+        'delete' => true,
+        'order' => true,
+        'filter' => true,
+        // TODO it also has a features DELETE ALL and RENAME which are not in the list of available
+    ];
 }

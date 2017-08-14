@@ -1,0 +1,13 @@
+<!-- This Mock is based on Contacts Mock -->
+<BatchPayments>
+    <BatchPayment>
+        <BankAccountNumber>123456</BankAccountNumber>
+        <BankAccountName>bank acccount</BankAccountName>
+        <Details>details</Details>
+    </BatchPayment>
+    <BatchPayment>
+        <BankAccountNumber>123456</BankAccountNumber>
+        <BankAccountName>bank acccount</BankAccountName>
+        <Details>details</Details>
+    </BatchPayment>
+</BatchPayments>
