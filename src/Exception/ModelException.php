@@ -40,6 +40,17 @@ class ModelException extends Exception
     const GETTING_UNDEFINED_PROPERTY = 20116;
     const TRYING_SORT_BY_UNKNOWN_FIELD = 20117;
     const TRYING_FILTER_BY_UNKNOWN_FIELD = 20118;
+    const REQUIRED_PROPERTY_MISSING = 20119;
+
+    // Types
+    const NOT_ALLOWED_PROPERTY_FOR_TYPE = 20120;
+    const REQUIRED_PROPERTY_MISSING_FOR_TYPE = 20121;
+
+    // Create/Update operations
+    const OBJECT_NOT_LOADED = 20130;
+    const ID_MISSING_FOR_UPDATE = 20131;
+    const REQUIRED_PROPERTY_MISSING_FOR_CREATE = 20132;
+    const PROPERTY_NOT_ALLOWED_FOR_CREATE = 20133;
 
     /**
      * Custom Model exception handler

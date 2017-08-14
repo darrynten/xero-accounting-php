@@ -33,9 +33,24 @@ class AccountModel extends BaseModel
 
     /**
      * String required to get right property from \stdObj after parsing from xml
+     *
      * @var string $entity
      */
     protected $entity = 'Account';
+
+    /**
+     * String required to detect name of field used as id
+     *
+     * @var string $idField
+     */
+    protected $idField  = 'accountID';
+
+    /**
+     * String required to detect if we need to validate model by types
+     *
+     * @var string $typeField
+     */
+    protected $typeField  = 'type';
 
     /**
      * Defines all possible fields.
@@ -61,15 +76,25 @@ class AccountModel extends BaseModel
             'readonly' => true,
         ],
         'code' => [
-            'type' => 'integer',
+            'type' => 'string',
             'nullable' => true,
-            'readonly' => true,
+            'readonly' => false,
+            'min' => 0,
+            'max' => 10,
+            'create' => [
+                'exceptType' => 'BANK',
+            ],
         ],
         'name' => [
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,
             'required' => true,
+            'min' => 0,
+            'max' => 150,
+            'create' => [
+                'required' => true,
+            ],
         ],
         // An inconvenient name as we use type
         'type' => [
@@ -78,6 +103,9 @@ class AccountModel extends BaseModel
             'readonly' => false,
             'required' => true,
             'valid' => 'accountTypes',
+            'create' => [
+                'required' => true,
+            ],
         ],
         'bankAccountNumber' => [
             'type' => 'integer',
@@ -87,6 +115,10 @@ class AccountModel extends BaseModel
             // This is *only* allowed if type is bank
             'only' => [
                 'type' => 'BANK',
+                'required' => true,
+            ],
+            'create' => [
+                'onlyType' => 'BANK'
             ],
         ],
         'status' => [
@@ -99,9 +131,12 @@ class AccountModel extends BaseModel
             'type' => 'string',
             'nullable' => true,
             'readonly' => false,
+            'min' => 0,
+            'max' => 4000,
             // This is not allowed if type is bank
             'except' => [
                 'type' => 'BANK',
+                'required' => false,
             ],
         ],
         'bankAccountType' => [
@@ -112,6 +147,7 @@ class AccountModel extends BaseModel
             // These are probably not a good idea...
             'only' => [
                 'type' => 'BANK',
+                'required' => false,
             ],
         ],
         'currencyCode' => [
@@ -120,6 +156,7 @@ class AccountModel extends BaseModel
             'readonly' => false,
             'only' => [
                 'type' => 'BANK',
+                'required' => false,
             ]
         ],
         'taxType' => [
