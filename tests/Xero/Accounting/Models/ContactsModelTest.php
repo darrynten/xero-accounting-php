@@ -2,18 +2,8 @@
 
 namespace DarrynTen\Xero\Tests\Xero\Accounting\Models;
 
-use DarrynTen\Xero\Models\Accounting\ContactsModel;
-use DarrynTen\Xero\Models\Accounting\AddressModel;
-use DarrynTen\Xero\Models\Accounting\BatchPaymentsModel;
-use DarrynTen\Xero\Models\Accounting\BrandingThemesModel;
-use DarrynTen\Xero\Models\Accounting\ContactGroupModel;
-use DarrynTen\Xero\Models\Accounting\ContactPersonsModel;
-use DarrynTen\Xero\Models\Accounting\PaymentTermsBillsModel;
-use DarrynTen\Xero\Models\Accounting\PaymentTermsSalesModel;
-use DarrynTen\Xero\Models\Accounting\PhonesModel;
-use DarrynTen\Xero\Models\Accounting\PurchasesTrackingCategoriesModel;
-use DarrynTen\Xero\Models\Accounting\SalesTrackingCategoryModel;
-use DarrynTen\Xero\Models\Accounting\TrackingCategoriesOptionsModel;
+use DarrynTen\Xero\Models\Accounting\Contact;
+use DarrynTen\Xero\Models\Accounting\Address;
 use DarrynTen\Xero\Tests\Xero\Accounting\BaseModelTest;
 use DarrynTen\Xero\Request\RequestHandler;
 use GuzzleHttp\Client;
@@ -31,35 +21,35 @@ class ContactsModelTest extends BaseModelTest
 {
     public function testInstanceOf()
     {
-        $this->verifyInstanceOf(ContactsModel::class);
+        $this->verifyInstanceOf(Contact::class);
     }
 
     public function testSetUndefined()
     {
-        $this->verifySetUndefined(ContactsModel::class);
+        $this->verifySetUndefined(Contact::class);
     }
 
     public function testGetUndefined()
     {
-        $this->verifyGetUndefined(ContactsModel::class);
+        $this->verifyGetUndefined(Contact::class);
     }
 
     public function testCanNullify()
     {
-        $this->verifyCanNullify(ContactsModel::class, 'skypeUserName');
+        $this->verifyCanNullify(Contact::class, 'skypeUserName');
     }
 
     // Failed asserting that exception of type "DarrynTen\Xero\Exception\ModelException" is thrown.
 
 /*    public function testBadImport()
     {
-        $this->verifyBadImport(ContactsModel::class, '222');
+        $this->verifyBadImport(Contact::class, '222');
     }*/
 
     public function testAttributes()
     {
         $this->verifyAttributes(
-            ContactsModel::class,
+            Contact::class,
             [
                 'contactID' => [
                     'type' => 'string',
@@ -134,9 +124,10 @@ class ContactsModelTest extends BaseModelTest
                     'max' => 50,
                 ],
                 'contactPersons' => [
-                    'type' => 'ContactPersonsModel',
+                    'type' => 'ContactPerson',
                     'nullable' => true,
                     'readonly' => false,
+                    'collection' => true,
                 ],
                 'bankAccountDetails' => [
                     'type' => 'integer',
@@ -162,12 +153,12 @@ class ContactsModelTest extends BaseModelTest
                     'readonly' => false,
                 ],
                 'addresses' => [
-                    'type' => 'AddressModel',
+                    'type' => 'Address',
                     'nullable' => false,
                     'readonly' => false,
                 ],
                 'phones' => [
-                    'type' => 'PhonesModel',
+                    'type' => 'Phone',
                     'nullable' => false,
                     'readonly' => false,
                 ],
@@ -202,7 +193,7 @@ class ContactsModelTest extends BaseModelTest
                  * Contrary, the property description in XML tables do not have indication that the field is nullable.
                  * We need to contact Xero to clarify the question.
                  */
-                'XeroNetworkKey' => [
+                'xeroNetworkKey' => [
                     'type' => 'string',
                     'nullable' => true,
                     'readonly' => false,
@@ -220,22 +211,22 @@ class ContactsModelTest extends BaseModelTest
                     'max' => 50,
                 ],
                 'salesTrackingCategories' => [
-                    'type' => 'SalesTrackingCategoryModel',
+                    'type' => 'SalesTrackingCategory',
                     'nullable' => false,
                     'readonly' => false,
                 ],
                 'purchasesTrackingCategories' => [
-                    'type' => 'PurchasesTrackingCategoriesModel',
+                    'type' => 'PurchasesTrackingCategory',
                     'nullable' => false,
                     'readonly' => false,
                 ],
                 'paymentTerms' => [
-                    'type' => 'PaymentTermsModel',
+                    'type' => 'PaymentTerm',
                     'nullable' => false,
                     'readonly' => false,
                 ],
                 'contactGroups' => [
-                    'type' => 'ContactGroupModel',
+                    'type' => 'ContactGroup',
                     'nullable' => true,
                     'readonly' => false,
                 ],
@@ -245,14 +236,15 @@ class ContactsModelTest extends BaseModelTest
                     'readonly' => false,
                 ],
                 'brandingTheme' => [
-                    'type' => 'BrandingThemeModel',
+                    'type' => 'BrandingTheme',
                     'nullable' => true,
                     'readonly' => false,
                 ],
                 'batchPayments' => [
-                    'type' => 'BatchPaymentsModel',
+                    'type' => 'BatchPayment',
                     'nullable' => false,
                     'readonly' => false,
+                    'collection' => true,
                 ],
                 /*
                  * discount property is missing in the provided Mock. Therefore I assume it is nullable.
@@ -274,18 +266,13 @@ class ContactsModelTest extends BaseModelTest
                     'nullable' => true,
                     'readonly' => false,
                 ],
-                'contactPerson' => [
-                    'type' => 'ContactPersonModel',
-                    'nullable' =>  true,
-                    'readonly' => false,
-                ],
             ]
         );
     }
 
     public function testFeatures()
     {
-        $this->verifyFeatures(ContactsModel::class, [
+        $this->verifyFeatures(Contact::class, [
             'all' => true,
             'get' => true,
             'delete' => false,
@@ -298,7 +285,7 @@ class ContactsModelTest extends BaseModelTest
 
     public function testInject()
     {
-        $this->verifyInject(ContactsModel::class, function ($model) {
+        $this->verifyInject(Contact::class, function ($model) {
             $this->assertEquals($model->contactID, 'bd2270c3-8706-4c11-9cfb-000b551c3f51');
             $this->assertEquals($model->name, 'ABC Limited');
             $this->assertEquals($model->firstName, 'Andrea');
@@ -309,7 +296,7 @@ class ContactsModelTest extends BaseModelTest
             $this->assertEquals($model->taxNumber, 415465456454);
             $this->assertEquals($model->accountsReceivableTaxType, 'INPUT2');
             $this->assertEquals($model->accountsPayableTaxType, 'OUTPUT2');
-            $this->assertInstanceOf(AddressModel::class, $model->addresses);
+            $this->assertInstanceOf(Address::class, $model->addresses);
             //$this->assertEquals($model->addresses->addressType, 'POBOX');
 
 
@@ -324,7 +311,7 @@ class ContactsModelTest extends BaseModelTest
     public function testGetByIds()
     {
         $this->verifyGetByIds(
-            ContactsModel::class,
+            Contact::class,
             ['297c2dc5-cc47-4afd-8ec8-74990b8761e9', '5040915e-8ce7-4177-8d08-fde416232f18'],
             function ($results) {
                 $this->assertEquals(2, count($results));
@@ -339,7 +326,7 @@ class ContactsModelTest extends BaseModelTest
     public function testCreate()
     {
         $this->verifyCreate(
-            ContactsModel::class,
+            Contact::class,
             function ($response) {
                 $this->assertEquals(304, $response->code);
                 // TODO Do actual checks
@@ -353,7 +340,7 @@ class ContactsModelTest extends BaseModelTest
     public function testUpdate()
     {
         $this->verifyUpdate(
-            ContactsModel::class,
+            Contact::class,
             function ($response) {
                 $this->assertEquals(200, $response->code);
                 // TODO Do actual checks
@@ -366,7 +353,7 @@ class ContactsModelTest extends BaseModelTest
 
     public function testDelete()
     {
-        $this->verifyDelete(ContactsModel::class, 11, function () {
+        $this->verifyDelete(Contact::class, 11, function () {
             // TODO do actual checks
         });
     }*/
