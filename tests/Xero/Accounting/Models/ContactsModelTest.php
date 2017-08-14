@@ -4,7 +4,7 @@ namespace DarrynTen\Xero\Tests\Xero\Accounting\Models;
 
 use DarrynTen\Xero\Models\Accounting\Contact;
 use DarrynTen\Xero\Models\Accounting\Address;
-use DarrynTen\Xero\Tests\Xero\Accounting\BaseModelTest;
+use DarrynTen\Xero\Tests\Xero\Accounting\BaseAccountingModelTest;
 use DarrynTen\Xero\Request\RequestHandler;
 use GuzzleHttp\Client;
 use ReflectionClass;
@@ -13,7 +13,7 @@ use DarrynTen\Xero\Exception\ModelException;
 use DarrynTen\Xero\ModelCollection;
 use DarrynTen\Xero\Exception\ValidationException;
 
-class ContactsModelTest extends BaseModelTest
+class ContactsModelTest extends BaseAccountingModelTest
 /*
  * Using BaseModelTest because AccountingModelTest is made to fit AccountingModel only. E.g. look
  * at verifyInject() method.
@@ -298,7 +298,6 @@ class ContactsModelTest extends BaseModelTest
             $this->assertEquals($model->accountsPayableTaxType, 'OUTPUT2');
             $this->assertInstanceOf(Address::class, $model->addresses);
             //$this->assertEquals($model->addresses->addressType, 'POBOX');
-
 
             // TODO
             $objArray = json_decode($model->toJson(), true);

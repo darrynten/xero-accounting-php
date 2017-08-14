@@ -29,7 +29,7 @@ class Account extends BaseModel
      *
      * @var string $endpoint
      */
-    protected $endpoint = 'Accounts';
+    public $endpoint = 'Accounts';
 
     /**
      * String required to get right property from \stdObj after parsing from xml

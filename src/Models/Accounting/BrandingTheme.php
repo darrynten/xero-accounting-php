@@ -26,13 +26,13 @@ class BrandingTheme extends BaseModel
      *
      * @var string $endpoint
      */
-    protected $endpoint = 'BrandingThemes';
+    public $endpoint = 'BrandingThemes';
 
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'BrandingTheme';
+    public $entity = 'BrandingTheme';
 
     /**
      * String required to detect name of field used as id

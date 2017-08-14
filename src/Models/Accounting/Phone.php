@@ -25,7 +25,7 @@ class Phone extends BaseModel
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'Phone';
+    public $entity = 'Phone';
 
     /**
      *

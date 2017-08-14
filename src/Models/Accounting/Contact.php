@@ -37,7 +37,7 @@ class Contact extends BaseModel
      *
      * @var string $endpoint
      */
-    protected $endpoint = 'Contacts';
+    public $endpoint = 'Contacts';
 
     /**
      * String required to get right property from \stdObj after parsing from xml

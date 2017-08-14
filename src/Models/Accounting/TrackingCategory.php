@@ -26,13 +26,13 @@ class TrackingCategory extends BaseModel
      *
      * @var string $endpoint
      */
-    protected $endpoint = 'TrackingCategories';
+    public $endpoint = 'TrackingCategories';
 
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'TrackingCategory';
+    public $entity = 'TrackingCategory';
 
     /**
      * String required to detect name of field used as id

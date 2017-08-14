@@ -25,7 +25,7 @@ class PaymentTermsSale extends BaseModel
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'Sales';
+    public $entity = 'Sales';
 
     /**
      *

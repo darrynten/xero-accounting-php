@@ -130,19 +130,36 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
     {
         //is this valid?
         $this->validateRange(json_decode('"\uD83D\uDE00"'), 1, 8);
-        //Emoji is one character, can this lead to problems?
+
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Validation error value 😀 out of min(1) max(2) String length is out of range');
+        $this->expectExceptionCode(20302);
+
         $this->validateRange(json_decode('"\uD83D\uDE00"'), 1, 2);
-        $this->assertException(
-            ValidationException::class,
-            "Validation error value 😀😀😀 out of min(1) max(2) String length is out of range",
-            ValidationException::STRING_LENGTH_OUT_OF_RANGE
-        );
+
+        // TODO ??
         $this->validateRange(
             json_decode('"\uD83D\uDE00"')
             . json_decode('"\uD83D\uDE00"') . json_decode('"\uD83D\uDE00"'),
             1,
             2
         );
+    }
+
+    public function testEmojiValidation2()
+    {
+        $this->expectException(ValidationException::class);
+        $this->expectExceptionMessage('Validation error value 😀😀😀 out of min(1) max(2) String length is out of range');
+        $this->expectExceptionCode(20302);
+
+        // TODO ??
+        $this->validateRange(
+            json_decode('"\uD83D\uDE00"')
+            . json_decode('"\uD83D\uDE00"') . json_decode('"\uD83D\uDE00"'),
+            1,
+            2
+        );
+
     }
 
     public function testLargeIntValidation()

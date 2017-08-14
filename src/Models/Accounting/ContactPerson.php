@@ -13,7 +13,6 @@ namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
 
-
 /**
  * Contact Persons Model
  *
@@ -26,7 +25,7 @@ class ContactPerson extends BaseModel
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'ContactPerson';
+    public $entity = 'ContactPerson';
 
     /**
      *

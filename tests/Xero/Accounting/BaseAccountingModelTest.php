@@ -774,7 +774,10 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyInject(string $class, callable $whatToCheck)
     {
         $className = $this->getClassName($class);
-        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/GET_{$className}_xx.xml";
+        $model = new $class($this->config);
+        $endpointName = $model->endpoint;
+        
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/GET_{$endpointName}_xx.xml";
         $model = $this->injectData($class, $pathToMock);
 
         $whatToCheck($model);
@@ -1174,8 +1177,9 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     {
         $model = new $class($this->config);
         $data = json_decode(json_encode(simplexml_load_file($path)));
-        // die(var_dump($model, $data->{$model->entity}, $path));
+        // die(var_dump($model));
         $model->loadResult($data->{$model->entity});
+        // die(var_dump($model, $data->{$model->entity}, $path));
 
         return $model;
     }
