@@ -37,7 +37,7 @@ class ModelCollection
     /**
      * @var array $keys list available keys on ModelCollection
      */
-    private $keys = ['totalResults', 'returnedResults', 'results'];
+    private $keys = ['totalResults', 'results'];
 
     /**
      *
@@ -67,37 +67,56 @@ class ModelCollection
         if (is_array($results)) {
             $collectionObject = new \StdClass;
             $collectionObject->TotalResults = count($results);
-            $collectionObject->ReturnedResults = $collectionObject->TotalResults;
             $collectionObject->Results = $results;
         }
-        if (!property_exists($collectionObject, 'TotalResults')) {
-            throw new ModelCollectionException(
-                ModelCollectionException::MISSING_REQUIRED_PROPERTY,
-                'TotalResults'
-            );
-        }
-        if (!property_exists($collectionObject, 'ReturnedResults')) {
-            throw new ModelCollectionException(
-                ModelCollectionException::MISSING_REQUIRED_PROPERTY,
-                'ReturnedResults'
-            );
-        }
-        if (!property_exists($collectionObject, 'Results')) {
-            throw new ModelCollectionException(
-                ModelCollectionException::MISSING_REQUIRED_PROPERTY,
-                'Results'
-            );
+
+        if (is_object($results)) {
+            $rawResults = $results->{$this->getClassName($class)};
+            $collectionObject->TotalResults = count($rawResults);
+            $collectionObject->Results = $rawResults;
         }
 
+        // if (!property_exists($collectionObject, 'TotalResults')) {
+        //     throw new ModelCollectionException(
+        //         ModelCollectionException::MISSING_REQUIRED_PROPERTY,
+        //         'TotalResults'
+        //     );
+        // }
+        // if (!property_exists($collectionObject, 'ReturnedResults')) {
+        //     throw new ModelCollectionException(
+        //         ModelCollectionException::MISSING_REQUIRED_PROPERTY,
+        //         'ReturnedResults'
+        //     );
+        // }
+        // if (!property_exists($collectionObject, 'Results')) {
+        //     throw new ModelCollectionException(
+        //         ModelCollectionException::MISSING_REQUIRED_PROPERTY,
+        //         'Results'
+        //     );
+        // }
+
         $models = [];
+        
         foreach ($collectionObject->Results as $result) {
             $model = new $class($config);
             $model->loadResult($result);
             $models[] = $model;
         }
+            (var_dump('==================', $results, 'xxxxxxx', $collectionObject,' xxxxxxxxxxxxxxxxxxxxx', $collectionObject->Results, $models));
 
         $this->totalResults = $collectionObject->TotalResults;
-        $this->returnedResults = $collectionObject->ReturnedResults;
         $this->results = $models;
+    }
+
+    /**
+     * Extracts className from path A\B\C\ClassName
+     *
+     * @param string $classPath Full path to the class
+     */
+    private function getClassName(string $class)
+    {
+        $classPath = explode('\\', $class);
+        $className = $classPath[ count($classPath) - 1];
+        return $className;
     }
 }

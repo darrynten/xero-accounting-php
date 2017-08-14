@@ -374,6 +374,9 @@ abstract class BaseModel
         }
 
         if (isset($config['collection']) && $config['collection'] === true) {
+            var_dump('xxx');
+            var_dump($config, $value);
+            var_dump('xxx');
             return $this->prepareModelCollection($config, $value);
         }
 //
@@ -516,7 +519,6 @@ abstract class BaseModel
         }
 
         if (isset($config['collection']) && $config['collection'] === true) {
-
             $class = $this->getModelWithNamespace($config['type']);
             if (!class_exists($class)) {
                 $this->throwException(ModelException::COLLECTION_WITHOUT_CLASS, sprintf(
