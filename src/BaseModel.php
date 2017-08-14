@@ -374,26 +374,23 @@ abstract class BaseModel
         }
 
         if (isset($config['collection']) && $config['collection'] === true) {
-            var_dump('xxx');
-            var_dump($config, $value);
-            var_dump('xxx');
             return $this->prepareModelCollection($config, $value);
         }
-//
-//        // At this stage we would be dealing with a related Model
-//        $class = $this->getModelWithNamespace($config['type']);
-//
-//        // So if the class doesn't exist, throw
-//        if (!class_exists($class)) {
-//            $this->throwException(ModelException::UNEXPECTED_PREPARE_CLASS, sprintf(
-//                'Received unexpected namespaced class "%s" when preparing an object row',
-//                $class
-//            ));
-//        }
-//
-//        // And finally return an Object representation of the related Model
-//        return $value->toObject();
-    }// @codeCoverageIgnore
+
+        // At this stage we would be dealing with a related Model
+        $class = $this->getModelWithNamespace($config['type']);
+
+         // So if the class doesn't exist, throw
+        if (!class_exists($class)) {
+             $this->throwException(ModelException::UNEXPECTED_PREPARE_CLASS, sprintf(
+                 'Received unexpected namespaced class "%s" when preparing an object row',
+                 $class
+             ));
+        }
+
+        // And finally return an Object representation of the related Model
+        return $value->toObject();
+    }
 
 
     /**
@@ -536,13 +533,7 @@ abstract class BaseModel
 //        // At this stage, any type is going to be a model that needs to be loaded
         $class = $this->getModelWithNamespace($config['type']);
 
-        // (var_dump('=================================---------'));
-        // (var_dump('CONFIG: ',$config));
-        // (var_dump('RESULTITEM: ',$resultItem));
-        // (var_dump('CLASS: ',$class));
-        // (var_dump('=================================---------'));
-//
-//        // So if the class doesn't exist, throw
+        // So if the class doesn't exist, throw
         if (!class_exists($class)) {
             $this->throwException(ModelException::PROPERTY_WITHOUT_CLASS, sprintf(
                 'Received namespaced class "%s" when defined type is "%s"',
@@ -587,12 +578,6 @@ abstract class BaseModel
                 ));
             }
 
-            // (var_dump('=================================---------'));
-            // (var_dump('CONFIG: ',$config));
-            // (var_dump('RESULT: ',$result));
-            // (var_dump('REMOTE: ',$remoteKey));
-            // (var_dump('REMOTE VALUE: ',$result->{$remoteKey}));
-            // (var_dump('=================================---------'));
             $value = $this->processResultItem($result->{$remoteKey}, $config);
 
             // This is similar to __set but it can fill read only fields

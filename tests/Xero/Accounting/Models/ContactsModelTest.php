@@ -180,7 +180,7 @@ class ContactsModelTest extends BaseAccountingModelTest
                     'nullable' => false,
                     'readonly' => false,
                 ],
-                'UpdatedDateUTC' => [
+                'updatedDateUTC' => [
                     'type' => 'DateTime',
                     'nullable' => false,
                     'readonly' => false,
@@ -296,14 +296,15 @@ class ContactsModelTest extends BaseAccountingModelTest
             $this->assertEquals($model->taxNumber, 415465456454);
             $this->assertEquals($model->accountsReceivableTaxType, 'INPUT2');
             $this->assertEquals($model->accountsPayableTaxType, 'OUTPUT2');
-            $this->assertInstanceOf(Address::class, $model->addresses);
-            //$this->assertEquals($model->addresses->addressType, 'POBOX');
+
+            // Relationships
+            $this->assertInstanceOf(Address::class, $model->addresses->results[0]);
+            $this->assertEquals($model->addresses->results[0]->addressType, 'POBOX');
 
             // TODO
             $objArray = json_decode($model->toJson(), true);
 
-            print_r($objArray);
-            $this->assertCount(33, $objArray);
+            $this->assertCount(32, $objArray);
         });
     }
 /*

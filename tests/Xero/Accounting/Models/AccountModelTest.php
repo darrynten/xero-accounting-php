@@ -305,7 +305,6 @@ class AccountsModelTest extends BaseAccountingModelTest
         $this->verifyGetAll(Account::class, function ($collectionModel) {
             $this->assertEquals(ModelCollection::class, get_class($collectionModel));
             $this->assertEquals(2, $collectionModel->totalResults);
-            $this->assertEquals(2, $collectionModel->returnedResults);
             $this->assertEquals(2, count($collectionModel->results));
 
             $model = $collectionModel->results[0];

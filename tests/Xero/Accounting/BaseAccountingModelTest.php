@@ -538,8 +538,19 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     private function verifyIfOptionsAreValid($className, $name, $options)
     {
         $validKeys = array_fill_keys([
-            'type', 'nullable', 'readonly', 'default',
-            'required', 'min', 'max', 'regex', 'valid', 'only', 'except', 'create'
+            'type',
+            'nullable',
+            'readonly',
+            'default',
+            'required',
+            'min',
+            'max',
+            'regex',
+            'valid',
+            'only',
+            'except',
+            'create',
+            'collection'
         ], true);
         foreach (array_keys($options) as $option) {
             if (!isset($validKeys[$option])) {
@@ -827,7 +838,6 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $allInstances = $model->all($parameters);
         $this->assertInstanceOf(ModelCollection::class, $allInstances);
         $this->assertObjectHasAttribute('totalResults', $allInstances);
-        $this->assertObjectHasAttribute('returnedResults', $allInstances);
         $this->assertObjectHasAttribute('results', $allInstances);
 
         $whatToCheck($allInstances);
@@ -855,7 +865,6 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $allInstances = $model->getByIds($ids);
         $this->assertInstanceOf(ModelCollection::class, $allInstances);
         $this->assertObjectHasAttribute('totalResults', $allInstances);
-        $this->assertObjectHasAttribute('returnedResults', $allInstances);
         $this->assertObjectHasAttribute('results', $allInstances);
 
         $whatToCheck($allInstances->results);

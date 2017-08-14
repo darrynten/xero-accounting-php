@@ -25,11 +25,6 @@ class ModelCollection
     protected $totalResults;
 
     /**
-     * @var integer $returnedResults
-     */
-    protected $returnedResults;
-
-    /**
      * @var array $results
      */
     protected $results;
@@ -63,46 +58,34 @@ class ModelCollection
      */
     public function __construct($class, $config, $results)
     {
+        $models = [];
+
         $collectionObject = $results;
+
+        if (is_object($results)) {
+            $objectClass = $this->getClassName($class);
+            $rawResults = $results->{$this->getClassName($class)};
+            foreach ($rawResults as $result) {
+                $model = new $class($config);
+                $model->loadResult($result);
+                $models[] = $model;
+            }
+            $collectionObject->TotalResults = count($rawResults);
+            $collectionObject->Results = $rawResults;
+        }
+
         if (is_array($results)) {
             $collectionObject = new \StdClass;
             $collectionObject->TotalResults = count($results);
             $collectionObject->Results = $results;
         }
 
-        if (is_object($results)) {
-            $rawResults = $results->{$this->getClassName($class)};
-            $collectionObject->TotalResults = count($rawResults);
-            $collectionObject->Results = $rawResults;
-        }
-
-        // if (!property_exists($collectionObject, 'TotalResults')) {
-        //     throw new ModelCollectionException(
-        //         ModelCollectionException::MISSING_REQUIRED_PROPERTY,
-        //         'TotalResults'
-        //     );
-        // }
-        // if (!property_exists($collectionObject, 'ReturnedResults')) {
-        //     throw new ModelCollectionException(
-        //         ModelCollectionException::MISSING_REQUIRED_PROPERTY,
-        //         'ReturnedResults'
-        //     );
-        // }
-        // if (!property_exists($collectionObject, 'Results')) {
-        //     throw new ModelCollectionException(
-        //         ModelCollectionException::MISSING_REQUIRED_PROPERTY,
-        //         'Results'
-        //     );
-        // }
-
-        $models = [];
-        
+        // TODO this whole bit can be better
         foreach ($collectionObject->Results as $result) {
             $model = new $class($config);
             $model->loadResult($result);
             $models[] = $model;
         }
-            (var_dump('==================', $results, 'xxxxxxx', $collectionObject,' xxxxxxxxxxxxxxxxxxxxx', $collectionObject->Results, $models));
 
         $this->totalResults = $collectionObject->TotalResults;
         $this->results = $models;
