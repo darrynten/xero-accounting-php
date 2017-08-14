@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Account:
  * https://developer.xero.com/documentation/api/accounts
  */
-class AccountModel extends BaseModel
+class Account extends BaseModel
 {
     /**
      * The API Endpoint

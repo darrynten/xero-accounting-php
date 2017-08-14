@@ -13,22 +13,14 @@ namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
 
-
 /**
  * Phones Model
  *
  * Details on writable properties for Phones:
  * https://developer.xero.com/documentation/api/types#phones
  */
-class PhonesModel extends BaseModel
+class Phone extends BaseModel
 {
-    /**
-     * The API Endpoint
-     *
-     * @var string $endpoint
-     */
-    protected $endpoint = 'Phones';
-
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
@@ -47,6 +39,7 @@ class PhonesModel extends BaseModel
             'type' => 'string',
             'nullable' => true,
             'readonly' => false,
+            // TODO valid types link
         ],
         'phoneNumber' => [
             'type' => 'string',
@@ -68,7 +61,6 @@ class PhonesModel extends BaseModel
             'readonly' => false,
             'min' => 1,
             'max' => 20,
-
         ],
     ];
 }

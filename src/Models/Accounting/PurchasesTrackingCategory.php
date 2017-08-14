@@ -19,15 +19,8 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Purchases Tracking Categories:
  * https://developer.xero.com/documentation/api/tracking-categories
  */
-class PurchasesTrackingCategoriesModel extends BaseModel
+class PurchasesTrackingCategory extends BaseModel
 {
-    /**
-     * The API Endpoint
-     *
-     * @var string $endpoint
-     */
-    protected $endpoint = 'PurchasesTrackingCategories';
-
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
@@ -46,6 +39,7 @@ class PurchasesTrackingCategoriesModel extends BaseModel
             'type' => 'string',
             'nullable' => true,
             /*
+             * TODO
              * Not sure it is true.
              * I get the mistake: Model "SalesTrackingCategoriesModel" key trackingCategoryName Property is null without nullable permission
              * The same is for trackingOptionName field.

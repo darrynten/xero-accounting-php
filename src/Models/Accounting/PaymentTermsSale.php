@@ -14,43 +14,33 @@ namespace DarrynTen\Xero\Models\Accounting;
 use DarrynTen\Xero\BaseModel;
 
 /**
- * Tracking Categories Options Model
+ * Payment Terms Sales Model
  *
- * Details on writable properties for Tracking Categories Options:
- * https://developer.xero.com/documentation/api/tracking-categories
+ * Details on writable properties for Payment Terms Sales:
+ * https://developer.xero.com/documentation/api/types#PaymentTerms
  */
-class TrackingCategoriesOptionsModel extends BaseModel
+class PaymentTermsSale extends BaseModel
 {
-    /**
-     * The API Endpoint
-     *
-     * @var string $endpoint
-     */
-    protected $endpoint = 'Options';
-
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'Option';
+    protected $entity = 'Sales';
 
     /**
      *
-     * Details on writable properties for Tracking Categories Options:
-     * https://developer.xero.com/documentation/api/tracking-categories
+     * Details on writable properties for PaymentTerms Sales:
+     * https://developer.xero.com/documentation/api/types#PaymentTerms
      *
      * @var array $fields
      */
     protected $fields = [
-        'name' => [
+        'day' => [
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,
-            'required' => true,
-            'min' => 1,
-            'max' => 100,
         ],
-        'status' => [
+        'type' => [
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,

@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for ContactGroup:
  * https://developer.xero.com/documentation/api/contactgroups
  */
-class ContactGroupModel extends BaseModel
+class ContactGroup extends BaseModel
 {
     /**
      * The API Endpoint
@@ -33,6 +33,13 @@ class ContactGroupModel extends BaseModel
      * @var string $entity
      */
     protected $entity = 'ContactGroup';
+
+    /**
+     * String required to detect name of field used as id
+     *
+     * @var string $idField
+     */
+    protected $idField  = 'contactGroupID';
 
     /**
      *
@@ -61,9 +68,27 @@ class ContactGroupModel extends BaseModel
             'regex' => "/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/",
         ],
         'contacts' => [
-            'type' => 'ContactsModel',
+            'type' => 'Contact',
             'nullable' => true,
             'readonly' => false,
+            'collection' => true,
         ],
+    ];
+
+    /**
+     * Features supported by the endpoint
+     *
+     * These features enable and disable certain calls from the base model
+     *
+     * @var array $features
+     */
+    protected $features = [
+        'all' => true,
+        'get' => true,
+        'create' => true,
+        'update' => true,
+        'delete' => true,
+        'order' => true,
+        'filter' => true,
     ];
 }

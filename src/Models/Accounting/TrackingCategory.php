@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Tracking Categories:
  * https://developer.xero.com/documentation/api/tracking-categories
  */
-class TrackingCategoriesModel extends BaseModel
+class TrackingCategory extends BaseModel
 {
     /**
      * The API Endpoint
@@ -33,6 +33,16 @@ class TrackingCategoriesModel extends BaseModel
      * @var string $entity
      */
     protected $entity = 'TrackingCategory';
+
+    /**
+     * String required to detect name of field used as id
+     *
+     * @var string $idField
+     */
+    protected $idField  = 'trackingCategoryID';
+
+    // TODO include archived
+    // https://developer.xero.com/documentation/api/tracking-categories
 
     /**
      *
@@ -61,22 +71,28 @@ class TrackingCategoriesModel extends BaseModel
             'required' => true,
             'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
         ],
-        'trackingOptionID' => [
-            'type' => 'string',
-            'nullable' => false,
-            'readonly' => false,
-            'required' => true,
-            'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
-        ],
         'options' => [
-            'type' => 'TrackingCategoriesOptionsModel',
+            'type' => 'TrackingCategoryOption',
             'nullable' => false,
             'readonly' => false,
+            'collection' => true,
         ],
-        'option' => [
-            'type' => 'string',
-            'nullable' => false,
-            'readonly' => false,
-        ],
+    ];
+
+    /**
+     * Features supported by the endpoint
+     *
+     * These features enable and disable certain calls from the base model
+     *
+     * @var array $features
+     */
+    protected $features = [
+        'all' => true,
+        'get' => true,
+        'create' => true,
+        'update' => true,
+        'delete' => false,
+        'order' => true,
+        'filter' => true,
     ];
 }

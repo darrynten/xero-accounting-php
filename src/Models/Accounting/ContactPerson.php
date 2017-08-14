@@ -15,41 +15,44 @@ use DarrynTen\Xero\BaseModel;
 
 
 /**
- * Payment Terms Bills Model
+ * Contact Persons Model
  *
- * Details on writable properties for Payment Terms Bills:
- * https://developer.xero.com/documentation/api/types#PaymentTerms
+ * Details on writable properties for Contact Persons:
+ * https://developer.xero.com/documentation/api/contacts#contact-persons
  */
-class PaymentTermsBillsModel extends BaseModel
+class ContactPerson extends BaseModel
 {
-    /**
-     * The API Endpoint
-     *
-     * @var string $endpoint
-     */
-    protected $endpoint = 'Bills';
-
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'Bills';
+    protected $entity = 'ContactPerson';
 
     /**
      *
-     * Details on writable properties for PaymentTerms Bills:
-     * https://developer.xero.com/documentation/api/types#PaymentTerms
+     * Details on writable properties for Contact Persons:
+     * https://developer.xero.com/documentation/api/contacts#contact-persons
      *
      * @var array $fields
      */
     protected $fields = [
-        'day' => [
+        'firstName' => [
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,
         ],
-        'type' => [
+        'lastName' => [
             'type' => 'string',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        'emailAddress' => [
+            'type' => 'string',
+            'nullable' => false,
+            'readonly' => false,
+        ],
+        'includeInEmails' => [
+            'type' => 'boolean',
             'nullable' => false,
             'readonly' => false,
         ],

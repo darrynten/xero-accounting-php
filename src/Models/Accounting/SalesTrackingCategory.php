@@ -19,20 +19,13 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Sales Tracking Categories:
  * https://developer.xero.com/documentation/api/tracking-categories
  */
-class SalesTrackingCategoryModel extends BaseModel
+class SalesTrackingCategory extends BaseModel
 {
-    /**
-     * The API Endpoint
-     *
-     * @var string $endpoint
-     */
-    protected $endpoint = 'SalesTrackingCategories';
-
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'SalesTrackingCategories';
+    protected $entity = 'SalesTrackingCategory';
 
     /**
      *

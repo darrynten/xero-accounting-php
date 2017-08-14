@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for BrandingThemes:
  * https://developer.xero.com/documentation/api/branding-themes
  */
-class BrandingThemesModel extends BaseModel
+class BrandingTheme extends BaseModel
 {
     /**
      * The API Endpoint
@@ -33,6 +33,13 @@ class BrandingThemesModel extends BaseModel
      * @var string $entity
      */
     protected $entity = 'BrandingTheme';
+
+    /**
+     * String required to detect name of field used as id
+     *
+     * @var string $idField
+     */
+    protected $idField  = 'brandingThemeID';
 
     /**
      *
@@ -64,5 +71,22 @@ class BrandingThemesModel extends BaseModel
             'nullable' => false,
             'readonly' => false,
         ],
+    ];
+
+    /**
+     * Features supported by the endpoint
+     *
+     * These features enable and disable certain calls from the base model
+     *
+     * @var array $features
+     */
+    protected $features = [
+        'all' => true,
+        'get' => false,
+        'create' => false,
+        'update' => false,
+        'delete' => false,
+        'order' => false,
+        'filter' => false,
     ];
 }

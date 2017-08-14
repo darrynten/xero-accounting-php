@@ -34,6 +34,13 @@ abstract class BaseModel
     use Validation;
 
     /**
+     * API Endpoint
+     *
+     * Null means non interactable
+     */
+    protected $endpoint = null;
+
+    /**
      * A request object
      *
      * TODO this should be refactored out
@@ -61,6 +68,15 @@ abstract class BaseModel
         'order' => true,
         'filter' => true,
     ];
+
+    /**
+     * String required to detect name of field used as id
+     *
+     * null means no id field present
+     *
+     * @var string $idField
+     */
+    protected $idField  = null;
 
     /**
      * String required to detect if we need to validate model by types
@@ -504,16 +520,16 @@ abstract class BaseModel
      */
     public function loadResult(\stdClass $result)
     {
-        $result = $this->removeSkippedResults($result);
+        // $result = $this->removeSkippedResults($result);
 
         // We only care about entires that are defined in the model
         foreach ($this->fields as $key => $config) {
             $remoteKey = $this->getRemoteKey($key);
             // If the payload is missing an item
             if (!property_exists($result, $remoteKey)) {
-        (var_dump('-------------'));
-        (var_dump($key, $config, $remoteKey, $result));
-        (var_dump('xxxxxxxxxxxxxxxxxxxx'));
+                (var_dump('-------------'));
+                (var_dump($key, $config, $remoteKey, $result));
+                (var_dump('xxxxxxxxxxxxxxxxxxxx'));
                 if (!array_key_exists('required', $config)) {
                     continue;
                 }
@@ -866,21 +882,5 @@ abstract class BaseModel
                 );
             }
         }
-    }
-
-    /**
-     * Used to determine namespace for related models
-     *
-     * @var string Name of the model
-     *
-     * @return string The full namespace for a Model
-     */
-    private function getModelWithNamespace(string $model)
-    {
-        return sprintf(
-            '%s\Models\%s',
-            __NAMESPACE__,
-            $model
-        );
     }
 }

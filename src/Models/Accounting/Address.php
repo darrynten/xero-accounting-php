@@ -19,15 +19,8 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Contacts:
  * https://developer.xero.com/documentation/api/contacts
  */
-class AddressModel extends BaseModel
+class Address extends BaseModel
 {
-    /**
-     * The API Endpoint
-     *
-     * @var string $endpoint
-     */
-    protected $endpoint = 'Address';
-
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
@@ -44,8 +37,9 @@ class AddressModel extends BaseModel
     protected $fields = [
         'addressType' => [
             'type' => 'string',
-            'nullable' =>true,
+            'nullable' => true,
             'readonly' => false,
+            'valid' => 'addressTypes',
         ],
         'addressLine1' => [
             'type' => 'string',

@@ -13,31 +13,23 @@ namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
 
-
 /**
- * Payment Terms Sales Model
+ * Payment Terms Bills Model
  *
- * Details on writable properties for Payment Terms Sales:
+ * Details on writable properties for Payment Terms Bills:
  * https://developer.xero.com/documentation/api/types#PaymentTerms
  */
-class PaymentTermsSalesModel extends BaseModel
+class PaymentTermsBill extends BaseModel
 {
-    /**
-     * The API Endpoint
-     *
-     * @var string $endpoint
-     */
-    protected $endpoint = 'Sales';
-
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'Sales';
+    protected $entity = 'Bills';
 
     /**
      *
-     * Details on writable properties for PaymentTerms Sales:
+     * Details on writable properties for PaymentTerms Bills:
      * https://developer.xero.com/documentation/api/types#PaymentTerms
      *
      * @var array $fields

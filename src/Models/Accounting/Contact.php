@@ -12,17 +12,17 @@
 namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
-use DarrynTen\Xero\Models\Accounting\AddressModel;
-use DarrynTen\Xero\Models\Accounting\BatchPaymentsModel;
-use DarrynTen\Xero\Models\Accounting\BrandingThemesModel;
-use DarrynTen\Xero\Models\Accounting\ContactGroupModel;
-use DarrynTen\Xero\Models\Accounting\ContactPersonsModel;
-use DarrynTen\Xero\Models\Accounting\PaymentTermsBillsModel;
-use DarrynTen\Xero\Models\Accounting\PaymentTermsSalesModel;
-use DarrynTen\Xero\Models\Accounting\PhonesModel;
-use DarrynTen\Xero\Models\Accounting\PurchasesTrackingCategoriesModel;
-use DarrynTen\Xero\Models\Accounting\SalesTrackingCategoryModel;
-use DarrynTen\Xero\Models\Accounting\TrackingCategoriesOptionsModel;
+use DarrynTen\Xero\Models\Accounting\Address;
+use DarrynTen\Xero\Models\Accounting\BatchPayment;
+use DarrynTen\Xero\Models\Accounting\BrandingTheme;
+use DarrynTen\Xero\Models\Accounting\ContactGroup;
+use DarrynTen\Xero\Models\Accounting\ContactPerson;
+use DarrynTen\Xero\Models\Accounting\PaymentTermsBill;
+use DarrynTen\Xero\Models\Accounting\PaymentTermsSale;
+use DarrynTen\Xero\Models\Accounting\Phone;
+use DarrynTen\Xero\Models\Accounting\PurchasesTrackingCategory;
+use DarrynTen\Xero\Models\Accounting\SalesTrackingCategory;
+use DarrynTen\Xero\Models\Accounting\TrackingCategoryOption;
 
 /**
  * Contacts Model
@@ -30,7 +30,7 @@ use DarrynTen\Xero\Models\Accounting\TrackingCategoriesOptionsModel;
  * Details on writable properties for Contacts:
  * https://developer.xero.com/documentation/api/contacts
  */
-class ContactsModel extends BaseModel
+class Contact extends BaseModel
 {
     /**
      * The API Endpoint
@@ -44,6 +44,13 @@ class ContactsModel extends BaseModel
      * @var string $entity
      */
     public $entity = 'Contact';
+
+    /**
+     * String required to detect name of field used as id
+     *
+     * @var string $idField
+     */
+    protected $idField  = 'contactID';
 
     /**
      *
@@ -127,9 +134,10 @@ class ContactsModel extends BaseModel
             'max' => 50,
         ],
         'contactPersons' => [
-            'type' => 'ContactPersonsModel',
+            'type' => 'ContactPerson',
             'nullable' => true,
             'readonly' => false,
+            'collection' => true,
         ],
         'bankAccountDetails' => [
             'type' => 'integer',
@@ -155,14 +163,16 @@ class ContactsModel extends BaseModel
             'readonly' => false,
         ],
         'addresses' => [
-            'type' => 'AddressModel',
+            'type' => 'Address',
             'nullable' => false,
             'readonly' => false,
+            'collection' => true,
         ],
         'phones' => [
-            'type' => 'PhonesModel',
+            'type' => 'Phone',
             'nullable' => false,
             'readonly' => false,
+            'collection' => true,
         ],
         'isSupplier' => [
             'type' => 'boolean',
@@ -182,7 +192,7 @@ class ContactsModel extends BaseModel
             'nullable' => false,
             'readonly' => false,
         ],
-        'UpdatedDateUTC' => [
+        'updatedDateUTC' => [
             'type' => 'DateTime',
             'nullable' => false,
             'readonly' => false,
@@ -195,7 +205,7 @@ class ContactsModel extends BaseModel
          * Contrary, the property description in XML tables do not have indication that the field is nullable.
          * We need to contact Xero to clarify the question.
          */
-        'XeroNetworkKey' => [
+        'xeroNetworkKey' => [
             'type' => 'string',
             'nullable' => true,
             'readonly' => false,
@@ -211,26 +221,31 @@ class ContactsModel extends BaseModel
             'readonly' => false,
             'min' => 1,
             'max' => 50,
+            // TODO valid codes
         ],
         'salesTrackingCategories' => [
-            'type' => 'SalesTrackingCategoryModel',
+            'type' => 'SalesTrackingCategory',
             'nullable' => false,
             'readonly' => false,
         ],
         'purchasesTrackingCategories' => [
-            'type' => 'PurchasesTrackingCategoriesModel',
+            'type' => 'PurchasesTrackingCategory',
             'nullable' => false,
             'readonly' => false,
         ],
+        // TODO this requires exactly 2 specific ones
+        // https://developer.xero.com/documentation/api/contacts
+        // how?
         'paymentTerms' => [
-            'type' => 'PaymentTermsModel',
+            'type' => 'PaymentTerm',
             'nullable' => false,
             'readonly' => false,
         ],
         'contactGroups' => [
-            'type' => 'ContactGroupModel',
+            'type' => 'ContactGroup',
             'nullable' => true,
             'readonly' => false,
+            'collection' => true,
         ],
         'website' => [
             'type' => 'string',
@@ -238,12 +253,12 @@ class ContactsModel extends BaseModel
             'readonly' => false,
         ],
         'brandingTheme' => [
-            'type' => 'BrandingThemeModel',
+            'type' => 'BrandingTheme',
             'nullable' => true,
             'readonly' => false,
         ],
         'batchPayments' => [
-            'type' => 'BatchPaymentsModel',
+            'type' => 'BatchPayment',
             'nullable' => false,
             'readonly' => false,
         ],
@@ -265,11 +280,6 @@ class ContactsModel extends BaseModel
         'hasAttachments' => [
             'type' => 'boolean',
             'nullable' => true,
-            'readonly' => false,
-        ],
-        'contactPerson' => [
-            'type' => 'ContactPersonModel',
-            'nullable' =>  true,
             'readonly' => false,
         ],
     ];

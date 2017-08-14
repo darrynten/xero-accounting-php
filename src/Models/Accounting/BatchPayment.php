@@ -13,53 +13,40 @@ namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
 
-
 /**
- * Contact Persons Model
+ * BatchPayments Model
  *
- * Details on writable properties for Contact Persons:
- * https://developer.xero.com/documentation/api/contacts#contact-persons
+ * Details on writable properties for BatchPayments:
+ * https://developer.xero.com/documentation/api/contacts
  */
-class ContactPersonsModel extends BaseModel
+class BatchPayment extends BaseModel
 {
-    /**
-     * The API Endpoint
-     *
-     * @var string $endpoint
-     */
-    protected $endpoint = 'ContactPersons';
-
     /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'ContactPerson';
+    protected $entity = 'BatchPayment';
 
     /**
      *
-     * Details on writable properties for Contact Persons:
-     * https://developer.xero.com/documentation/api/contacts#contact-persons
+     * Details on writable properties for BatchPayment:
+     * https://developer.xero.com/documentation/api/contacts
      *
      * @var array $fields
      */
     protected $fields = [
-        'firstName' => [
+        'bankAccountNumber' => [
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,
         ],
-        'lastName' => [
+        'bankAccountName' => [
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,
         ],
-        'emailAddress' => [
+        'details' => [
             'type' => 'string',
-            'nullable' => false,
-            'readonly' => false,
-        ],
-        'includeInEmails' => [
-            'type' => 'boolean',
             'nullable' => false,
             'readonly' => false,
         ],
