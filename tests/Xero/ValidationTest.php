@@ -2,7 +2,6 @@
 
 namespace DarrynTen\Xero\Tests\Xero;
 
-
 use DarrynTen\Xero\Exception\ValidationException;
 use DarrynTen\Xero\Validation;
 

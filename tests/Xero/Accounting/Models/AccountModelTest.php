@@ -305,6 +305,7 @@ class AccountsModelTest extends BaseAccountingModelTest
             $model = $collectionModel->results[0];
             $this->assertEquals(AccountModel::class, get_class($model));
             $this->assertEquals('297c2dc5-cc47-4afd-8ec8-74990b8761e9', $model->accountID);
+            // TODO test for both BANK and other type
             $this->assertEquals('BANK', $model->type);
         });
     }

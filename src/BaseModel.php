@@ -8,6 +8,8 @@
  * @license  MIT <https://github.com/darrynten/xero-php/blob/master/LICENSE>
  * @link     https://github.com/darrynten/xero-php
  * @version  PHP 7+
+ *
+ * TODO Split this file it's getting too big
  */
 
 namespace DarrynTen\Xero;
@@ -664,7 +666,6 @@ abstract class BaseModel
      */
     protected function prepareGetQueryParams(array  $parameters) : array
     {
-
         $queryParams = [];
         if (array_key_exists('order', $parameters)) {
             if (!$this->features['order']) {
@@ -732,8 +733,7 @@ abstract class BaseModel
     public function validateModel()
     {
         foreach ($this->fields as $key => $config) {
-            if (
-                !array_key_exists($key, $this->fieldsData) &&
+            if (!array_key_exists($key, $this->fieldsData) &&
                 array_key_exists('required', $config)
             ) {
                 $this->throwException(ModelException::REQUIRED_PROPERTY_MISSING, sprintf(
@@ -758,8 +758,7 @@ abstract class BaseModel
         foreach ($this->fields as $key => $config) {
             if (array_key_exists('only', $config)) {
                 //property exist and not allowed
-                if (
-                    array_key_exists($key, $this->fieldsData) &&
+                if (array_key_exists($key, $this->fieldsData) &&
                     $this->fieldsData[$this->typeField] !== $config['only']['type']
                 ) {
                     $this->throwException(
@@ -768,8 +767,7 @@ abstract class BaseModel
                     );
                 }
                 //property not exists but required
-                if (
-                    !array_key_exists($key, $this->fieldsData) &&
+                if (!array_key_exists($key, $this->fieldsData) &&
                     $this->fieldsData[$this->typeField] === $config['only']['type'] &&
                     $config['only']['required']
                 ) {
@@ -781,8 +779,7 @@ abstract class BaseModel
             }
 
             if (array_key_exists('except', $config)) {
-                if (
-                    array_key_exists($key, $this->fieldsData) &&
+                if (array_key_exists($key, $this->fieldsData) &&
                     $this->fieldsData[$this->typeField] === $config['except']['type']
                 ) {
                     $this->throwException(
@@ -802,19 +799,16 @@ abstract class BaseModel
     private function validateMinimumFieldsRequiredForCreate()
     {
         foreach ($this->fields as $key => $config) {
-            if (
-                array_key_exists('create', $config) &&
+            if (array_key_exists('create', $config) &&
                 !array_key_exists($key, $this->fieldsData)
             ) {
-                if (
-                    array_key_exists('exceptType', $config['create']) &&
+                if (array_key_exists('exceptType', $config['create']) &&
                     $this->fieldsData[$this->typeField] === $config['create']['exceptType']
                 ) {
                     continue;
                 }
 
-                if (
-                    array_key_exists('onlyType', $config['create']) &&
+                if (array_key_exists('onlyType', $config['create']) &&
                     $this->fieldsData[$this->typeField] !== $config['create']['onlyType']
                 ) {
                     continue;

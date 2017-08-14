@@ -156,6 +156,8 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
      * Verifies that model will throw error when we try method all that not supported by model
      *
      * @param string $class Full path to the class
+     *
+     * TODO use a dataprovider
      */
     protected function verifyNotSupportedAll(string $class)
     {
@@ -1177,7 +1179,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         return $model;
     }
 
-    protected function injectPropertyInModel(string $class, string $propertyName,  $property)
+    protected function injectPropertyInModel(string $class, string $propertyName, $property)
     {
         $model = new $class($this->config);
         $reflection = new ReflectionClass($model);
@@ -1214,6 +1216,9 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
      * Verifies that base model validates regexp
      *
      * @param string $class Full path to the class
+     *
+     * TODO: test the opposite of this
+     * (a failing, exception throwing wrong validation)
      */
     protected function verifyValidateRegexp(string $class)
     {
