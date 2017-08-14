@@ -310,7 +310,7 @@ class ContactsModelTest extends BaseModelTest
             $this->assertEquals($model->accountsReceivableTaxType, 'INPUT2');
             $this->assertEquals($model->accountsPayableTaxType, 'OUTPUT2');
             $this->assertInstanceOf(AddressModel::class, $model->addresses);
-            //$this->assertEquals($model->addresses->addressType, 'POBOX');
+            $this->assertEquals($model->addresses->addressType, 'POBOX');
 
 
             // TODO
