@@ -36,7 +36,7 @@ class AccountModel extends BaseModel
      *
      * @var string $entity
      */
-    protected $entity = 'Account';
+    public $entity = 'Account';
 
     /**
      * String required to detect name of field used as id
@@ -49,6 +49,8 @@ class AccountModel extends BaseModel
      * String required to detect if we need to validate model by types
      *
      * @var string $typeField
+     *
+     * TODO what is going on with this?
      */
     protected $typeField  = 'type';
 

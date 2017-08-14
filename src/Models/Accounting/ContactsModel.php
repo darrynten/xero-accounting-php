@@ -33,7 +33,7 @@ class ContactsModel extends BaseModel
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */
-    protected $entity = 'Contact';
+    public $entity = 'Contact';
 
     /**
      *

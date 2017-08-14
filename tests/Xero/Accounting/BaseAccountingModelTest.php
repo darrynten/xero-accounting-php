@@ -1174,7 +1174,8 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     {
         $model = new $class($this->config);
         $data = json_decode(json_encode(simplexml_load_file($path)));
-        $model->loadResult($data->Account);
+        // die(var_dump($model, $data->{$model->entity}, $path));
+        $model->loadResult($data->{$model->entity});
 
         return $model;
     }
