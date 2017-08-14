@@ -161,6 +161,7 @@ class AccountsModelTest extends BaseAccountingModelTest
                         'required' => true,
                     ],
                 ],
+                // An inconvenient name as we use type
                 'type' => [
                     'type' => 'string',
                     'nullable' => false,
@@ -175,6 +176,8 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'type' => 'integer',
                     'nullable' => true,
                     'readonly' => false,
+                    // This is *only* required if type is bank
+                    // This is *only* allowed if type is bank
                     'only' => [
                         'type' => 'BANK',
                         'required' => true,
@@ -195,6 +198,7 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'readonly' => false,
                     'min' => 0,
                     'max' => 4000,
+                    // This is not allowed if type is bank
                     'except' => [
                         'type' => 'BANK',
                         'required' => false,
@@ -205,6 +209,7 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'nullable' => true,
                     'readonly' => false,
                     'valid' => 'bankAccountTypes',
+                    // These are probably not a good idea...
                     'only' => [
                         'type' => 'BANK',
                         'required' => false,
@@ -239,6 +244,7 @@ class AccountsModelTest extends BaseAccountingModelTest
                     'nullable' => true,
                     'readonly' => true,
                 ],
+                //  Note that non-system accounts may have this element set as either "" or null.
                 'systemAccount' => [
                     'type' => 'boolean',
                     'nullable' => true,

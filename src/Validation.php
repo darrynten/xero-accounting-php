@@ -37,6 +37,34 @@ trait Validation
             return true;
         }
 
+        /**
+         * We sometimes receive integers as strings
+         *
+         * This checks for that one particular condition with a strict
+         * regex
+         */
+        if ($itemType === 'string' && $definedType === 'integer') {
+            if (preg_match('/[0-9]{1,}/', $item)) {
+                return true;
+            }
+        }
+
+        /**
+         * We sometimes receive booleans as strings
+         *
+         * This checks for that one particular condition with a strict
+         * regex
+         */
+        if ($itemType === 'string' && $definedType === 'boolean') {
+            if ($item === 'true') {
+                return true;
+            }
+
+            if ($item === 'false') {
+                return true;
+            }
+        }
+
         return false;
     }
 

@@ -145,7 +145,7 @@ abstract class BaseModel
      */
     public function __get($key)
     {
-      if (!array_key_exists($key, $this->fields)) {
+        if (!array_key_exists($key, $this->fields)) {
             $this->throwException(ModelException::GETTING_UNDEFINED_PROPERTY, sprintf('key %s', $key));
         }
 
@@ -367,11 +367,11 @@ abstract class BaseModel
         if ($this->isValidPrimitive($value, $config['type'])) {
             return $this->$key;
         }
-        //we don't have models with DateTime or Related Objects yet
-//        // If it's a date we return a valid format
-//        if ($config['type'] === 'DateTime') {
-//            return $value->format('Y-m-d');
-//        }
+
+        // If it's a date we return a valid format
+        if ($config['type'] === 'DateTime') {
+            return $value->format('Y-m-d');
+        }
 
         if (isset($config['collection']) && $config['collection'] === true) {
             return $this->prepareModelCollection($config, $value);
@@ -454,6 +454,49 @@ abstract class BaseModel
     }
 
     /**
+     * Runs a value through a basic type fix/check.
+     *
+     * Only thing it does right now is a very strict conversion of
+     * a string representation of an integer to the integer version
+     *
+     * @param mixed $value The thing to check
+     * @param string $value The desired type
+     *
+     * @return mixed Original thing, cast if needed
+     */
+    private function typeFix($value, $desiredType)
+    {
+        $itemType = gettype($value);
+
+        /**
+         * This typecast may only happen if you want an integer
+         * and the type is a string that has only numbers, and
+         * at least one number.
+         */
+        if ($itemType === 'string' && $desiredType === 'integer') {
+            if (preg_match('/[0-9]{1,}/', $value)) {
+                return (integer)$value;
+            }
+        }
+
+        /**
+         * This typecast may only happen if you want a boolean
+         * and the type a string that is either literally true or false
+         */
+        if ($itemType === 'string' && $desiredType === 'boolean') {
+            if ($value === 'true') {
+                return true;
+            }
+
+            if ($value === 'false') {
+                return false;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
      * Process an item during loading a payload
      *
      * @var $resultItem The item to load
@@ -464,16 +507,16 @@ abstract class BaseModel
     private function processResultItem($resultItem, $config)
     {
         if ($this->isValidPrimitive($resultItem, $config['type'])) {
-            return $resultItem;
+            return $this->typeFix($resultItem, $config['type']);
         }
 
-        //we don't have models with DateTime or Related Objects yet
-//        // If it's a date we return a new DateTime object
-//        if ($config['type'] === \DateTime::class) {
-//            return new \DateTime($resultItem);
-//        }
+        // If it's a date we return a new DateTime object
+        if ($config['type'] === \DateTime::class) {
+            return new \DateTime($resultItem);
+        }
 
         if (isset($config['collection']) && $config['collection'] === true) {
+
             $class = $this->getModelWithNamespace($config['type']);
             if (!class_exists($class)) {
                 $this->throwException(ModelException::COLLECTION_WITHOUT_CLASS, sprintf(
@@ -484,12 +527,18 @@ abstract class BaseModel
             return new ModelCollection($class, $this->config, $resultItem);
         }
 //        // If it's null and it's allowed to be null
-//        if (is_null($resultItem) && ($config['nullable'] === true)) {
-//            return null;
-//        }
+        if (is_null($resultItem) && ($config['nullable'] === true)) {
+            return null;
+        }
 
 //        // At this stage, any type is going to be a model that needs to be loaded
         $class = $this->getModelWithNamespace($config['type']);
+
+        // (var_dump('=================================---------'));
+        // (var_dump('CONFIG: ',$config));
+        // (var_dump('RESULTITEM: ',$resultItem));
+        // (var_dump('CLASS: ',$class));
+        // (var_dump('=================================---------'));
 //
 //        // So if the class doesn't exist, throw
         if (!class_exists($class)) {
@@ -520,16 +569,13 @@ abstract class BaseModel
      */
     public function loadResult(\stdClass $result)
     {
-        // $result = $this->removeSkippedResults($result);
+        $result = $this->removeSkippedResults($result);
 
         // We only care about entires that are defined in the model
         foreach ($this->fields as $key => $config) {
             $remoteKey = $this->getRemoteKey($key);
             // If the payload is missing an item
             if (!property_exists($result, $remoteKey)) {
-                // (var_dump('-------------'));
-                // (var_dump($key, $config, $remoteKey, $result));
-                // (var_dump('xxxxxxxxxxxxxxxxxxxx'));
                 if (!array_key_exists('required', $config)) {
                     continue;
                 }
@@ -539,9 +585,13 @@ abstract class BaseModel
                 ));
             }
 
-            // TODO what was/is this for?
-            // $result->$remoteKey = $this->castToType($config['type'], $result->$remoteKey);
-            $value = $this->processResultItem($result->$remoteKey, $config);
+            // (var_dump('=================================---------'));
+            // (var_dump('CONFIG: ',$config));
+            // (var_dump('RESULT: ',$result));
+            // (var_dump('REMOTE: ',$remoteKey));
+            // (var_dump('REMOTE VALUE: ',$result->{$remoteKey}));
+            // (var_dump('=================================---------'));
+            $value = $this->processResultItem($result->{$remoteKey}, $config);
 
             // This is similar to __set but it can fill read only fields
             $this->checkDefined($key, $value);

@@ -54,6 +54,17 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * Extracts endpoint from an instance
+     *
+     * @param string $classPath Full path to the class
+     */
+    private function getEndpointName(string $class)
+    {
+        $model = new $class($this->config);
+        return $model->endpoint;
+    }
+
+    /**
      * Verifies that passed $class (as string) is instance of $class
      *
      * @param string $class Full path to the class
@@ -778,6 +789,8 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $endpointName = $model->endpoint;
         
         $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/GET_{$endpointName}_xx.xml";
+        // (var_dump('CLASS:',$className));
+        // (var_dump('ENDPOINT:',$endpointName));
         $model = $this->injectData($class, $pathToMock);
 
         $whatToCheck($model);
@@ -792,7 +805,9 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyGetAll(string $class, callable $whatToCheck)
     {
         $className = $this->getClassName($class);
-        $mockFile = sprintf('%s/GET_%s.xml', $className, $className);
+        $endpointName = $this->getEndpointName($class);
+
+        $mockFile = sprintf('%s/GET_%s.xml', $className, $endpointName);
         $model = $this->setUpRequestMock(
             'GET',
             $class,
@@ -827,7 +842,9 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyGetByIds(string $class, array $ids, callable $whatToCheck)
     {
         $className = $this->getClassName($class);
-        $mockFile = sprintf('%s/GET_%s_xx.xml', $className, $className);
+        $endpointName = $this->getEndpointName($class);
+
+        $mockFile = sprintf('%s/GET_%s_xx.xml', $className, $endpointName);
         $model = $this->setUpRequestMock(
             'GET',
             $class,
@@ -854,8 +871,10 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyGetId(string $class, string $id, callable $whatToCheck)
     {
         $className = $this->getClassName($class);
+        $endpointName = $this->getEndpointName($class);
+
         $path = sprintf('%s/Get/%s', $className, $id);
-        $mockFile = sprintf('%s/GET_%s_xx.xml', $className, $className);
+        $mockFile = sprintf('%s/GET_%s_xx.xml', $className, $endpointName);
         $model = $this->setUpRequestMock(
             'GET',
             $class,
@@ -878,9 +897,11 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyCreate(string $class, callable $beforeCreate, callable $afterCreate)
     {
         $className = $this->getClassName($class);
-        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/PUT_{$className}_NewAssetAccount_BareMinimum_REQ.xml";
-        $path = sprintf('%s/Create', $className);
-        $mockFileResponse = sprintf('%s/PUT_%s_NewAssetAccount_BareMinimum_REQ.xml', $className, $className);
+        $endpointName = $this->getEndpointName($class);
+
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/PUT_{$endpointName}_NewAssetAccount_BareMinimum_REQ.xml";
+        $path = sprintf('%s/Create', $endpointName);
+        $mockFileResponse = sprintf('%s/PUT_%s_NewAssetAccount_BareMinimum_REQ.xml', $className, $endpointName);
         $model = $this->setUpRequestMock(
             'PUT',
             $class,
@@ -906,9 +927,11 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyUpdate(string $class, callable $beforeUpdate, callable $afterUpdate)
     {
         $className = $this->getClassName($class);
-        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/POST_{$className}_UpdateAccount_REQ.xml";
-        $path = sprintf('%s/Update', $className);
-        $mockFileResponse = sprintf('%s/POST_%s_UpdateAccount_REQ.xml', $className, $className);
+        $endpointName = $this->getEndpointName($class);
+
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/POST_{$endpointName}_UpdateAccount_REQ.xml";
+        $path = sprintf('%s/Update', $endpointName);
+        $mockFileResponse = sprintf('%s/POST_%s_UpdateAccount_REQ.xml', $className, $endpointName);
         $model = $this->setUpRequestMock(
             'PUT',
             $class,
@@ -917,7 +940,6 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         );
 
         $data = json_decode(json_encode(simplexml_load_file($pathToMock)));
-        // die(var_dump($data->Account));
         $model->loadResult($data->Account);
 
         $beforeUpdate($model);
@@ -935,6 +957,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     public function verifyDelete(string $class, int $id, callable $whatToCheck)
     {
         $className = $this->getClassName($class);
+
         $path = sprintf('%s/Delete/%s', $className, $id);
         $model = $this->setUpRequestMock('DELETE', $class, $path);
 
@@ -1177,9 +1200,7 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     {
         $model = new $class($this->config);
         $data = json_decode(json_encode(simplexml_load_file($path)));
-        // die(var_dump($model));
         $model->loadResult($data->{$model->entity});
-        // die(var_dump($model, $data->{$model->entity}, $path));
 
         return $model;
     }
@@ -1249,7 +1270,9 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyNotAllowedPropertyForTypeOnly(string $class)
     {
         $className = $this->getClassName($class);
-        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$className}_Invalid_Property_For_Type_Only.xml";
+        $endpointName = $this->getEndpointName($class);
+
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$endpointName}_Invalid_Property_For_Type_Only.xml";
 
         $model = new $class($this->config);
 
@@ -1271,7 +1294,9 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyAbsentPropertyForType(string $class)
     {
         $className = $this->getClassName($class);
-        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$className}_Absent_Property_For_Type.xml";
+        $endpointName = $this->getEndpointName($class);
+
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$endpointName}_Absent_Property_For_Type.xml";
 
         $model = new $class($this->config);
 
@@ -1293,7 +1318,9 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyAbsentPropertyForTypeExcept(string $class)
     {
         $className = $this->getClassName($class);
-        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$className}_Invalid_Property_For_Type_Except.xml";
+        $endpointName = $this->getEndpointName($class);
+
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$endpointName}_Invalid_Property_For_Type_Except.xml";
 
         $model = new $class($this->config);
 
@@ -1315,7 +1342,8 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
     protected function verifyNotHaveMinimumPropertiesForCreate(string $class)
     {
         $className = $this->getClassName($class);
-        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$className}_not_have_minimum_for_create.xml";
+        $endpointName = $this->getEndpointName($class);
+        $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/{$endpointName}_not_have_minimum_for_create.xml";
         $fields = [
             'code' => [
                 'type' => 'string',
