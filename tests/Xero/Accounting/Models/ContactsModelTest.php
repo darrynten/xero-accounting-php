@@ -4,6 +4,16 @@ namespace DarrynTen\Xero\Tests\Xero\Accounting\Models;
 
 use DarrynTen\Xero\Models\Accounting\ContactsModel;
 use DarrynTen\Xero\Models\Accounting\AddressModel;
+use DarrynTen\Xero\Models\Accounting\BatchPaymentsModel;
+use DarrynTen\Xero\Models\Accounting\BrandingThemesModel;
+use DarrynTen\Xero\Models\Accounting\ContactGroupModel;
+use DarrynTen\Xero\Models\Accounting\ContactPersonsModel;
+use DarrynTen\Xero\Models\Accounting\PaymentTermsBillsModel;
+use DarrynTen\Xero\Models\Accounting\PaymentTermsSalesModel;
+use DarrynTen\Xero\Models\Accounting\PhonesModel;
+use DarrynTen\Xero\Models\Accounting\PurchasesTrackingCategoriesModel;
+use DarrynTen\Xero\Models\Accounting\SalesTrackingCategoryModel;
+use DarrynTen\Xero\Models\Accounting\TrackingCategoriesOptionsModel;
 use DarrynTen\Xero\Tests\Xero\Accounting\BaseModelTest;
 use DarrynTen\Xero\Request\RequestHandler;
 use GuzzleHttp\Client;
@@ -14,6 +24,10 @@ use DarrynTen\Xero\ModelCollection;
 use DarrynTen\Xero\Exception\ValidationException;
 
 class ContactsModelTest extends BaseModelTest
+/*
+ * Using BaseModelTest because AccountingModelTest is made to fit AccountingModel only. E.g. look
+ * at verifyInject() method.
+ */
 {
     public function testInstanceOf()
     {
@@ -32,14 +46,14 @@ class ContactsModelTest extends BaseModelTest
 
     public function testCanNullify()
     {
-        $this->verifyCanNullify(ContactsModel::class, 'accountNumber');
+        $this->verifyCanNullify(ContactsModel::class, 'skypeUserName');
     }
 
     // Failed asserting that exception of type "DarrynTen\Xero\Exception\ModelException" is thrown.
 
 /*    public function testBadImport()
     {
-        $this->verifyBadImport(ContactsModel::class, 'contactID');
+        $this->verifyBadImport(ContactsModel::class, '222');
     }*/
 
     public function testAttributes()
@@ -49,161 +63,179 @@ class ContactsModelTest extends BaseModelTest
             [
                 'contactID' => [
                     'type' => 'string',
-                    'nullable' => true,
-                    'readonly' => true,
+                    'nullable' => false,
+                    'readonly' => false,
+                    'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
                 ],
+                /* contactNumber property is missing in the provided Mock. Therefore I assume it is nullable.
+                 * Contrary, the property description in XML tables do not have indication that the field is nullable.
+                 * We need to contact Xero to clarify the question.
+                 */
                 'contactNumber' => [
                     'type' => 'string',
                     'nullable' => true,
                     'readonly' => true,
-                    'min' => 0,
+                    'min' => 1,
                     'max' => 50,
                 ],
+                /*
+                 * accountNumber property is missing in the provided Mock. Therefore I assume it is nullable.
+                 * Contrary, the property description in XML tables do not have indication that the field is nullable.
+                 * We need to contact Xero to clarify the question.
+                 */
                 'accountNumber' => [
                     'type' => 'string',
                     'nullable' => true,
                     'readonly' => false,
-                    'min' => 0,
+                    // the min/max fields defined in online docs but not in XeroAPI-schemas
+                    'min' => 1,
                     'max' => 50,
                 ],
                 'contactStatus' => [
                     'type' => 'string',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'name' => [
                     'type' => 'string',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
-                    'min' => 0,
-                    'max' => 255,
+                    'min' => 1,
+                    'max' => 500,
                 ],
                 'firstName' => [
                     'type' => 'string',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
-                    'min' => 0,
+                    'min' => 1,
                     'max' => 255,
                 ],
                 'lastName' => [
                     'type' => 'string',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
-                    'min' => 0,
+                    'min' => 1,
                     'max' => 255,
                 ],
                 'emailAddress' => [
                     'type' => 'string',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
-                    'min' => 0,
-                    'max' => 255,
+                    // the max field defined in online docs = 255, in XeroAPI-schemas 500
+                    'min' => 1,
+                    'max' => 500,
                 ],
                 'skypeUserName' => [
                     'type' => 'string',
                     'nullable' => true,
                     'readonly' => false,
+                    // the min/max fields  not defined in online docs, but not defined in XeroAPI-schemas
+                    'min' => 1,
+                    'max' => 50,
+                ],
+                'contactPersons' => [
+                    'type' => 'ContactPersonsModel',
+                    'nullable' => true,
+                    'readonly' => false,
                 ],
                 'bankAccountDetails' => [
                     'type' => 'integer',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'taxNumber' => [
-                    'type' => 'integer',
-                    'nullable' => true,
+                    'type' => 'string',
+                    'nullable' => false,
                     'readonly' => false,
-                    'minLength' => 0,
-                    'maxLength' => 50,
+                    'regex' => '/^[0-9a-zA-Z-_]+$/',
+                    'min' => 1,
+                    'max' => 50,
                 ],
                 'accountsReceivableTaxType' => [
                     'type' => 'string',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'accountsPayableTaxType' => [
                     'type' => 'string',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'addresses' => [
                     'type' => 'AddressModel',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'phones' => [
-                    'type' => 'Phones',
-                    'nullable' => true,
+                    'type' => 'PhonesModel',
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'isSupplier' => [
                     'type' => 'boolean',
-                    'nullable' => true,
-                    'readonly' => true,
+                    'nullable' => false,
+                    'readonly' => false,
                 ],
                 'isCustomer' => [
                     'type' => 'boolean',
-                    'nullable' => true,
-                    'readonly' => true,
+                    'nullable' => false,
+                    'readonly' => false,
                 ],
+                // https://github.com/XeroAPI/XeroAPI-Schemas/blob/master/src/main/resources/XeroSchemas/v2.00/CurrencyCode.xsd
+                // do we need a model for this?
+                // in the XMLSchemas type for defaultCurrency is defined as CurrencyCode
                 'defaultCurrency' => [
                     'type' => 'string',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'UpdatedDateUTC' => [
                     'type' => 'DateTime',
-                    'nullable' => true,
+                    'nullable' => false,
                     'readonly' => false,
                 ],
-                'contactPersons' => [
-                    'type' => 'ContactPersons',
-                    'nullable' => true,
-                    'readonly' => false,
-                ],
+                /*
+                 * The following are only retrieved on GET requests for a single contact or when pagination is used
+                 */
+                /*
+                 * XeroNetworkKey property is missing in the provided Mock. Therefore I assume it is nullable.
+                 * Contrary, the property description in XML tables do not have indication that the field is nullable.
+                 * We need to contact Xero to clarify the question.
+                 */
                 'XeroNetworkKey' => [
                     'type' => 'string',
                     'nullable' => true,
                     'readonly' => false,
                 ],
                 'salesDefaultAccountCode' => [
-                    'type' => 'integer',
-                    'nullable' => true,
+                    'type' => 'string',
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'purchasesDefaultAccountCode' => [
-                    'type' => 'integer',
-                    'nullable' => true,
+                    'type' => 'string',
+                    'nullable' => false,
                     'readonly' => false,
+                    'min' => 1,
+                    'max' => 50,
                 ],
                 'salesTrackingCategories' => [
-                    'type' => 'SalesTrackingCategories',
-                    'nullable' => true,
+                    'type' => 'SalesTrackingCategoryModel',
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'purchasesTrackingCategories' => [
-                    'type' => 'PurchasesTrackingCategories',
-                    'nullable' => true,
-                    'readonly' => false,
-                ],
-                'trackingCategoryName' => [
-                    'type' => 'string',
-                    'nullable' => true,
-                    'readonly' => false,
-                ],
-                // maybe TrackingOptionName as in mocks ???????
-                'trackingCategoryOption' => [
-                    'type' => 'string',
-                    'nullable' => true,
+                    'type' => 'PurchasesTrackingCategoriesModel',
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'paymentTerms' => [
-                    'type' => 'PaymentTerms',
-                    'nullable' => true,
+                    'type' => 'PaymentTermsModel',
+                    'nullable' => false,
                     'readonly' => false,
                 ],
                 'contactGroups' => [
-                    'type' => 'string',
+                    'type' => 'ContactGroupModel',
                     'nullable' => true,
                     'readonly' => false,
                 ],
@@ -213,28 +245,38 @@ class ContactsModelTest extends BaseModelTest
                     'readonly' => false,
                 ],
                 'brandingTheme' => [
-                    'type' => 'BrandingTheme',
+                    'type' => 'BrandingThemeModel',
                     'nullable' => true,
                     'readonly' => false,
                 ],
                 'batchPayments' => [
-                    'type' => 'BatchPayments',
-                    'nullable' => true,
+                    'type' => 'BatchPaymentsModel',
+                    'nullable' => false,
                     'readonly' => false,
                 ],
+                /*
+                 * discount property is missing in the provided Mock. Therefore I assume it is nullable.
+                 * Contrary, the property description in XML tables do not have indication that the field is nullable.
+                 * We need to contact Xero to clarify the question.
+                 */
                 'discount' => [
-                    'type' => 'integer',
+                    'type' => 'double',
                     'nullable' => true,
                     'readonly' => false,
                 ],
+                /*
+                 * hasAttachments property is missing in the provided Mock. Therefore I assume it is nullable.
+                 * Contrary, the property description in XML tables do not have indication that the field is nullable.
+                 * We need to contact Xero to clarify the question.
+                 */
                 'hasAttachments' => [
                     'type' => 'boolean',
                     'nullable' => true,
                     'readonly' => false,
                 ],
                 'contactPerson' => [
-                    'type' => 'ContactPerson',
-                    'nullable' => true,
+                    'type' => 'ContactPersonModel',
+                    'nullable' =>  true,
                     'readonly' => false,
                 ],
             ]
@@ -267,10 +309,15 @@ class ContactsModelTest extends BaseModelTest
             $this->assertEquals($model->taxNumber, 415465456454);
             $this->assertEquals($model->accountsReceivableTaxType, 'INPUT2');
             $this->assertEquals($model->accountsPayableTaxType, 'OUTPUT2');
+            $this->assertInstanceOf(AddressModel::class, $model->addresses);
+            //$this->assertEquals($model->addresses->addressType, 'POBOX');
+
 
             // TODO
             $objArray = json_decode($model->toJson(), true);
-            $this->assertCount(500, $objArray);
+
+            print_r($objArray);
+            $this->assertCount(33, $objArray);
         });
     }
 /*

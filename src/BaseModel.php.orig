@@ -620,13 +620,30 @@ abstract class BaseModel
         throw new ModelException((new \ReflectionClass($this))->getShortName(), $code, $message);
     }
 
+<<<<<<< HEAD
+    //method unused yet
+//    /**
+//     * Used to determine namespace for related models
+//     *
+//     * @var string Name of the model
+//     *
+//     * @return string The full namespace for a Model
+//     */
+//    private function getModelWithNamespace(string $model)
+//    {
+//        return sprintf(
+//            '%s\Models\%s',
+//            __NAMESPACE__,
+//            $model
+//        );
+//    }
+=======
     /**
      * Used to determine namespace for related models
      *
      * @var string Name of the model
      *
      * @return string The full namespace for a Model
-     * TODO Accounting, Payroll etc, or remove Accounting?
      */
     private function getModelWithNamespace(string $model)
     {
@@ -636,6 +653,7 @@ abstract class BaseModel
             $model
         );
     }
+>>>>>>> ContactsModel
 
     /**
      * Used to skip empty values after parsing from XML
