@@ -288,10 +288,19 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $this->validateRange(0xFF, 0, 8);
     }
 
+    /*
+     * @dataProvider exceptionProvider
+     */
+
     private function assertException($class, String $message, int $code)
     {
         $this->expectException($class);
         $this->expectExceptionMessage($message);
         $this->expectExceptionCode($code);
+    }
+
+    public static function exceptionProvider()
+    {
+        return array(AccountModel::class, 'Undefined model exception', 20100);
     }
 }
