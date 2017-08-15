@@ -156,16 +156,11 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
      * Verifies that model will throw error when we try method all that not supported by model
      *
      * @param string $class Full path to the class
-     *
-     * TODO use a dataprovider
+     * @param array $features features of the model
      */
-    protected function verifyNotSupportedAll(string $class)
+    protected function verifyNotSupportedAll(string $class, array $features)
     {
         $className = $this->getClassName($class);
-
-        $features = [
-            'all' => false,
-        ];
         $model = $this->injectPropertyInModel($class, 'features', $features);
 
         $this->expectException(ModelException::class);
@@ -179,14 +174,11 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
      * Verifies that model will throw error when we try method get that not supported by model
      *
      * @param string $class Full path to the class
+     * @param array $features features of the model
      */
-    protected function verifyNotSupportedGet(string $class)
+    protected function verifyNotSupportedGet(string $class, array $features)
     {
         $className = $this->getClassName($class);
-
-        $features = [
-            'get' => false,
-        ];
         $model = $this->injectPropertyInModel($class, 'features', $features);
 
         $this->expectException(ModelException::class);
@@ -200,14 +192,11 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
      * Verifies that model will throw error when we try method getByIds that not supported by model
      *
      * @param string $class Full path to the class
+     * @param array $features features of the model
      */
-    protected function verifyNotSupportedGetByIds(string $class)
+    protected function verifyNotSupportedGetByIds(string $class, array $features)
     {
         $className = $this->getClassName($class);
-
-        $features = [
-            'get' => false,
-        ];
         $model = $this->injectPropertyInModel($class, 'features', $features);
 
         $this->expectException(ModelException::class);
@@ -221,14 +210,11 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
      * Verifies that model will throw error when we try method delete that not supported by model
      *
      * @param string $class Full path to the class
+     * @param array $features features of the model
      */
-    protected function verifyNotSupportedDelete(string $class)
+    protected function verifyNotSupportedDelete(string $class, array $features)
     {
         $className = $this->getClassName($class);
-
-        $features = [
-            'delete' => false,
-        ];
         $model = $this->injectPropertyInModel($class, 'features', $features);
 
         $this->expectException(ModelException::class);
@@ -242,14 +228,11 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
      * Verifies that model will throw error when we try method create not supported by model
      *
      * @param string $class Full path to the class
+     * @param array $features features of the model
      */
-    protected function verifyNotSupportedCreate(string $class)
+    protected function verifyNotSupportedCreate(string $class, array $features)
     {
         $className = $this->getClassName($class);
-
-        $features = [
-            'create' => false,
-        ];
         $model = $this->injectPropertyInModel($class, 'features', $features);
 
         $this->expectException(ModelException::class);
@@ -263,14 +246,11 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
      * Verifies that model will throw error when we try method update not supported by model
      *
      * @param string $class Full path to the class
+     * @param array $features features of the model
      */
-    protected function verifyNotSupportedUpdate(string $class)
+    protected function verifyNotSupportedUpdate(string $class, array $features)
     {
         $className = $this->getClassName($class);
-
-        $features = [
-            'update' => false,
-        ];
         $model = $this->injectPropertyInModel($class, 'features', $features);
 
         $this->expectException(ModelException::class);
@@ -1355,5 +1335,23 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $this->expectExceptionCode(ModelException::REQUIRED_PROPERTY_MISSING_FOR_CREATE);
 
         $model->create();
+    }
+
+    /**
+     * @return array
+     */
+    public function falseFeaturesProvider()
+    {
+        return [
+            [
+                [
+                    'get' => false,
+                    'all' => false,
+                    'delete' => false,
+                    'create' => false,
+                    'update' => false,
+                ]
+            ]
+        ];
     }
 }

@@ -43,34 +43,58 @@ class AccountsModelTest extends BaseAccountingModelTest
         $this->verifyBadImport(AccountModel::class, 'name');
     }
 
-    public function testNotSupportedAll()
+    /**
+     * @dataProvider falseFeaturesProvider
+     * @param array $features
+     */
+    public function testNotSupportedAll(array $features)
     {
-        $this->verifyNotSupportedAll(AccountModel::class);
+        $this->verifyNotSupportedAll(AccountModel::class, $features);
     }
 
-    public function testNotSupportedGet()
+    /**
+     * @dataProvider falseFeaturesProvider
+     * @param array $features
+     */
+    public function testNotSupportedGet(array $features)
     {
-        $this->verifyNotSupportedGet(AccountModel::class);
+        $this->verifyNotSupportedGet(AccountModel::class, $features);
     }
 
-    public function testNotSupportedGetByIds()
+    /**
+     * @dataProvider falseFeaturesProvider
+     * @param array $features
+     */
+    public function testNotSupportedGetByIds(array $features)
     {
-        $this->verifyNotSupportedGetByIds(AccountModel::class);
+        $this->verifyNotSupportedGetByIds(AccountModel::class, $features);
     }
 
-    public function testNotSupportedDelete()
+    /**
+     * @dataProvider falseFeaturesProvider
+     * @param array $features
+     */
+    public function testNotSupportedDelete(array $features)
     {
-        $this->verifyNotSupportedDelete(AccountModel::class);
+        $this->verifyNotSupportedDelete(AccountModel::class, $features);
     }
 
-    public function testNotSupportedCreate()
+    /**
+     * @dataProvider falseFeaturesProvider
+     * @param array $features
+     */
+    public function testNotSupportedCreate(array $features)
     {
-        $this->verifyNotSupportedCreate(AccountModel::class);
+        $this->verifyNotSupportedCreate(AccountModel::class, $features);
     }
 
-    public function testNotSupportedUpdate()
+    /**
+     * @dataProvider falseFeaturesProvider
+     * @param array $features
+     */
+    public function testNotSupportedUpdate(array $features)
     {
-        $this->verifyNotSupportedUpdate(AccountModel::class);
+        $this->verifyNotSupportedUpdate(AccountModel::class, $features);
     }
 
     public function testNullWithoutNullableAtribute()
