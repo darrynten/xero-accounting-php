@@ -1,0 +1,10 @@
+<PaymentTerms>
+    <Bills>
+        <Day>4</Day>
+        <Type>OFFOLLOWINGMONTH</Type>
+    </Bills>
+    <Bills>
+        <Day>4</Day>
+        <Type>OFFOLLOWINGMONTH</Type>
+    </Bills>
+</PaymentTerms>

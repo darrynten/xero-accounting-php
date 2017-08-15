@@ -44,17 +44,12 @@ class PurchasesTrackingCategoriesModel extends BaseModel
     protected $fields = [
         'trackingCategoryName' => [
             'type' => 'string',
-            'nullable' => true,
-            /*
-             * Not sure it is true.
-             * I get the mistake: Model "SalesTrackingCategoriesModel" key trackingCategoryName Property is null without nullable permission
-             * The same is for trackingOptionName field.
-             */
+            'nullable' => false,
             'readonly' => false,
         ],
         'trackingOptionName' => [
             'type' => 'string',
-            'nullable' => true,
+            'nullable' => false,
             'readonly' => false,
         ],
     ];

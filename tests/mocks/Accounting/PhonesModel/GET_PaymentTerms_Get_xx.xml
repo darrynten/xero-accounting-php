@@ -1,0 +1,8 @@
+<Phones>
+    <Phone>
+        <PhoneType>DEFAULT</PhoneType>
+        <PhoneNumber>1111111</PhoneNumber>
+        <PhoneAreaCode>04</PhoneAreaCode>
+        <PhoneCountryCode>64</PhoneCountryCode>
+    </Phone>
+</Phones>

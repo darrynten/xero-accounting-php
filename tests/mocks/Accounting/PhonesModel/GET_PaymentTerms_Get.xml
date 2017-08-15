@@ -1,0 +1,17 @@
+<Phones>
+    <Phone>
+        <PhoneType>DEFAULT</PhoneType>
+        <PhoneNumber>1111111</PhoneNumber>
+        <PhoneAreaCode>04</PhoneAreaCode>
+        <PhoneCountryCode>64</PhoneCountryCode>
+    </Phone>
+    <Phone>
+        <PhoneType>FAX</PhoneType>
+    </Phone>
+    <Phone>
+        <PhoneType>MOBILE</PhoneType>
+    </Phone>
+    <Phone>
+        <PhoneType>DDI</PhoneType>
+    </Phone>
+</Phones>

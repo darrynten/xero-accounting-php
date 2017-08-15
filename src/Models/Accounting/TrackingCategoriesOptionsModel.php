@@ -42,6 +42,13 @@ class TrackingCategoriesOptionsModel extends BaseModel
      * @var array $fields
      */
     protected $fields = [
+        'trackingOptionID' => [
+            'type' => 'string',
+            'nullable' => false,
+            'readonly' => false,
+            'required' => true,
+            'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
+        ],
         'name' => [
             'type' => 'string',
             'nullable' => false,
@@ -55,5 +62,22 @@ class TrackingCategoriesOptionsModel extends BaseModel
             'nullable' => false,
             'readonly' => false,
         ],
+    ];
+
+    /**
+     * Features supported by the endpoint
+     *
+     * These features enable and disable certain calls from the base model
+     *
+     * @var array $features
+     */
+    protected $features = [
+        'all' => true,
+        'get' => true,
+        'create' => true,
+        'update' => true,
+        'delete' => true,
+        'order' => true,
+        'filter' => true,
     ];
 }

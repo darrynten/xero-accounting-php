@@ -61,22 +61,27 @@ class TrackingCategoriesModel extends BaseModel
             'required' => true,
             'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
         ],
-        'trackingOptionID' => [
-            'type' => 'string',
-            'nullable' => false,
-            'readonly' => false,
-            'required' => true,
-            'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
-        ],
         'options' => [
             'type' => 'TrackingCategoriesOptionsModel',
             'nullable' => false,
             'readonly' => false,
         ],
-        'option' => [
-            'type' => 'string',
-            'nullable' => false,
-            'readonly' => false,
-        ],
+    ];
+
+    /**
+     * Features supported by the endpoint
+     *
+     * These features enable and disable certain calls from the base model
+     *
+     * @var array $features
+     */
+    protected $features = [
+        'all' => true,
+        'get' => true,
+        'create' => true,
+        'update' => true,
+        'delete' => true,
+        'order' => true,
+        'filter' => true,
     ];
 }

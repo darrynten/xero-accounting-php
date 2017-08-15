@@ -1,0 +1,6 @@
+<PaymentTerms>
+    <Sales>
+        <Day>2</Day>
+        <Type>OFFOLLOWINGMONTH</Type>
+    </Sales>
+</PaymentTerms>
