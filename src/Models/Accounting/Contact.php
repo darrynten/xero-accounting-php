@@ -12,6 +12,7 @@
 namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\Validation\ValidationPatterns;
 
 /**
  * Contacts Model
@@ -47,7 +48,7 @@ class Contact extends BaseModel
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,
-            'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
+            'regex' => ValidationPatterns::GUID,
         ],
         /*
          * contactNumber property is missing in the provided Mock. Therefore I assume it is nullable.
@@ -131,7 +132,7 @@ class Contact extends BaseModel
             'type' => 'string',
             'nullable' => false,
             'readonly' => false,
-            'regex' => '/^[0-9a-zA-Z-_]+$/',
+            'regex' => ValidationPatterns::ALPHANUMERIC_DASH_UNDERSCORE,
             'min' => 1,
             'max' => 50,
         ],

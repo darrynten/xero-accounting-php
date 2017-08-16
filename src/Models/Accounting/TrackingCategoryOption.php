@@ -11,7 +11,8 @@
 
 namespace DarrynTen\Xero\Models\Accounting;
 
-use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\StaticBaseModel;
+use DarrynTen\Xero\Validation\ValidationPatterns;
 
 /**
  * Tracking Categories Options Model
@@ -19,7 +20,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Tracking Categories Options:
  * https://developer.xero.com/documentation/api/tracking-categories
  */
-class TrackingCategoriesOptionsModel extends BaseModel
+class TrackingCategoriesOptionsModel extends StaticBaseModel
 {
     /**
      *
@@ -47,7 +48,7 @@ class TrackingCategoriesOptionsModel extends BaseModel
             'nullable' => false,
             'readonly' => false,
             'required' => true,
-            'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
+            'regex' => ValidationPatterns::GUID,
         ],
     ];
 }

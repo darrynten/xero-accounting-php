@@ -12,6 +12,7 @@
 namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\Validation\ValidationPatterns;
 
 /**
  * ContactGroup Model
@@ -59,7 +60,7 @@ class ContactGroup extends BaseModel
             'type' => 'string',
             'nullable' => true,
             'readonly' => false,
-            'regex' => "/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/",
+            'regex' => ValidationPatterns::GUID,
         ],
         'contacts' => [
             'type' => 'Contact',

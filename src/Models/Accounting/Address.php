@@ -11,7 +11,7 @@
 
 namespace DarrynTen\Xero\Models\Accounting;
 
-use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\StaticBaseModel;
 
 /**
  * Address Model
@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Contacts:
  * https://developer.xero.com/documentation/api/contacts
  */
-class Address extends BaseModel
+class Address extends StaticBaseModel
 {
     /**
      *

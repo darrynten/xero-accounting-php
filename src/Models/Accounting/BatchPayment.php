@@ -11,7 +11,7 @@
 
 namespace DarrynTen\Xero\Models\Accounting;
 
-use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\StaticBaseModel;
 
 /**
  * BatchPayments Model
@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for BatchPayments:
  * https://developer.xero.com/documentation/api/contacts
  */
-class BatchPayment extends BaseModel
+class BatchPayment extends StaticBaseModel
 {
     /**
      *
