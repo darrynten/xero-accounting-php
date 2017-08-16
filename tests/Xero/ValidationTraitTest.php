@@ -23,7 +23,8 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
         $this->assertException(
             ValidationException::class,
             'value fergus failed to validate',
-            ValidationException::STRING_REGEX_MISMATCH);
+            ValidationException::STRING_REGEX_MISMATCH
+        );
         $this->validateRegex('fergus', '~[0-9]~');
     }
 
@@ -136,9 +137,12 @@ class ValidationTraitTest extends \PHPUnit_Framework_TestCase
             "Validation error value 😀😀😀 out of min(1) max(2) String length is out of range",
             ValidationException::STRING_LENGTH_OUT_OF_RANGE
         );
-        $this->validateRange(json_decode('"\uD83D\uDE00"')
+        $this->validateRange(
+            json_decode('"\uD83D\uDE00"')
             . json_decode('"\uD83D\uDE00"') . json_decode('"\uD83D\uDE00"'),
-            1, 2);
+            1,
+            2
+        );
     }
 
     public function testLargeIntValidation()

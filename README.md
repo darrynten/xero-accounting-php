@@ -184,23 +184,22 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [x] Invoice Types
   - [x] Line Amount Types
   - [x] Overpayment Types
-  - [ ] Payment Terms
+  - [x] Payment Terms
   - [x] Payment Types
   - [x] Phone types
   - [x] Prepayment Types
-  - [ ] Receipt Status
   - [ ] System Account Types
   - [ ] Tax Types
-  - [ ] User Roles
+  - [x] User Roles
 - [ ] Codes	//These are essentially simple enums
   - [x] Account Status Codes
-  - [ ] Contact Status Codes
+  - [x] Contact Status Codes
   - [x] Credit Note Status Codes (Covered by invoice status codes)
   - [x] Expense Claim Status Codes
   - [x] Invoice Status Codes
   - [ ] OverPayment Status Codes
-  - [ ] Payment Status Codes
-  - [ ] Prepayment Status Codes
+  - [x] Payment Status Codes
+  - [x] Prepayment Status Codes
 
 And any related models not listed, so if ExampleModel has a reference to ExampleCategory
 but that is not on the list above it too must get processed
@@ -286,3 +285,4 @@ if you have any ideas.
 
 * [Fergus Strangways-Dixon](https://github.com/fergusdixon)
 * [Igor Sergiichuk](https://github.com/igorsergiichuk)
+* [Brian Maiyo](https://github.com/kiproping)
