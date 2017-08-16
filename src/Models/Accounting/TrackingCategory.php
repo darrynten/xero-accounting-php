@@ -22,10 +22,11 @@ use DarrynTen\Xero\BaseModel;
 class TrackingCategory extends BaseModel
 {
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
+     * The API Endpoint
+     *
+     * @var string $endpoint
      */
-    public $entity = 'TrackingCategory';
+    public $endpoint = 'TrackingCategories';
 
     /**
      * String required to detect name of field used as id

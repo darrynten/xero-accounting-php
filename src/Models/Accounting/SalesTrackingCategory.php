@@ -33,9 +33,12 @@ class SalesTrackingCategory extends BaseModel
             'type' => 'string',
             'nullable' => true,
             /*
+             * TODO
              * Not sure it is true.
              * I get the mistake: Model "SalesTrackingCategoriesModel" key trackingCategoryName Property is null without nullable permission
              * The same is for trackingOptionName field.
+             *
+             * Find out what default is
              */
             'readonly' => false,
         ],
