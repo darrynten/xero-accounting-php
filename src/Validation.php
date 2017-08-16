@@ -37,6 +37,34 @@ trait Validation
             return true;
         }
 
+        /**
+         * We sometimes receive integers as strings
+         *
+         * This checks for that one particular condition with a strict
+         * regex
+         */
+        if ($itemType === 'string' && $definedType === 'integer') {
+            if (preg_match('/[0-9]{1,}/', $item)) {
+                return true;
+            }
+        }
+
+        /**
+         * We sometimes receive booleans as strings
+         *
+         * This checks for that one particular condition with a strict
+         * regex
+         */
+        if ($itemType === 'string' && $definedType === 'boolean') {
+            if ($item === 'true') {
+                return true;
+            }
+
+            if ($item === 'false') {
+                return true;
+            }
+        }
+
         return false;
     }
 
@@ -90,8 +118,8 @@ trait Validation
         }
 
         if (gettype($value) === 'string') {
-            // TODO why mbstrlen
-            if ((mb_strlen($value) <= $min) || (mb_strlen($value) > $max)) {
+            // TODO should this be multi-byte?
+            if ((strlen($value) <= $min) || (strlen($value) > $max)) {
                 throw new ValidationException(
                     ValidationException::STRING_LENGTH_OUT_OF_RANGE,
                     sprintf(

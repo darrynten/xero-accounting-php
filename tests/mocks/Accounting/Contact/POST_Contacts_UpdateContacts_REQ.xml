@@ -1,0 +1,21 @@
+<Contact>
+  <ContactID>eaa28f49-6028-4b6e-bb12-d8f6278073fc</ContactID>
+  <ContactNumber>ID001</ContactNumber>
+  <Name>ABC Limited</Name>
+  <FirstName>John</FirstName>
+  <LastName>Smith</LastName>
+  <EmailAddress>john.smith@gmail.com</EmailAddress>
+  <Addresses>
+    <Address>
+      <AddressType>POBOX</AddressType>
+      <AddressLine1>P O Box 123</AddressLine1>
+      <City>Wellington</City>
+      <PostalCode>6011</PostalCode>
+    </Address>
+  </Addresses>
+  <BankAccountDetails>01-0123-0123456-00</BankAccountDetails>
+  <TaxNumber>12-345-678</TaxNumber>
+  <AccountsReceivableTaxType>OUTPUT</AccountsReceivableTaxType>
+  <AccountsPayableTaxType>INPUT</AccountsPayableTaxType>
+  <DefaultCurrency>NZD</DefaultCurrency>
+</Contact>

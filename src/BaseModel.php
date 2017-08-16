@@ -34,6 +34,18 @@ abstract class BaseModel
     use Validation;
 
     /**
+     * API Endpoint
+     *
+     * Null means non interactable
+     */
+    public $endpoint = null;
+
+    /**
+     * Entity - set automatically
+     */
+    public $entity = null;
+
+    /**
      * A request object
      *
      * TODO this should be refactored out
@@ -61,6 +73,15 @@ abstract class BaseModel
         'order' => true,
         'filter' => true,
     ];
+
+    /**
+     * String required to detect name of field used as id
+     *
+     * null means no id field present
+     *
+     * @var string $idField
+     */
+    protected $idField  = null;
 
     /**
      * String required to detect if we need to validate model by types
@@ -95,8 +116,23 @@ abstract class BaseModel
         // TODO can't be spawning a million of these and passing in
         // config the whole time
         // TODO switch to Xero-Auth
+        $this->entity = $this->getClassName(static::class);
         $this->request = new RequestHandler($config);
         $this->config = $config;
+    }
+
+    /**
+     * Extracts className from path A\B\C\ClassName
+     *
+     * TODO this code exists elsewhere too
+     *
+     * @param string $classPath Full path to the class
+     */
+    private function getClassName(string $class)
+    {
+        $classPath = explode('\\', $class);
+        $className = $classPath[count($classPath) - 1];
+        return $className;
     }
 
     /**
@@ -129,23 +165,23 @@ abstract class BaseModel
      */
     public function __get($key)
     {
-        if (array_key_exists($key, $this->fields)) {
-            // there is some data loaded so we return it
-            if (array_key_exists($key, $this->fieldsData)) {
-                return $this->fieldsData[$key];
-            }
-
-            // there is some default value
-            if (array_key_exists('default', $this->fields[$key])) {
-                return $this->fields[$key]['default'];
-            }
-
-            // Accessing $obj->key when no default data is set returns null
-            // so we return it as default value for any described but not loaded property
-            return null;
+        if (!array_key_exists($key, $this->fields)) {
+            $this->throwException(ModelException::GETTING_UNDEFINED_PROPERTY, sprintf('key %s', $key));
         }
 
-        return $this->throwException(ModelException::GETTING_UNDEFINED_PROPERTY, sprintf('key %s', $key));
+        // there is some data loaded so we return it
+        if (array_key_exists($key, $this->fieldsData)) {
+            return $this->fieldsData[$key];
+        }
+
+        // there is some default value
+        if (array_key_exists('default', $this->fields[$key])) {
+            return $this->fields[$key]['default'];
+        }
+
+        // Accessing $obj->key when no default data is set returns null
+        // so we return it as default value for any described but not loaded property
+        return null;
     }
 
     /**
@@ -351,26 +387,55 @@ abstract class BaseModel
         if ($this->isValidPrimitive($value, $config['type'])) {
             return $this->$key;
         }
-        //we don't have models with DateTime or Related Objects yet
-//        // If it's a date we return a valid format
-//        if ($config['type'] === 'DateTime') {
-//            return $value->format('Y-m-d');
-//        }
-//
-//        // At this stage we would be dealing with a related Model
-//        $class = $this->getModelWithNamespace($config['type']);
-//
-//        // So if the class doesn't exist, throw
-//        if (!class_exists($class)) {
-//            $this->throwException(ModelException::UNEXPECTED_PREPARE_CLASS, sprintf(
-//                'Received unexpected namespaced class "%s" when preparing an object row',
-//                $class
-//            ));
-//        }
-//
-//        // And finally return an Object representation of the related Model
-//        return $value->toObject();
-    }// @codeCoverageIgnore
+
+        // If it's a date we return a valid format
+        if ($config['type'] === 'DateTime') {
+            return $value->format('Y-m-d');
+        }
+
+        if (isset($config['collection']) && $config['collection'] === true) {
+            return $this->prepareModelCollection($config, $value);
+        }
+
+        // At this stage we would be dealing with a related Model
+        $class = $this->getModelWithNamespace($config['type']);
+
+         // So if the class doesn't exist, throw
+        if (!class_exists($class)) {
+             $this->throwException(ModelException::UNEXPECTED_PREPARE_CLASS, sprintf(
+                 'Received unexpected namespaced class "%s" when preparing an object row',
+                 $class
+             ));
+        }
+
+        // And finally return an Object representation of the related Model
+        return $value->toObject();
+    }
+
+
+    /**
+     * Turns the model collection into an array of models
+     *
+     * @param array $config The config for the model
+     * @param ModelCollection $value Collection which is converted into array
+     * @return array
+     */
+    private function prepareModelCollection(array $config, ModelCollection $value)
+    {
+        $class = $this->getModelWithNamespace($config['type']);
+        if (!class_exists($class)) {
+            $this->throwException(ModelException::COLLECTION_WITHOUT_CLASS, sprintf(
+                'Class "%s" for collection does not exist',
+                $class
+            ));
+        }
+        $rows = [];
+        foreach ($value->results as $result) {
+            $rows[] = $result->toObject();
+        }
+        return $rows;
+    }
+
 
     /**
      * Switches between our id format and xeros id format
@@ -409,6 +474,49 @@ abstract class BaseModel
     }
 
     /**
+     * Runs a value through a basic type fix/check.
+     *
+     * Only thing it does right now is a very strict conversion of
+     * a string representation of an integer to the integer version
+     *
+     * @param mixed $value The thing to check
+     * @param string $value The desired type
+     *
+     * @return mixed Original thing, cast if needed
+     */
+    private function typeFix($value, $desiredType)
+    {
+        $itemType = gettype($value);
+
+        /**
+         * This typecast may only happen if you want an integer
+         * and the type is a string that has only numbers, and
+         * at least one number.
+         */
+        if ($itemType === 'string' && $desiredType === 'integer') {
+            if (preg_match('/[0-9]{1,}/', $value)) {
+                return (integer)$value;
+            }
+        }
+
+        /**
+         * This typecast may only happen if you want a boolean
+         * and the type a string that is either literally true or false
+         */
+        if ($itemType === 'string' && $desiredType === 'boolean') {
+            if ($value === 'true') {
+                return true;
+            }
+
+            if ($value === 'false') {
+                return false;
+            }
+        }
+
+        return $value;
+    }
+
+    /**
      * Process an item during loading a payload
      *
      * @var $resultItem The item to load
@@ -419,38 +527,48 @@ abstract class BaseModel
     private function processResultItem($resultItem, $config)
     {
         if ($this->isValidPrimitive($resultItem, $config['type'])) {
-            return $resultItem;
+            return $this->typeFix($resultItem, $config['type']);
         }
 
-        //we don't have models with DateTime or Related Objects yet
+        // If it's a date we return a new DateTime object
+        if ($config['type'] === \DateTime::class) {
+            return new \DateTime($resultItem);
+        }
+
+        if (isset($config['collection']) && $config['collection'] === true) {
+            $class = $this->getModelWithNamespace($config['type']);
+            if (!class_exists($class)) {
+                $this->throwException(ModelException::COLLECTION_WITHOUT_CLASS, sprintf(
+                    'class "%s"',
+                    $class
+                ));
+            }
+            return new ModelCollection($class, $this->config, $resultItem);
+        }
 //        // If it's null and it's allowed to be null
-//        if (is_null($resultItem) && ($config['nullable'] === true)) {
-//            return null;
-//        }
-//        // If it's a date we return a new DateTime object
-//        if ($config['type'] === \DateTime::class) {
-//            return new \DateTime($resultItem);
-//        }
-//
+        if (is_null($resultItem) && ($config['nullable'] === true)) {
+            return null;
+        }
+
 //        // At this stage, any type is going to be a model that needs to be loaded
-//        $class = $this->getModelWithNamespace($config['type']);
+        $class = $this->getModelWithNamespace($config['type']);
+
+        // So if the class doesn't exist, throw
+        if (!class_exists($class)) {
+            $this->throwException(ModelException::PROPERTY_WITHOUT_CLASS, sprintf(
+                'Received namespaced class "%s" when defined type is "%s"',
+                $class,
+                gettype($resultItem),
+                $resultItem
+            ));
+        }
 //
-//        // So if the class doesn't exist, throw
-//        if (!class_exists($class)) {
-//            $this->throwException(ModelException::PROPERTY_WITHOUT_CLASS, sprintf(
-//                'Received namespaced class "%s" when defined type is "%s"',
-//                $class,
-//                gettype($resultItem),
-//                $resultItem
-//            ));
-//        }
+//         // Make a new instance of the class and load the item
+        $instance = new $class($this->config);
+        $instance->loadResult($resultItem);
 //
-//        // Make a new instance of the class and load the item
-//        $instance = new $class($this->config);
-//        $instance->loadResult($resultItem);
-//
-//        // Return that instance
-//        return $instance;
+//         // Return that instance
+        return $instance;
     }
 
     /**
@@ -480,8 +598,7 @@ abstract class BaseModel
                 ));
             }
 
-            $result->$remoteKey = $this->castToType($config['type'], $result->$remoteKey);
-            $value = $this->processResultItem($result->$remoteKey, $config);
+            $value = $this->processResultItem($result->{$remoteKey}, $config);
 
             // This is similar to __set but it can fill read only fields
             $this->checkDefined($key, $value);
@@ -576,22 +693,22 @@ abstract class BaseModel
         throw new ModelException((new \ReflectionClass($this))->getShortName(), $code, $message);
     }
 
-    //method unused yet
-//    /**
-//     * Used to determine namespace for related models
-//     *
-//     * @var string Name of the model
-//     *
-//     * @return string The full namespace for a Model
-//     */
-//    private function getModelWithNamespace(string $model)
-//    {
-//        return sprintf(
-//            '%s\Models\%s',
-//            __NAMESPACE__,
-//            $model
-//        );
-//    }
+    /**
+     * Used to determine namespace for related models
+     *
+     * @var string Name of the model
+     *
+     * @return string The full namespace for a Model
+     * TODO Accounting, Payroll etc, or remove Accounting?
+     */
+    private function getModelWithNamespace(string $model)
+    {
+        return sprintf(
+            '%s\Models\Accounting\%s',
+            __NAMESPACE__,
+            $model
+        );
+    }
 
     /**
      * Used to skip empty values after parsing from XML
@@ -750,6 +867,8 @@ abstract class BaseModel
 
     /**
      * Validate model properties by model type
+     *
+     * TODO not sure what's happening here
      *
      * @throws ModelException
      */
