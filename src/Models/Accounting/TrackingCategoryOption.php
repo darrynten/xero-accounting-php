@@ -22,12 +22,6 @@ use DarrynTen\Xero\BaseModel;
 class TrackingCategoriesOptionsModel extends BaseModel
 {
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'Option';
-
-    /**
      *
      * Details on writable properties for Tracking Categories Options:
      * https://developer.xero.com/documentation/api/tracking-categories

@@ -29,12 +29,6 @@ class ContactGroup extends BaseModel
     public $endpoint = 'ContactGroups';
 
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'ContactGroup';
-
-    /**
      * String required to detect name of field used as id
      *
      * @var string $idField

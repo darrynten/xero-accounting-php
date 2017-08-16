@@ -22,12 +22,6 @@ use DarrynTen\Xero\BaseModel;
 class BatchPayment extends BaseModel
 {
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'BatchPayment';
-
-    /**
      *
      * Details on writable properties for BatchPayment:
      * https://developer.xero.com/documentation/api/contacts

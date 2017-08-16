@@ -22,12 +22,6 @@ use DarrynTen\Xero\BaseModel;
 class SalesTrackingCategory extends BaseModel
 {
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'SalesTrackingCategory';
-
-    /**
      *
      * Details on writable properties for SalesTrackingCategory:
      * https://developer.xero.com/documentation/api/tracking-categories

@@ -22,12 +22,6 @@ use DarrynTen\Xero\BaseModel;
 class PaymentTermsSale extends BaseModel
 {
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'Sales';
-
-    /**
      *
      * Details on writable properties for PaymentTerms Sales:
      * https://developer.xero.com/documentation/api/types#PaymentTerms

@@ -22,12 +22,6 @@ use DarrynTen\Xero\BaseModel;
 class Phone extends BaseModel
 {
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'Phone';
-
-    /**
      *
      * Details on writable properties for Phones:
      * https://developer.xero.com/documentation/api/types#phones

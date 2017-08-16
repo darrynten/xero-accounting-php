@@ -22,12 +22,6 @@ use DarrynTen\Xero\BaseModel;
 class Address extends BaseModel
 {
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'Address';
-
-    /**
      *
      * Details on writable properties for Address:
      * https://developer.xero.com/documentation/api/Types

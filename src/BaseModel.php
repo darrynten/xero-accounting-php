@@ -41,6 +41,11 @@ abstract class BaseModel
     public $endpoint = null;
 
     /**
+     * Entity - set automaticall
+     */
+    public $entity = null;
+
+    /**
      * A request object
      *
      * TODO this should be refactored out
@@ -111,8 +116,23 @@ abstract class BaseModel
         // TODO can't be spawning a million of these and passing in
         // config the whole time
         // TODO switch to Xero-Auth
+        $this->entity = $this->getClassName(static::class);
         $this->request = new RequestHandler($config);
         $this->config = $config;
+    }
+
+    /**
+     * Extracts className from path A\B\C\ClassName
+     *
+     * TODO this code exists elsewhere too
+     *
+     * @param string $classPath Full path to the class
+     */
+    private function getClassName(string $class)
+    {
+        $classPath = explode('\\', $class);
+        $className = $classPath[count($classPath) - 1];
+        return $className;
     }
 
     /**

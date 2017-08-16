@@ -94,12 +94,14 @@ class ModelCollection
     /**
      * Extracts className from path A\B\C\ClassName
      *
+     * TODO this code exists elsewhere too
+     *
      * @param string $classPath Full path to the class
      */
     private function getClassName(string $class)
     {
         $classPath = explode('\\', $class);
-        $className = $classPath[ count($classPath) - 1];
+        $className = $classPath[count($classPath) - 1];
         return $className;
     }
 }

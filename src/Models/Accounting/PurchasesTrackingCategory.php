@@ -22,12 +22,6 @@ use DarrynTen\Xero\BaseModel;
 class PurchasesTrackingCategory extends BaseModel
 {
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'PurchasesTrackingCategory';
-
-    /**
      *
      * Details on writable properties for PurchasesTrackingCategory:
      * https://developer.xero.com/documentation/api/tracking-categories

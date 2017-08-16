@@ -40,12 +40,6 @@ class Contact extends BaseModel
     public $endpoint = 'Contacts';
 
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'Contact';
-
-    /**
      * String required to detect name of field used as id
      *
      * @var string $idField

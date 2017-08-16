@@ -22,13 +22,6 @@ use DarrynTen\Xero\BaseModel;
 class TrackingCategory extends BaseModel
 {
     /**
-     * The API Endpoint
-     *
-     * @var string $endpoint
-     */
-    public $endpoint = 'TrackingCategories';
-
-    /**
      * String required to get right property from \stdObj after parsing from xml
      * @var string $entity
      */

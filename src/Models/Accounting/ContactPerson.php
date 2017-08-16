@@ -22,12 +22,6 @@ use DarrynTen\Xero\BaseModel;
 class ContactPerson extends BaseModel
 {
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     * @var string $entity
-     */
-    public $entity = 'ContactPerson';
-
-    /**
      *
      * Details on writable properties for Contact Persons:
      * https://developer.xero.com/documentation/api/contacts#contact-persons

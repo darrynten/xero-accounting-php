@@ -32,13 +32,6 @@ class Account extends BaseModel
     public $endpoint = 'Accounts';
 
     /**
-     * String required to get right property from \stdObj after parsing from xml
-     *
-     * @var string $entity
-     */
-    public $entity = 'Account';
-
-    /**
      * String required to detect name of field used as id
      *
      * @var string $idField
