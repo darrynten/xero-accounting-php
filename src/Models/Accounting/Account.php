@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Account:
  * https://developer.xero.com/documentation/api/accounts
  */
-class AccountModel extends BaseModel
+class Account extends BaseModel
 {
     /**
      * The API Endpoint
@@ -29,14 +29,7 @@ class AccountModel extends BaseModel
      *
      * @var string $endpoint
      */
-    protected $endpoint = 'Accounts';
-
-    /**
-     * String required to get right property from \stdObj after parsing from xml
-     *
-     * @var string $entity
-     */
-    protected $entity = 'Account';
+    public $endpoint = 'Accounts';
 
     /**
      * String required to detect name of field used as id
@@ -49,6 +42,8 @@ class AccountModel extends BaseModel
      * String required to detect if we need to validate model by types
      *
      * @var string $typeField
+     *
+     * TODO what is going on with this?
      */
     protected $typeField  = 'type';
 
