@@ -11,7 +11,7 @@
 
 namespace DarrynTen\Xero\Models\Accounting;
 
-use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\StaticBaseModel;
 
 /**
  * Payment Terms Model
@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Payment Terms:
  * https://developer.xero.com/documentation/api/types#PaymentTerms
  */
-class PaymentTerm extends BaseModel
+class PaymentTerm extends StaticBaseModel
 {
     /**
      *

@@ -11,7 +11,7 @@
 
 namespace DarrynTen\Xero\Models\Accounting;
 
-use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\StaticBaseModel;
 
 /**
  * Purchases Tracking Categories Model
@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Purchases Tracking Categories:
  * https://developer.xero.com/documentation/api/tracking-categories
  */
-class PurchasesTrackingCategory extends BaseModel
+class PurchasesTrackingCategory extends StaticBaseModel
 {
     /**
      *

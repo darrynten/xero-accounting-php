@@ -63,22 +63,6 @@ abstract class BaseModel extends StaticBaseModel
     ];
 
     /**
-     * String required to detect name of field used as id
-     *
-     * null means no id field present
-     *
-     * @var string $idField
-     */
-    protected $idField  = null;
-
-    /**
-     * String required to detect if we need to validate model by types
-     *
-     * @var string $typeField
-     */
-    protected $typeField  = '';
-
-    /**
      * Make a new model
      *
      * Setup a request handler and bind the config

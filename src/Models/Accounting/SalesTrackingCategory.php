@@ -11,7 +11,7 @@
 
 namespace DarrynTen\Xero\Models\Accounting;
 
-use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\StaticBaseModel;
 
 /**
  * Sales Tracking Categories Model
@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Sales Tracking Categories:
  * https://developer.xero.com/documentation/api/tracking-categories
  */
-class SalesTrackingCategory extends BaseModel
+class SalesTrackingCategory extends StaticBaseModel
 {
     /**
      *

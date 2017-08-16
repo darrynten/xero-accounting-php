@@ -54,6 +54,26 @@ abstract class StaticBaseModel
     protected $config = null;
 
     /**
+     * String required to detect name of field used as id
+     *
+     * null means no id field present
+     *
+     * TODO where is this implemented
+     *
+     * @var string $idField
+     */
+    protected $idField  = null;
+
+    /**
+     * String required to detect if we need to validate model by types
+     *
+     * TODO what's actually happening with this?
+     *
+     * @var string $typeField
+     */
+    protected $typeField  = '';
+
+    /**
      * A models fields are stored here
      *
      * @var array $fieldsData

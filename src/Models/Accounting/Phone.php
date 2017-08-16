@@ -11,7 +11,7 @@
 
 namespace DarrynTen\Xero\Models\Accounting;
 
-use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\StaticBaseModel;
 
 /**
  * Phones Model
@@ -19,7 +19,7 @@ use DarrynTen\Xero\BaseModel;
  * Details on writable properties for Phones:
  * https://developer.xero.com/documentation/api/types#phones
  */
-class Phone extends BaseModel
+class Phone extends StaticBaseModel
 {
     /**
      *
