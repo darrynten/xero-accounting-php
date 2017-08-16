@@ -303,58 +303,9 @@ class ContactsModelTest extends BaseAccountingModelTest
 
             // TODO
             $objArray = json_decode($model->toJson(), true);
+            // TODO write the tests
 
             $this->assertCount(32, $objArray);
         });
     }
-/*
-    public function testGetByIds()
-    {
-        $this->verifyGetByIds(
-            Contact::class,
-            ['297c2dc5-cc47-4afd-8ec8-74990b8761e9', '5040915e-8ce7-4177-8d08-fde416232f18'],
-            function ($results) {
-                $this->assertEquals(2, count($results));
-                $model = $results[0];
-                $this->assertEquals($model->accountID, '297c2dc5-cc47-4afd-8ec8-74990b8761e9');
-                $this->assertFalse($model->enablePaymentsToAccount);
-                $this->assertEquals($model->type, 'BANK');
-            }
-        );
-    }
-
-    public function testCreate()
-    {
-        $this->verifyCreate(
-            Contact::class,
-            function ($response) {
-                $this->assertEquals(304, $response->code);
-                // TODO Do actual checks
-            },
-            function ($response) {
-                $this->assertEquals(304, $response->code);
-            }
-        );
-    }
-
-    public function testUpdate()
-    {
-        $this->verifyUpdate(
-            Contact::class,
-            function ($response) {
-                $this->assertEquals(200, $response->code);
-                // TODO Do actual checks
-            },
-            function ($response) {
-                $this->assertEquals(200, $response->code);
-            }
-        );
-    }
-
-    public function testDelete()
-    {
-        $this->verifyDelete(Contact::class, 11, function () {
-            // TODO do actual checks
-        });
-    }*/
 }

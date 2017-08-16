@@ -800,8 +800,6 @@ abstract class BaseAccountingModelTest extends \PHPUnit_Framework_TestCase
         $endpointName = $model->endpoint;
         
         $pathToMock = __DIR__ . "/../../mocks/Accounting/{$className}/GET_{$endpointName}_xx.xml";
-        // (var_dump('CLASS:',$className));
-        // (var_dump('ENDPOINT:',$endpointName));
         $model = $this->injectData($class, $pathToMock);
 
         $whatToCheck($model);
