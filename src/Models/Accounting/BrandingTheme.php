@@ -12,6 +12,7 @@
 namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
+use DarrynTen\Xero\Validation\ValidationPatterns;
 
 /**
  * BrandingThemes Model
@@ -58,7 +59,7 @@ class BrandingTheme extends BaseModel
             'nullable' => false,
             'readonly' => false,
             'required' => true,
-            'regex' => "/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/",
+            'regex' => ValidationPatterns::GUID,
         ],
         'createdDateUTC' => [
             'type' => 'DateTime',

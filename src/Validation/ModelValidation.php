@@ -1,6 +1,6 @@
 <?php
 
-namespace DarrynTen\Xero;
+namespace DarrynTen\Xero\Validation;
 
 use DarrynTen\Xero\Exception\ModelException;
 

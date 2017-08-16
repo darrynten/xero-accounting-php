@@ -12,6 +12,7 @@ use ReflectionClass;
 use DarrynTen\Xero\Exception\ModelException;
 use DarrynTen\Xero\ModelCollection;
 use DarrynTen\Xero\Exception\ValidationException;
+use DarrynTen\Xero\Validation\ValidationPatterns;
 
 class ContactsModelTest extends BaseAccountingModelTest
 /*
@@ -55,7 +56,7 @@ class ContactsModelTest extends BaseAccountingModelTest
                     'type' => 'string',
                     'nullable' => false,
                     'readonly' => false,
-                    'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
+                    'regex' => ValidationPatterns::GUID,
                 ],
                 /* contactNumber property is missing in the provided Mock. Therefore I assume it is nullable.
                  * Contrary, the property description in XML tables do not have indication that the field is nullable.
@@ -138,7 +139,7 @@ class ContactsModelTest extends BaseAccountingModelTest
                     'type' => 'string',
                     'nullable' => false,
                     'readonly' => false,
-                    'regex' => '/^[0-9a-zA-Z-_]+$/',
+                    'regex' => ValidationPatterns::ALPHANUMERIC_DASH_UNDERSCORE,
                     'min' => 1,
                     'max' => 50,
                 ],

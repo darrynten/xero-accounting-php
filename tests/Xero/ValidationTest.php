@@ -3,7 +3,7 @@
 namespace DarrynTen\Xero\Tests\Xero;
 
 use DarrynTen\Xero\Exception\ValidationException;
-use DarrynTen\Xero\Validation;
+use DarrynTen\Xero\Validation\Validation;
 
 class ValidationTest extends \PHPUnit_Framework_TestCase
 {

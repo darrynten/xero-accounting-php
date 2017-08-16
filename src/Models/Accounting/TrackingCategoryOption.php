@@ -12,6 +12,7 @@
 namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\StaticBaseModel;
+use DarrynTen\Xero\Validation\ValidationPatterns;
 
 /**
  * Tracking Categories Options Model
@@ -47,7 +48,7 @@ class TrackingCategoriesOptionsModel extends StaticBaseModel
             'nullable' => false,
             'readonly' => false,
             'required' => true,
-            'regex' => '/^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$/',
+            'regex' => ValidationPatterns::GUID,
         ],
     ];
 }

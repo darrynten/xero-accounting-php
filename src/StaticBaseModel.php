@@ -15,8 +15,8 @@
 namespace DarrynTen\Xero;
 
 use DarrynTen\Xero\Exception\ModelException;
-use DarrynTen\Xero\Validation;
-use DarrynTen\Xero\ModelValidation;
+use DarrynTen\Xero\Validation\Validation;
+use DarrynTen\Xero\Validation\ModelValidation;
 
 /**
  * This is the base class for all the Xero Models.
@@ -89,9 +89,6 @@ abstract class StaticBaseModel
      */
     public function __construct(array $config)
     {
-        // TODO can't be spawning a million of these and passing in
-        // config the whole time
-        // TODO switch to Xero-Auth
         $this->entity = $this->getClassName(static::class);
         $this->config = $config;
     }

@@ -244,6 +244,8 @@ abstract class BaseModel extends StaticBaseModel
     /**
      * Used to generate right filters for query from raw parameters
      *
+     * TODO this needs investigation
+     *
      * @param array $parameters
      *
      * @return array
@@ -336,10 +338,10 @@ abstract class BaseModel extends StaticBaseModel
         return $xml;
     }
 
-
-
     /**
      * Validate that model has minimum amount of fields for create operation
+     *
+     * TODO move to model validation trait?
      *
      * @throws ModelException
      */
