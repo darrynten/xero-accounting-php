@@ -118,6 +118,7 @@ trait Validation
         }
 
         if (gettype($value) === 'string') {
+            // TODO should this be multi-byte?
             if ((strlen($value) <= $min) || (strlen($value) > $max)) {
                 throw new ValidationException(
                     ValidationException::STRING_LENGTH_OUT_OF_RANGE,
