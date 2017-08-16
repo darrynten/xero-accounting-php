@@ -18,5 +18,6 @@ class ValidationPatterns
 
     public $descriptions = [
         self::GUID => 'Globally Unique Identifier',
+        self::ALPHANUMERIC_DASH_UNDERSCORE => 'Alphanumeric String incl Dash `-` and Underscore `_`',
     ];
 }
