@@ -14,9 +14,9 @@ class OverpaymentStatusCodesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('VOIDED', OverpaymentStatusCodes::VOIDED);
 
         $expected = [
-            OverpaymentStatusCodes::AUTHORISED => 'An overpayment has been authorised',
-            OverpaymentStatusCodes::PAID => 'An overpayment has been paid',
-            OverpaymentStatusCodes::VOIDED => 'An overpayment has been voided',
+            OverpaymentStatusCodes::AUTHORISED => 'Authorised overpayment',
+            OverpaymentStatusCodes::PAID => 'Paid overpayment',
+            OverpaymentStatusCodes::VOIDED => 'Voided overpayment',
         ];
 
         $this->assertEquals($expected, $overpaymentCodes->descriptions);
