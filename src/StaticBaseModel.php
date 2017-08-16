@@ -16,6 +16,7 @@ namespace DarrynTen\Xero;
 
 use DarrynTen\Xero\Exception\ModelException;
 use DarrynTen\Xero\Validation;
+use DarrynTen\Xero\ModelValidation;
 
 /**
  * This is the base class for all the Xero Models.
@@ -31,6 +32,7 @@ use DarrynTen\Xero\Validation;
 abstract class StaticBaseModel
 {
     use Validation;
+    use ModelValidation;
 
     /**
      * Entity - set automatically
@@ -244,7 +246,6 @@ abstract class StaticBaseModel
         return $rows;
     }
 
-
     /**
      * Switches between our id format and xeros id format
      *
@@ -260,7 +261,6 @@ abstract class StaticBaseModel
 
         return $remoteKey;
     }
-
 
     /**
      * Turns the model into an object for exporting.
@@ -353,12 +353,12 @@ abstract class StaticBaseModel
             }
             return new ModelCollection($class, $this->config, $resultItem);
         }
-//        // If it's null and it's allowed to be null
+       // If it's null and it's allowed to be null
         if (is_null($resultItem) && ($config['nullable'] === true)) {
             return null;
         }
 
-//        // At this stage, any type is going to be a model that needs to be loaded
+       // At this stage, any type is going to be a model that needs to be loaded
         $class = $this->getModelWithNamespace($config['type']);
 
         // So if the class doesn't exist, throw
@@ -370,12 +370,12 @@ abstract class StaticBaseModel
                 $resultItem
             ));
         }
-//
-//         // Make a new instance of the class and load the item
+
+        // Make a new instance of the class and load the item
         $instance = new $class($this->config);
         $instance->loadResult($resultItem);
-//
-//         // Return that instance
+
+        // Return that instance
         return $instance;
     }
 
@@ -418,73 +418,6 @@ abstract class StaticBaseModel
 
         if ($this->typeField) {
             $this->validateModelByType();
-        }
-    }
-
-    /**
-     * Ensure the field is defined
-     *
-     * @var string $key
-     * @var string|integer $value
-     * @thows ModelException
-     */
-    private function checkDefined($key, $value)
-    {
-        if (!array_key_exists($key, $this->fields)) {
-            $this->throwException(ModelException::SETTING_UNDEFINED_PROPERTY, sprintf('key %s value %s', $key, $value));
-        }
-    }
-
-    /**
-     * Check if the field is read only
-     *
-     * @var string $key
-     * @var string|integer $value
-     * @thows ModelException
-     */
-    private function checkReadOnly($key, $value)
-    {
-        if ($this->fields[$key]['readonly']) {
-            $this->throwException(ModelException::SETTING_READ_ONLY_PROPERTY, sprintf('key %s value %s', $key, $value));
-        }
-    }
-
-    /**
-     * Check if the field can be set to null
-     *
-     * @var string $key
-     * @var string|integer $value
-     * @thows ModelException
-     */
-    private function checkNullable($key, $value)
-    {
-        if (!$this->fields[$key]['nullable'] && is_null($value)) {
-            $this->throwException(ModelException::NULL_WITHOUT_NULLABLE, sprintf('attempting to nullify key %s', $key));
-        }
-    }
-
-    /**
-     * Check min-max and regex validation
-     *
-     * @var string $key
-     * @var string|integer $value
-     * @thows ModelException
-     */
-    private function checkValidation($key, $value)
-    {
-        // If it is and can be null
-        if (is_null($value) && ($this->fields[$key]['nullable'] === true)) {
-            return;
-        }
-
-        // If values have a defined min/max then validate
-        if ((array_key_exists('min', $this->fields[$key])) && (array_key_exists('max', $this->fields[$key]))) {
-            $this->validateRange($value, $this->fields[$key]['min'], $this->fields[$key]['max']);
-        }
-
-        // If values have a defined regex then validate
-        if (array_key_exists('regex', $this->fields[$key])) {
-            $this->validateRegex($value, $this->fields[$key]['regex']);
         }
     }
 
@@ -555,71 +488,5 @@ abstract class StaticBaseModel
         }
 
         return $value;
-    }
-
-    /**
-     * Validates all required properties in model
-     */
-    public function validateModel()
-    {
-        foreach ($this->fields as $key => $config) {
-            if (!array_key_exists($key, $this->fieldsData) &&
-                array_key_exists('required', $config)
-            ) {
-                $this->throwException(ModelException::REQUIRED_PROPERTY_MISSING, sprintf(
-                    'Defined key "%s" not present in model',
-                    $key
-                ));
-            }
-        }
-
-        if ($this->typeField) {
-            $this->validateModelByType();
-        }
-    }
-
-    /**
-     * Validate model properties by model type
-     *
-     * TODO not sure what's happening here
-     *
-     * @throws ModelException
-     */
-    private function validateModelByType()
-    {
-        foreach ($this->fields as $key => $config) {
-            if (array_key_exists('only', $config)) {
-                //property exist and not allowed
-                if (array_key_exists($key, $this->fieldsData) &&
-                    $this->fieldsData[$this->typeField] !== $config['only']['type']
-                ) {
-                    $this->throwException(
-                        ModelException::NOT_ALLOWED_PROPERTY_FOR_TYPE,
-                        sprintf('property %s', $key)
-                    );
-                }
-                //property not exists but required
-                if (!array_key_exists($key, $this->fieldsData) &&
-                    $this->fieldsData[$this->typeField] === $config['only']['type'] &&
-                    $config['only']['required']
-                ) {
-                    $this->throwException(
-                        ModelException::REQUIRED_PROPERTY_MISSING_FOR_TYPE,
-                        sprintf('property %s', $key)
-                    );
-                }
-            }
-
-            if (array_key_exists('except', $config)) {
-                if (array_key_exists($key, $this->fieldsData) &&
-                    $this->fieldsData[$this->typeField] === $config['except']['type']
-                ) {
-                    $this->throwException(
-                        ModelException::NOT_ALLOWED_PROPERTY_FOR_TYPE,
-                        sprintf('property %s', $key)
-                    );
-                }
-            }
-        }
     }
 }
