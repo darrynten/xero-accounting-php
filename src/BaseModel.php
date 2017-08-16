@@ -41,7 +41,7 @@ abstract class BaseModel
     public $endpoint = null;
 
     /**
-     * Entity - set automaticall
+     * Entity - set automatically
      */
     public $entity = null;
 

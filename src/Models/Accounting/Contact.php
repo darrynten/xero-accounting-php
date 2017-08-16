@@ -12,17 +12,6 @@
 namespace DarrynTen\Xero\Models\Accounting;
 
 use DarrynTen\Xero\BaseModel;
-use DarrynTen\Xero\Models\Accounting\Address;
-use DarrynTen\Xero\Models\Accounting\BatchPayment;
-use DarrynTen\Xero\Models\Accounting\BrandingTheme;
-use DarrynTen\Xero\Models\Accounting\ContactGroup;
-use DarrynTen\Xero\Models\Accounting\ContactPerson;
-use DarrynTen\Xero\Models\Accounting\PaymentTermsBill;
-use DarrynTen\Xero\Models\Accounting\PaymentTermsSale;
-use DarrynTen\Xero\Models\Accounting\Phone;
-use DarrynTen\Xero\Models\Accounting\PurchasesTrackingCategory;
-use DarrynTen\Xero\Models\Accounting\SalesTrackingCategory;
-use DarrynTen\Xero\Models\Accounting\TrackingCategoryOption;
 
 /**
  * Contacts Model
