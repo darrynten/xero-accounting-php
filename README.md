@@ -197,7 +197,7 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [ ] Credit Note Status Codes
   - [x] Expense Claim Status Codes
   - [ ] Invoice Status Codes
-  - [ ] OverPayment Status Codes
+  - [x] OverPayment Status Codes
   - [x] Payment Status Codes
   - [x] Prepayment Status Codes
 
