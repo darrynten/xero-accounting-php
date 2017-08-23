@@ -4,8 +4,6 @@ namespace DarrynTen\Xero\Tests\Xero;
 
 use DarrynTen\Xero\Exception\ValidationException;
 use DarrynTen\Xero\Validation;
-use DarrynTen\Xero\Xero;
-use DarrynTen\Xero\Request\RequestHandler;
 
 class ValidationTest extends \PHPUnit_Framework_TestCase
 {
@@ -194,17 +192,6 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $this->validateRange(null, 5, 15);
     }
 
-    public function testValidateNullCharacter()
-    {
-        //These strings need the double inverted comma for the null character to register properly
-        $this->assertException(
-            ValidationException::class,
-            "Validation error value \0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0asdhd out of min(5) max(15) String length is out of range",
-            ValidationException::STRING_LENGTH_OUT_OF_RANGE
-        );
-        $this->validateRange("\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0asdhd", 5, 15);
-    }
-
     public function testValidateNullType()
     {
         //Should this be valid?
@@ -227,25 +214,14 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
 
         //HexEncoding
         $this->assertTrue($this->isValidPrimitive(bin2hex("foobar"), 'string'));
-        $this->assertException(
-            ValidationException::class,
-            "Validation error value 666f6f0a626172 out of min(5) max(10) String length is out of range",
-            ValidationException::STRING_LENGTH_OUT_OF_RANGE
-        );
-        $this->validateRange(bin2hex("foo\nbar"), 5, 10);
-    }
 
+        //Validate range is moved to bottom test
+    }
     public function testValidateBaseSixtyFourEncodedType()
     {
         //b64 encoding tests
         $this->assertTrue($this->isValidPrimitive(base64_encode("foobar"), 'string'));
         $this->validateRange(base64_encode("foobar"), 5, 15);
-        $this->assertException(
-            ValidationException::class,
-            'Validation error value Zm9vYmFyIGJhcmZvbyAKIHpvbw== out of min(5) max(15) String length is out of range',
-            ValidationException::STRING_LENGTH_OUT_OF_RANGE
-        );
-        $this->validateRange(base64_encode("foobar barfoo \n zoo"), 5, 15);
     }
 
     public function testEmojiValidation()
@@ -254,17 +230,7 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $this->validateRange(json_decode('"\uD83D\uDE00"'), 0, 8);
         //Emoji is one character, can this lead to problems?
         $this->validateRange(json_decode('"\uD83D\uDE00"'), 0, 2);
-        $this->assertException(
-            ValidationException::class,
-            "Validation error value 😀😀😀 out of min(1) max(2) String length is out of range",
-            ValidationException::STRING_LENGTH_OUT_OF_RANGE
-        );
-        $this->validateRange(
-            json_decode('"\uD83D\uDE00"')
-            . json_decode('"\uD83D\uDE00"') . json_decode('"\uD83D\uDE00"'),
-            1,
-            2
-        );
+
     }
 
     public function testLargeIntValidation()
@@ -288,10 +254,6 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $this->validateRange(0xFF, 0, 8);
     }
 
-    /*
-     * @dataProvider exceptionProvider
-     */
-
     private function assertException($class, String $message, int $code)
     {
         $this->expectException($class);
@@ -299,8 +261,48 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $this->expectExceptionCode($code);
     }
 
-    public static function exceptionProvider()
+    /**
+     * @dataProvider stringExceptionProvider
+     */
+
+    public function testLengthValidation($message, $test, $min, $max)
     {
-        return array(AccountModel::class, 'Undefined model exception', 20100);
+        $this->assertException(
+            ValidationException::class,
+            sprintf("Validation error value %s String length is out of range", $message),
+            ValidationException::STRING_LENGTH_OUT_OF_RANGE
+        );
+        $this->validateRange($test, $min, $max);
+    }
+
+    public static function stringExceptionProvider()
+    {
+        return array(
+            array(
+                '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0asdhd out of min(5) max(15)',
+                '\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0asdhd',
+                5,
+                15,
+            ),
+            array(
+                '666f6f0a626172 out of min(5) max(10)',
+                bin2hex("foo\nbar"),
+                5,
+                10
+            ),
+            array(
+                'Zm9vYmFyIGJhcmZvbyAKIHpvbw== out of min(5) max(15)',
+                base64_encode("foobar barfoo \n zoo"),
+                5,
+                15
+            ),
+            array(
+                '😀😀😀 out of min(1) max(2)',
+                json_decode('"\uD83D\uDE00"')
+                . json_decode('"\uD83D\uDE00"') . json_decode('"\uD83D\uDE00"'),
+                1,
+                2
+            ),
+        );
     }
 }
