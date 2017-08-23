@@ -41,9 +41,11 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     public function testRegexpException()
     {
         $value = 'bar';
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage(sprintf('value %s failed to validate', $value));
-        $this->expectExceptionCode(ValidationException::STRING_REGEX_MISMATCH);
+        $this->assertException(
+            ValidationException::class,
+            sprintf('value %s failed to validate', $value),
+            ValidationException::STRING_REGEX_MISMATCH
+        );
 
         $this->traitObject->validateRegex($value, '/^foo$/');
     }
@@ -58,16 +60,16 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $value = 10;
         $min = 11;
         $max = 12;
-        $this->expectException(ValidationException::class);
-        $this->expectExceptionMessage(
+        $this->assertException(
+            ValidationException::class,
             sprintf(
                 'value %s out of min(%s) max(%s)',
                 $value,
                 $min,
                 $max
-            )
+            ),
+            ValidationException::INTEGER_OUT_OF_RANGE
         );
-        $this->expectExceptionCode(ValidationException::INTEGER_OUT_OF_RANGE);
 
         $this->traitObject->validateRange($value, $min, $max);
     }
@@ -159,17 +161,6 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $this->validateRange(20, 5, 15);
     }
 
-    public function testValidateStringException()
-    {
-        $this->assertEquals(null, $this->validateRange('asd', 1, 6));
-        $this->assertException(
-            ValidationException::class,
-            'Validation error value AAaaaaaa out of min(5) max(6) String length is out of range',
-            ValidationException::STRING_LENGTH_OUT_OF_RANGE
-        );
-        $this->validateRange('AAaaaaaa', 5, 6);
-    }
-
     public function testValidationTypeException()
     {
         $this->assertException(
@@ -230,7 +221,6 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
         $this->validateRange(json_decode('"\uD83D\uDE00"'), 0, 8);
         //Emoji is one character, can this lead to problems?
         $this->validateRange(json_decode('"\uD83D\uDE00"'), 0, 2);
-
     }
 
     public function testLargeIntValidation()
