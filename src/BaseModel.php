@@ -16,22 +16,22 @@ namespace DarrynTen\Xero;
 
 use DarrynTen\Xero\Request\RequestHandler;
 use DarrynTen\Xero\Exception\ModelException;
-use DarrynTen\Xero\Validation;
 
 /**
- * This is the base class for all the Xero Models.
+ * This is the base class for all the interactable Xero Models.
  *
- * This class covers all/get/save/delete/update calls for all models that require it.
+ * This class covers all/get/save/delete/update calls for models that require it.
  *
- * It also handles conversion between our Model objects, and JSON that is
- * compliant with the Xero API format.
- *
- * In order to provide ORM type functionality we support re-hydrating any
- * model with its defined JSON fragment.
+ * @inheritdoc
  */
-abstract class BaseModel
+abstract class BaseModel extends StaticBaseModel
 {
-    use Validation;
+    /**
+     * API Endpoint
+     *
+     * Null means non interactable
+     */
+    public $endpoint = null;
 
     /**
      * A request object
@@ -63,27 +63,6 @@ abstract class BaseModel
     ];
 
     /**
-     * String required to detect if we need to validate model by types
-     *
-     * @var string $typeField
-     */
-    protected $typeField  = '';
-
-    /**
-     * A models configuration is stored here
-     *
-     * @var array $config
-     */
-    protected $config = null;
-
-    /**
-     * A models fields are stored here
-     *
-     * @var array $fieldsData
-     */
-    private $fieldsData = [];
-
-    /**
      * Make a new model
      *
      * Setup a request handler and bind the config
@@ -92,60 +71,9 @@ abstract class BaseModel
      */
     public function __construct(array $config)
     {
-        // TODO can't be spawning a million of these and passing in
-        // config the whole time
-        // TODO switch to Xero-Auth
+        parent::__construct($config);
+
         $this->request = new RequestHandler($config);
-        $this->config = $config;
-    }
-
-    /**
-     * Ensure attempted sets are valid
-     *
-     * The key has to be defined in the field map
-     * The key needs to be checked if it is read only
-     * The key cannot set null if it is not nullable
-     * The value for the key must pass validation
-     *
-     * @var string $key The property
-     * @var mixed $value The desired value
-     */
-    public function __set($key, $value)
-    {
-        $this->checkDefined($key, $value);
-        $this->checkReadOnly($key, $value);
-        $this->checkNullable($key, $value);
-        $this->checkValidation($key, $value);
-
-        $this->fieldsData[$key] = $value;
-    }
-
-    /**
-     * __get
-     *
-     * @param string $key Desired property
-     *
-     * @thows ModelException
-     */
-    public function __get($key)
-    {
-        if (array_key_exists($key, $this->fields)) {
-            // there is some data loaded so we return it
-            if (array_key_exists($key, $this->fieldsData)) {
-                return $this->fieldsData[$key];
-            }
-
-            // there is some default value
-            if (array_key_exists('default', $this->fields[$key])) {
-                return $this->fields[$key]['default'];
-            }
-
-            // Accessing $obj->key when no default data is set returns null
-            // so we return it as default value for any described but not loaded property
-            return null;
-        }
-
-        return $this->throwException(ModelException::GETTING_UNDEFINED_PROPERTY, sprintf('key %s', $key));
     }
 
     /**
@@ -314,351 +242,9 @@ abstract class BaseModel
     }
 
     /**
-     * Returns a JSON representation of the Model
-     *
-     * Conforms 100% to Xero responses and can load into other copies
-     *
-     * @return string JSON representation of the Model
-     */
-    public function toJson()
-    {
-        return json_encode($this->toObject(), JSON_PRESERVE_ZERO_FRACTION);
-    }
-
-    /**
-     * Prepare an object row for export
-     *
-     * @var string $key The objects key
-     * @var array $config The configuration for the object field
-     *
-     * @return mixed|null|void
-     */
-    private function prepareObjectRow($key, $config)
-    {
-        $value = $this->__get($key);
-
-        // If null and allowed to be null, return null
-        if (is_null($value) && $this->fields[$key]['nullable']) {
-            return null;
-        }
-
-        // If null and can't be null then throw
-        if (is_null($value) && !$this->fields[$key]['nullable']) {
-            $this->throwException(ModelException::NULL_WITHOUT_NULLABLE, sprintf('key %s', $key));
-        }
-
-        // If it's a valid primitive
-        if ($this->isValidPrimitive($value, $config['type'])) {
-            return $this->$key;
-        }
-        //we don't have models with DateTime or Related Objects yet
-//        // If it's a date we return a valid format
-//        if ($config['type'] === 'DateTime') {
-//            return $value->format('Y-m-d');
-//        }
-//
-//        // At this stage we would be dealing with a related Model
-//        $class = $this->getModelWithNamespace($config['type']);
-//
-//        // So if the class doesn't exist, throw
-//        if (!class_exists($class)) {
-//            $this->throwException(ModelException::UNEXPECTED_PREPARE_CLASS, sprintf(
-//                'Received unexpected namespaced class "%s" when preparing an object row',
-//                $class
-//            ));
-//        }
-//
-//        // And finally return an Object representation of the related Model
-//        return $value->toObject();
-    }// @codeCoverageIgnore
-
-    /**
-     * Switches between our id format and xeros id format
-     *
-     * Sage is PascalCase ours is camelCase
-     *
-     * @var string $localKey
-     *
-     * @return string Remote key
-     */
-    private function getRemoteKey($localKey)
-    {
-        $remoteKey = ucfirst($localKey);
-
-        return $remoteKey;
-    }
-
-
-    /**
-     * Turns the model into an object for exporting.
-     *
-     * Loops through valid fields and exports only those, so as to match the
-     * Xero API responses.
-     *
-     * @return array
-     */
-    private function toObject()
-    {
-        $result = [];
-        foreach ($this->fields as $localKey => $config) {
-            $remoteKey = $this->getRemoteKey($localKey);
-            $result[$remoteKey] = $this->prepareObjectRow($localKey, $config);
-        }
-
-        return $result;
-    }
-
-    /**
-     * Process an item during loading a payload
-     *
-     * @var $resultItem The item to load
-     * @var $config The configuration for the item
-     *
-     * @return mixed
-     */
-    private function processResultItem($resultItem, $config)
-    {
-        if ($this->isValidPrimitive($resultItem, $config['type'])) {
-            return $resultItem;
-        }
-
-        //we don't have models with DateTime or Related Objects yet
-//        // If it's null and it's allowed to be null
-//        if (is_null($resultItem) && ($config['nullable'] === true)) {
-//            return null;
-//        }
-//        // If it's a date we return a new DateTime object
-//        if ($config['type'] === \DateTime::class) {
-//            return new \DateTime($resultItem);
-//        }
-//
-//        // At this stage, any type is going to be a model that needs to be loaded
-//        $class = $this->getModelWithNamespace($config['type']);
-//
-//        // So if the class doesn't exist, throw
-//        if (!class_exists($class)) {
-//            $this->throwException(ModelException::PROPERTY_WITHOUT_CLASS, sprintf(
-//                'Received namespaced class "%s" when defined type is "%s"',
-//                $class,
-//                gettype($resultItem),
-//                $resultItem
-//            ));
-//        }
-//
-//        // Make a new instance of the class and load the item
-//        $instance = new $class($this->config);
-//        $instance->loadResult($resultItem);
-//
-//        // Return that instance
-//        return $instance;
-    }
-
-    /**
-     * Loads up a result from an object
-     *
-     * The object can be created by json_decode of a Xero response
-     *
-     * Used for restoring and loading related models
-     *
-     * @var object $result A raw object representation
-     */
-    public function loadResult(\stdClass $result)
-    {
-        $result = $this->removeSkippedResults($result);
-
-        // We only care about entires that are defined in the model
-        foreach ($this->fields as $key => $config) {
-            $remoteKey = $this->getRemoteKey($key);
-            // If the payload is missing an item
-            if (!property_exists($result, $remoteKey)) {
-                if (!array_key_exists('required', $config)) {
-                    continue;
-                }
-                $this->throwException(ModelException::INVALID_LOAD_RESULT_PAYLOAD, sprintf(
-                    'Defined key "%s" not present in payload',
-                    $key
-                ));
-            }
-
-            $result->$remoteKey = $this->castToType($config['type'], $result->$remoteKey);
-            $value = $this->processResultItem($result->$remoteKey, $config);
-
-            // This is similar to __set but it can fill read only fields
-            $this->checkDefined($key, $value);
-            $this->checkNullable($key, $value);
-            $this->checkValidation($key, $value);
-
-            $this->fieldsData[$key] = $value;
-        }
-
-        if ($this->typeField) {
-            $this->validateModelByType();
-        }
-    }
-
-    /**
-     * Ensure the field is defined
-     *
-     * @var string $key
-     * @var string|integer $value
-     * @thows ModelException
-     */
-    private function checkDefined($key, $value)
-    {
-        if (!array_key_exists($key, $this->fields)) {
-            $this->throwException(ModelException::SETTING_UNDEFINED_PROPERTY, sprintf('key %s value %s', $key, $value));
-        }
-    }
-
-    /**
-     * Check if the field is read only
-     *
-     * @var string $key
-     * @var string|integer $value
-     * @thows ModelException
-     */
-    private function checkReadOnly($key, $value)
-    {
-        if ($this->fields[$key]['readonly']) {
-            $this->throwException(ModelException::SETTING_READ_ONLY_PROPERTY, sprintf('key %s value %s', $key, $value));
-        }
-    }
-
-    /**
-     * Check if the field can be set to null
-     *
-     * @var string $key
-     * @var string|integer $value
-     * @thows ModelException
-     */
-    private function checkNullable($key, $value)
-    {
-        if (!$this->fields[$key]['nullable'] && is_null($value)) {
-            $this->throwException(ModelException::NULL_WITHOUT_NULLABLE, sprintf('attempting to nullify key %s', $key));
-        }
-    }
-
-    /**
-     * Check min-max and regex validation
-     *
-     * @var string $key
-     * @var string|integer $value
-     * @thows ModelException
-     */
-    private function checkValidation($key, $value)
-    {
-        // If it is and can be null
-        if (is_null($value) && ($this->fields[$key]['nullable'] === true)) {
-            return;
-        }
-
-        // If values have a defined min/max then validate
-        if ((array_key_exists('min', $this->fields[$key])) && (array_key_exists('max', $this->fields[$key]))) {
-            $this->validateRange($value, $this->fields[$key]['min'], $this->fields[$key]['max']);
-        }
-
-        // If values have a defined regex then validate
-        if (array_key_exists('regex', $this->fields[$key])) {
-            $this->validateRegex($value, $this->fields[$key]['regex']);
-        }
-    }
-
-    /**
-     * Properly handles and throws ModelExceptions
-     *
-     * @var integer $code The exception code
-     * @var string $message Any additional information
-     *
-     * @throws ModelException
-     */
-    public function throwException($code, $message = '')
-    {
-        throw new ModelException((new \ReflectionClass($this))->getShortName(), $code, $message);
-    }
-
-    //method unused yet
-//    /**
-//     * Used to determine namespace for related models
-//     *
-//     * @var string Name of the model
-//     *
-//     * @return string The full namespace for a Model
-//     */
-//    private function getModelWithNamespace(string $model)
-//    {
-//        return sprintf(
-//            '%s\Models\%s',
-//            __NAMESPACE__,
-//            $model
-//        );
-//    }
-
-    /**
-     * Used to skip empty values after parsing from XML
-     *
-     * @param \stdClass $results
-     *
-     * @return \stdClass
-     */
-    private function removeSkippedResults(\stdClass $results)
-    {
-        foreach ((array) $results as $field => $value) {
-            if ($value instanceof \stdClass && empty((array) $value)) {
-                $results->$field = null;
-            }
-        }
-
-        return $results;
-    }
-
-    /**
-     * Used to generate XML nodes from array
-     *
-     * @param $array
-     *
-     * @return string
-     */
-    private function generateXmlFromArray($array)
-    {
-        $xml = '';
-
-        if (is_array($array) || is_object($array)) {
-            foreach ($array as $key => $value) {
-                if ($value) {
-                    $xml .= '<' . $key . '>' . "\n" . $this->generateXmlFromArray($value) . '</' . $key . '>' . "\n";
-                }
-            }
-        } else {
-            $xml = htmlspecialchars($array, ENT_QUOTES) . "\n";
-        }
-
-        return $xml;
-    }
-
-    /**
-     *
-     * Used to generate XML nodes from array
-     *
-     * @param $array
-     *
-     * TODO what is difference between generate valid xml and the
-     * other method?
-     *
-     * @return string
-     */
-    private function generateValidXmlFromArray(array $array)
-    {
-        $xml = '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
-
-        $xml .= '<' . $this->entity . '>' . "\n";
-        $xml .= $this->generateXmlFromArray($array);
-        $xml .= '</' . $this->entity . '>' . "\n";
-
-        return $xml;
-    }
-
-    /**
      * Used to generate right filters for query from raw parameters
+     *
+     * TODO this needs investigation
      *
      * @param array $parameters
      *
@@ -707,92 +293,55 @@ abstract class BaseModel
     }
 
     /**
-     * Used to cast values as we get strings from XML
+     * Used to generate XML nodes from array
      *
-     * @param string $expectedType
-     * @param $value
+     * @param $array
      *
-     * @return int|mixed
+     * @return string
      */
-    private function castToType(string $expectedType, $value)
+    private function generateXmlFromArray($array)
     {
-        if ($expectedType === 'integer') {
-            return (int) $value;
+        $xml = '';
+
+        if (is_array($array) || is_object($array)) {
+            foreach ($array as $key => $value) {
+                if ($value) {
+                    $xml .= '<' . $key . '>' . "\n" . $this->generateXmlFromArray($value) . '</' . $key . '>' . "\n";
+                }
+            }
+        } else {
+            $xml = htmlspecialchars($array, ENT_QUOTES) . "\n";
         }
 
-        if ($expectedType === 'boolean') {
-            return filter_var($value, FILTER_VALIDATE_BOOLEAN);
-        }
-
-        return $value;
+        return $xml;
     }
 
     /**
-     * Validates all required properties in model
-     */
-    public function validateModel()
-    {
-        foreach ($this->fields as $key => $config) {
-            if (!array_key_exists($key, $this->fieldsData) &&
-                array_key_exists('required', $config)
-            ) {
-                $this->throwException(ModelException::REQUIRED_PROPERTY_MISSING, sprintf(
-                    'Defined key "%s" not present in model',
-                    $key
-                ));
-            }
-        }
-
-        if ($this->typeField) {
-            $this->validateModelByType();
-        }
-    }
-
-    /**
-     * Validate model properties by model type
      *
-     * @throws ModelException
+     * Used to generate XML nodes from array
+     *
+     * @param $array
+     *
+     * TODO what is difference between generate valid xml and the
+     * other method?
+     *
+     * @return string
      */
-    private function validateModelByType()
+    protected function generateValidXmlFromArray(array $array)
     {
-        foreach ($this->fields as $key => $config) {
-            if (array_key_exists('only', $config)) {
-                //property exist and not allowed
-                if (array_key_exists($key, $this->fieldsData) &&
-                    $this->fieldsData[$this->typeField] !== $config['only']['type']
-                ) {
-                    $this->throwException(
-                        ModelException::NOT_ALLOWED_PROPERTY_FOR_TYPE,
-                        sprintf('property %s', $key)
-                    );
-                }
-                //property not exists but required
-                if (!array_key_exists($key, $this->fieldsData) &&
-                    $this->fieldsData[$this->typeField] === $config['only']['type'] &&
-                    $config['only']['required']
-                ) {
-                    $this->throwException(
-                        ModelException::REQUIRED_PROPERTY_MISSING_FOR_TYPE,
-                        sprintf('property %s', $key)
-                    );
-                }
-            }
+        $xml = '<?xml version="1.0" encoding="UTF-8" ?>' . "\n";
 
-            if (array_key_exists('except', $config)) {
-                if (array_key_exists($key, $this->fieldsData) &&
-                    $this->fieldsData[$this->typeField] === $config['except']['type']
-                ) {
-                    $this->throwException(
-                        ModelException::NOT_ALLOWED_PROPERTY_FOR_TYPE,
-                        sprintf('property %s', $key)
-                    );
-                }
-            }
-        }
+        $xml .= '<' . $this->entity . '>' . "\n";
+        $xml .= $this->generateXmlFromArray($array);
+        $xml .= '</' . $this->entity . '>' . "\n";
+
+        return $xml;
     }
 
     /**
      * Validate that model has minimum amount of fields for create operation
+     *
+     * TODO move to model validation trait?
      *
      * @throws ModelException
      */
