@@ -15,10 +15,10 @@ class ReceiptStatusCodesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('DECLINED', ReceiptStatusCodes::DECLINED);
 
         $expected = [
-            ReceiptStatusCodes::DRAFT => 'A draft receipt (default)',
-            ReceiptStatusCodes::SUBMITTED => 'Receipt has been submitted as part of an expense claim',
-            ReceiptStatusCodes::AUTHORISED => 'Receipt has been authorised in the Xero app',
-            ReceiptStatusCodes::DECLINED => 'Receipt has been declined in the Xero app',
+            ReceiptStatusCodes::DRAFT => 'Draft receipt',
+            ReceiptStatusCodes::SUBMITTED => 'Submitted receipt ',
+            ReceiptStatusCodes::AUTHORISED => 'Authorised receipt',
+            ReceiptStatusCodes::DECLINED => 'Declined receipt',
         ];
 
         $this->assertEquals($expected, $receiptCodes->descriptions);

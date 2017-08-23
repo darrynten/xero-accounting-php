@@ -19,9 +19,9 @@ class ReceiptStatusCodes
     const DECLINED = 'DECLINED';
 
     public $descriptions = [
-        self::DRAFT => 'A draft receipt (default)',
-        self::SUBMITTED => 'Receipt has been submitted as part of an expense claim',
-        self::AUTHORISED => 'Receipt has been authorised in the Xero app',
-        self::DECLINED => 'Receipt has been declined in the Xero app',
+        self::DRAFT => 'Draft receipt',
+        self::SUBMITTED => 'Submitted receipt ',
+        self::AUTHORISED => 'Authorised receipt',
+        self::DECLINED => 'Declined receipt',
     ];
 }
