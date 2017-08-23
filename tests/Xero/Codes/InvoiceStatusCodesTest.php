@@ -17,12 +17,12 @@ class InvoiceStatusCodesTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('VOIDED', InvoiceStatusCodes::VOIDED);
 
         $expected = [
-            InvoiceStatusCodes::DRAFT => 'A Draft Invoice (default)',
-            InvoiceStatusCodes::SUBMITTED => 'An Awaiting Approval Invoice',
-            InvoiceStatusCodes::DELETED => 'A Deleted Invoice',
-            InvoiceStatusCodes::AUTHORISED => 'An Invoice that is Approved and Awaiting Payment OR partially paid',
-            InvoiceStatusCodes::PAID => 'An Invoice that is completely Paid',
-            InvoiceStatusCodes::VOIDED => 'A Voided Invoice',
+            InvoiceStatusCodes::DRAFT => 'Draft invoice',
+            InvoiceStatusCodes::SUBMITTED => 'Invoice awaiting approval ',
+            InvoiceStatusCodes::DELETED => 'Deleted invoice',
+            InvoiceStatusCodes::AUTHORISED => 'Approved invoice',
+            InvoiceStatusCodes::PAID => 'Paid invoice  ',
+            InvoiceStatusCodes::VOIDED => 'Voided invoice',
         ];
 
         $this->assertEquals($expected, $invoiceCodes->descriptions);
