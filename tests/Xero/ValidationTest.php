@@ -219,8 +219,6 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
     {
         //is this valid?
         $this->validateRange(json_decode('"\uD83D\uDE00"'), 0, 8);
-        //Emoji is one character, can this lead to problems?
-        $this->validateRange(json_decode('"\uD83D\uDE00"'), 0, 2);
     }
 
     public function testLargeIntValidation()
@@ -293,6 +291,12 @@ class ValidationTest extends \PHPUnit_Framework_TestCase
                 1,
                 2
             ),
+            array(
+                '😀 out of min(0) max(2)',
+                json_decode('"\uD83D\uDE00"'),
+                0,
+                2
+            )
         );
     }
 }
