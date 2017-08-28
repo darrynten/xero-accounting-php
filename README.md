@@ -5,15 +5,9 @@ Add badges
 
 [Xero Accounting API](https://developer.xero.com/) for PHP.
 
-This is a 100% fully unit tested and (mostly) fully featured unofficial PHP client for the Xero Accounting package
+This will be a 100% fully unit tested and (mostly) fully featured unofficial PHP client for the Xero Accounting package
 
 Depends on `xero-oauth-php` request handler.
-
-> "Beautiful accounting software"
-
-```bash
-composer require darrynten/xero-accounting-php
-```
 
 PHP 7.0+
 
@@ -22,7 +16,7 @@ PHP 7.0+
 [JSON support](https://devblog.xero.com/json-for-the-accounting-api-974a3b8adfb4) is finally here,
 although the current models in the documentation are still in XML.
 
-# TODO
+This handler is using the xml version, but returns json
 
 ## Features
 
@@ -69,11 +63,8 @@ $account->delete();
 
 ### Application base
 
-* Guzzle is used for the communications (I think we should replace?)
+* Guzzle is used for the communications
 * The library has 100% test coverage
-* The library supports framework-agnostic caching so you don't have to
-worry about which framework your package that uses this package is going
-to end up in.
 
 The client is not 100% complete and is a work in progress, details below.
 
@@ -85,7 +76,6 @@ Each section must have a short explaination and some example code like on
 the API docs page.
 
 Checked off bits are complete.
-
 
 ## Note
 
@@ -106,58 +96,30 @@ a basic model.
 
 As such we only need to focus on the tricky bits.
 
+## Models and Collections
+
+These are the basic data models
+
+* StaticBaseModel - These are for models that do not interact with APIs
+* BaseModel - Extends the Static one and adds common API call methods.
+This is for Models that have endpoints.
+* ModelCollection - Generic collection of models
+
 # NB the project is evolving quickly
 
 ## This might be outdated
 
 ### If it is and you fix it please update this document
 
-#### The best place to look is the example model
+# NB initial delivery consists of:
 
-### Basic model template
-
-```
-Name             | Type             | Additional Information
--------------------------------------------------------------------
-Name             | string           | None.
-type         	 | AccountType	    | Required, 'only' => 'BANK'
-Balance          | decimal          | Read Only / System Generated
-ReportingGroupId | nullable integer | None.
-status           | nullable string  | 'valid' => 'accountStatusCodes'
-except           | type		    | 'BANK'
-```
-
-We'll be using that for this example (docblocks excluded from example but are
-required)
-
-# TODO
-- Add example model
-- Add example type
-- Add example code
-
-Following that template will very quickly create models for the project.
-
-There is an example mock folder to help you get going quickly.
-
-A lot of the heavy testing is handled by the BaseAccountingModelTest class. It makes
-testing and getting good defensive coverage quite trivial for most things.
-
-# TODO
-Add example test
-
-We aim to have all models tested against mocks provided by Xero's docs.
-
-# NB initial delivery consists of only these models:
-
-TODO - Mark models with an asterix that are pure CRUD models
-
+- [ ] Xero Oauth Request Handler Package Integration
 - [x] Base
 - [x] Exception Handling
 - [ ] CRUD
-- [ ] Save Call
 - [ ] Real CRUD Response Mocks
 - [ ] Pagination
-- [ ] Models
+- [ ] Models `**`
   - [ ] Expense Claims
   - [ ] Users
   - [ ] Contacts
@@ -169,12 +131,12 @@ TODO - Mark models with an asterix that are pure CRUD models
     - [ ] Attachments
   - [ ] Payments
     - [x] Accounts
-    - [ ] Credit Notes ?
+    - [ ] Credit Notes
     - [ ] Invoices
-      - [ ] Items ?
-    - [ ] Overpayments ?
-    - [ ] Prepayments ?
-- [ ] Types	//These are essentially simple enums
+    - [ ] Items
+    - [ ] Overpayments
+    - [ ] Prepayments
+- [ ] Types
   - [x] Account Type
   - [x] Account Class Type
   - [x] Address types
@@ -191,18 +153,20 @@ TODO - Mark models with an asterix that are pure CRUD models
   - [ ] System Account Types
   - [ ] Tax Types
   - [x] User Roles
-- [ ] Codes	//These are essentially simple enums
+- [x] Codes
   - [x] Account Status Codes
   - [x] Contact Status Codes
-  - [x] Credit Note Status Codes (Covered by invoice status codes)
+  - [x] Credit Note Status Codes
   - [x] Expense Claim Status Codes
   - [x] Invoice Status Codes
   - [x] OverPayment Status Codes
   - [x] Payment Status Codes
   - [x] Prepayment Status Codes
 
-And any related models not listed, so if ExampleModel has a reference to ExampleCategory
+`**` And any related models not listed, so if ExampleModel has a reference to ExampleCategory
 but that is not on the list above it too must get processed
+These types are generall `StaticBaseModel`, i.e. they do not have
+endpoints or interact with the API in any way
 
 # ==== END OF INITIAL DELIVERY ====
 
@@ -218,6 +182,9 @@ can be inferred from the existing names in the folders)
 Please feel free to open PRs for any of the following :)
 
 #### Models
+
+"Non-Static" Models
+
 - [ ] Bank Transactions
 - [ ] Bank Transfers
 - [ ] Branding Themes
@@ -235,10 +202,14 @@ Please feel free to open PRs for any of the following :)
 - [ ] Tax Rates
 - [ ] Tracking
 
+And all related "static" models.
+
 #### Types
-- [ ] Bank Transaction Types
+
+- [x] Bank Transaction Types
 - [ ] Organisation Types
 - [ ] Version Types
+
 #### Codes
 
 - [ ] Bank Transaction Status Codes
@@ -247,27 +218,19 @@ Please feel free to open PRs for any of the following :)
 
 ### Request Limits
 
-Minute Limit: 60 calls in a rolling 60 second window, 
-Daily Limit: 5000 calls in a rolling 24 hour window. 
+* Minute Limit: 60 calls in a rolling 60 second window, 
+* Daily Limit: 5000 calls in a rolling 24 hour window. 
 A maximum of 100 results will be returned for list methods, 
 regardless of the parameter sent through.
 
 [Details](https://developer.xero.com/documentation/auth-and-limits/xero-api-limits)
 
-Because of this some of them can
-benefit from being cached. All caching should be off by default and only
-used if explicity set.
-
-### Details
-
-These run through the `darrynten/any-cache` package, and no extra config
-is needed. Please ensure that any features that include caching have it
-be optional and initially set to `false` to avoid unexpected behaviour.
-
 ### Rate Limiting and Queueing
+
 See [Xero API Limits](https://developer.xero.com/documentation/auth-and-limits/xero-api-limits)
 
-# TODO
+The plan is to move this functinality to the oauth request handler
+package (darrynten/xero-oauth-php)
 
 ## Contributing and Testing
 
