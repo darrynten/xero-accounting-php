@@ -21,11 +21,11 @@ class InvoiceStatusCodes
     const VOIDED = 'VOIDED';
 
     public $descriptions = [
-        self::DRAFT => 'A Draft Invoice (default)',
-        self::SUBMITTED => 'An Awaiting Approval Invoice',
-        self::DELETED => 'A Deleted Invoice',
-        self::AUTHORISED => 'An Invoice that is Approved and Awaiting Payment OR partially paid',
-        self::PAID => 'An Invoice that is completely Paid',
-        self::VOIDED => 'A Voided Invoice',
+        self::DRAFT => 'Draft invoice',
+        self::SUBMITTED => 'Invoice awaiting approval ',
+        self::DELETED => 'Deleted invoice',
+        self::AUTHORISED => 'Approved invoice',
+        self::PAID => 'Paid invoice  ',
+        self::VOIDED => 'Voided invoice',
     ];
 }
