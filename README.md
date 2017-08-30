@@ -162,6 +162,7 @@ This is for Models that have endpoints.
   - [x] OverPayment Status Codes
   - [x] Payment Status Codes
   - [x] Prepayment Status Codes
+  - [x] Receipt Status Codes
 
 `**` And any related models not listed, so if ExampleModel has a reference to ExampleCategory
 but that is not on the list above it too must get processed
